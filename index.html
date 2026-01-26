@@ -457,6 +457,33 @@ tg.onEvent('web_app_data', (event) => {
     showStatus('Ошибка получения конфига', '#ff4444');
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+  document.querySelector('.test-btn').addEventListener('click', () => {
+  showStatus('Запрос теста отправлен...');
+
+  // Отправляем callback боту вместо sendData
+  tg.sendData(JSON.stringify({ action: 'test_24h' })); // оставляем на всякий случай
+  tg.MainButton.setText("Тест 24 часа"); // если хочешь использовать главную кнопку
+  tg.MainButton.show();
+  tg.MainButton.onClick(() => {
+    tg.sendData(JSON.stringify({ action: 'test_24h' }));
+  });
+
+  // Основной способ — callback через бота
+  tg.sendData(JSON.stringify({ action: 'test_24h' })); // повтор для надёжности
+});
 </script>
 
 </body>
