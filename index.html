@@ -406,6 +406,56 @@ tg.onEvent('web_app_data', (event) => {
 document.querySelector('.test-btn').addEventListener('click', () => {
   tg.sendData(JSON.stringify({ action: 'test_24h' }));
   showStatus('Запрос бесплатного теста отправлен...');
+});  
+
+
+
+
+  tg.onEvent('mainButtonClicked', () => {
+  // Если хочешь использовать главную кнопку Telegram
+});
+
+tg.onEvent('web_app_data', (event) => {
+  try {
+    const data = JSON.parse(event.data);
+    if (data.action === 'config_ready') {
+      showStatus('Конфигурация готова!', '#0f0');
+
+      const configDiv = document.createElement('div');
+      configDiv.innerHTML = `
+        <h3 style="margin:24px 0 12px;">Ваш VLESS:</h3>
+        <div style="background:#111; padding:16px; border-radius:12px; word-break:break-all; font-family:monospace;">
+          ${data.vless_url || 'Ссылка загружается...'}
+        </div>
+        <button onclick="navigator.clipboard.writeText('${data.vless_url}').then(()=>tg.showAlert('Скопировано!'))" style="margin:12px 0; padding:12px; background:#333; color:white; border:none; border-radius:12px; width:100%;">
+          Скопировать VLESS
+        </button>
+
+        <h3 style="margin:24px 0 12px;">Subscription URL:</h3>
+        <div style="background:#111; padding:16px; border-radius:12px; word-break:break-all;">
+          ${data.sub_url || 'Загружается...'}
+        </div>
+      `;
+      document.querySelector('.container').appendChild(configDiv);
+
+      if (data.vless_url) {
+        const qrDiv = document.createElement('div');
+        qrDiv.id = 'qr';
+        qrDiv.style.margin = '24px auto';
+        qrDiv.style.background = 'white';
+        qrDiv.style.padding = '16px';
+        qrDiv.style.borderRadius = '12px';
+        qrDiv.style.display = 'inline-block';
+        document.querySelector('.container').appendChild(qrDiv);
+
+        QRCode.toCanvas(qrDiv, data.vless_url, { width: 280 }, (err) => {
+          if (err) console.error(err);
+        });
+      }
+    }
+  } catch (e) {
+    showStatus('Ошибка получения конфига', '#ff4444');
+  }
 });
 </script>
 
