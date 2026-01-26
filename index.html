@@ -474,6 +474,22 @@ tg.onEvent('web_app_data', (event) => {
 
 
 
+
+
+
+
+
+
+
+
+
+  tg.onEvent('web_app_data', (event) => {
+  showStatus('Данные от бота получены!', '#0f0');
+  console.log('Данные от бота:', event.data);
+  alert('Данные от бота: ' + event.data); // временно, чтобы увидеть в окне
+});
+
+
 </script>
 
 </body>
