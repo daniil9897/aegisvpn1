@@ -482,11 +482,20 @@ tg.onEvent('web_app_data', (event) => {
 
 
 
+document.querySelector('.test-btn').addEventListener('click', () => {
+  showStatus('Запрос отправлен...');
 
-  tg.onEvent('web_app_data', (event) => {
-  showStatus('Данные от бота получены!', '#0f0');
-  console.log('Данные от бота:', event.data);
-  alert('Данные от бота: ' + event.data); // временно, чтобы увидеть в окне
+  const payload = JSON.stringify({ action: 'test_24h' });
+  console.log("Отправляю sendData:", payload); // для F12 -> Console
+  tg.sendData(payload);
+
+  // Пробуем через MainButton (иногда работает лучше)
+  tg.MainButton.setText("Отправить тест");
+  tg.MainButton.show();
+  tg.MainButton.onClick(() => {
+    tg.sendData(payload);
+    showStatus('Повторная отправка через MainButton');
+  });
 });
 
 
