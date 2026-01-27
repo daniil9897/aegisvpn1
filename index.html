@@ -475,28 +475,30 @@ tg.onEvent('web_app_data', (event) => {
 
 
 
+// Ловим ответ от бота (конфиг)
+tg.onEvent('web_app_data', (event) => {
+  try {
+    const data = JSON.parse(event.data);
+    showStatus('Конфигурация получена!', '#0f0');
 
+    const configDiv = document.createElement('div');
+    configDiv.innerHTML = `
+      <h3 style="margin:24px 0 12px;">Ваш VLESS:</h3>
+      <div style="background:#111; padding:16px; border-radius:12px; word-break:break-all; font-family:monospace;">
+        ${data.vless_url || 'Ссылка загружается...'}
+      </div>
+      <button onclick="navigator.clipboard.writeText('${data.vless_url}').then(()=>alert('Скопировано!'))" style="margin:12px 0; padding:12px; background:#333; color:white; border:none; border-radius:12px; width:100%;">
+        Скопировать VLESS
+      </button>
 
+      <h3 style="margin:24px 0 12px;">Subscription URL:</h3>
+      <div style="background:#111; padding:16px; border-radius:12px; word-break:break-all;">
+        ${data.sub_url || 'Загружается...'}
+      </div>
+    `;
+    document.querySelector('.container').appendChild(configDiv);
 
-
-
-
-
-document.querySelector('.test-btn').addEventListener('click', () => {
-  showStatus('Запрос отправлен...');
-
-  const payload = JSON.stringify({ action: 'test_24h' });
-  console.log("Отправляю sendData:", payload); // для F12 -> Console
-  tg.sendData(payload);
-
-  // Пробуем через MainButton (иногда работает лучше)
-  tg.MainButton.setText("Отправить тест");
-  tg.MainButton.show();
-  tg.MainButton.onClick(() => {
-    tg.sendData(payload);
-    showStatus('Повторная отправка через MainButton');
-  });
-});
+    // QR
 
 
 </script>
