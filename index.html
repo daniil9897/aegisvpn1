@@ -24,6 +24,7 @@
       color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
+      margin: 0;
     }
     .container {
       max-width: 580px;
@@ -174,13 +175,7 @@
       background: rgba(139,92,246,0.14);
     }
     .nav-item svg { width: 26px; height: 26px; margin-bottom: 3px; stroke: currentColor; stroke-width: 2; }
-    .bottom-nav a {
-      text-decoration: none !important;
-      color: inherit;
-    }
-    .bottom-nav a:hover, .bottom-nav a:active, .bottom-nav a:visited {
-      text-decoration: none !important;
-    }
+    .bottom-nav a { text-decoration: none !important; color: inherit; }
     #status {
       text-align: center;
       padding: 16px;
@@ -193,6 +188,17 @@
     #config-section { display: none; margin-top: 24px; }
     #config-section.visible { display: block; }
     #qr { margin: 16px auto; display: block; background: white; padding: 8px; border-radius: 8px; width: fit-content; }
+    .copy-btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -207,60 +213,51 @@
     <div class="user-info" id="userInfo">Загрузка...</div>
   </header>
   <div class="subtitle">Надёжный VPN · Reality / VLESS · Без логов</div>
+
   <button class="test-btn">Тест 24 часа — БЕСПЛАТНО</button>
+
   <div class="section-title">Выберите тариф</div>
   <div class="tariff-grid">
+    <!-- Тарифы без изменений, но кнопки пока симулируют -->
     <div class="tariff-card">
       <div class="tariff-name">Basic</div>
       <div class="tariff-price">99 <small>XTR</small></div>
-      <ul class="features">
-        <li>7 дней</li>
-        <li>50 ГБ трафика</li>
-        <li>3 устройства</li>
-      </ul>
+      <ul class="features"><li>7 дней</li><li>50 ГБ</li><li>3 устройства</li></ul>
       <button class="btn">Выбрать</button>
     </div>
     <div class="tariff-card">
       <div class="popular-badge">ПОПУЛЯРНЫЙ</div>
       <div class="tariff-name">Standard</div>
       <div class="tariff-price">249 <small>XTR</small></div>
-      <ul class="features">
-        <li>30 дней</li>
-        <li>200 ГБ трафика</li>
-        <li>5 устройств</li>
-      </ul>
+      <ul class="features"><li>30 дней</li><li>200 ГБ</li><li>5 устройств</li></ul>
       <button class="btn">Выбрать</button>
     </div>
     <div class="tariff-card">
       <div class="tariff-name">Premium</div>
       <div class="tariff-price">399 <small>XTR</small></div>
-      <ul class="features">
-        <li>30 дней</li>
-        <li>∞ Безлимит</li>
-        <li>8 устройств</li>
-      </ul>
+      <ul class="features"><li>30 дней</li><li>∞ Безлимит</li><li>8 устройств</li></ul>
       <button class="btn">Выбрать</button>
     </div>
     <div class="tariff-card">
       <div class="tariff-name">Unlimited</div>
       <div class="tariff-price">999 <small>XTR</small></div>
-      <ul class="features">
-        <li>90 дней</li>
-        <li>∞ Безлимит</li>
-        <li>10 устройств</li>
-      </ul>
+      <ul class="features"><li>90 дней</li><li>∞ Безлимит</li><li>10 устройств</li></ul>
       <button class="btn">Выбрать</button>
     </div>
   </div>
+
   <div id="status"></div>
+
   <div id="config-section">
     <h3>Ваш VLESS:</h3>
     <div id="vless-url" style="background:#111; padding:16px; border-radius:12px; word-break:break-all; font-family:monospace;"></div>
+    <button class="copy-btn" onclick="copyVless()">Скопировать VLESS</button>
     <h3>Subscription URL:</h3>
     <div id="sub-url" style="background:#111; padding:16px; border-radius:12px; word-break:break-all;"></div>
     <div id="qr"></div>
   </div>
 </div>
+
 <div class="bottom-nav">
   <div class="nav-item active">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
@@ -278,97 +275,63 @@
     Профиль
   </a>
 </div>
+
 <script>
 const tg = Telegram.WebApp;
 tg.ready();
 tg.expand();
+
 const user = tg.initDataUnsafe.user;
 const userId = user ? user.id : null;
 document.getElementById('userInfo').textContent = user ? `@${user.username || user.first_name}` : 'Гость';
 
-const SERVER_URL = 'http://45.133.251.210:8080';  // Измените на https если настроили SSL
-
 function showStatus(text, color = '#0f0') {
-  const statusEl = document.getElementById('status');
-  statusEl.innerHTML = text;
-  statusEl.style.color = color;
-  statusEl.style.display = 'block';
+  const el = document.getElementById('status');
+  el.innerHTML = text;
+  el.style.color = color;
+  el.style.display = 'block';
 }
 
-async function fetchConfig(attempts = 10) {
-  if (!userId) {
-    showStatus('Ошибка: User ID не найден', '#ff4444');
-    return;
-  }
-  try {
-    const response = await fetch(`${SERVER_URL}/get_config/${userId}`);
-    if (response.ok) {
-      const config = await response.json();
-      document.getElementById('vless-url').textContent = config.vless_url;
-      document.getElementById('sub-url').textContent = config.sub_url;
-      document.getElementById('config-section').classList.add('visible');
-      new QRCode(document.getElementById('qr'), {
-        text: config.vless_url,
-        width: 256,
-        height: 256,
-        colorDark: '#000000',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.H
-      });
-      showStatus('Конфигурация загружена!', '#0f0');
-      return;
-    } else if (attempts > 0) {
-      setTimeout(() => fetchConfig(attempts - 1), 2000);
-    } else {
-      showStatus('Конфигурация не найдена. Попробуйте снова.', '#ff4444');
-    }
-  } catch (e) {
-    showStatus('Ошибка загрузки: ' + e.message, '#ff4444');
-  }
+function copyVless() {
+  const text = document.getElementById('vless-url').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showStatus('VLESS скопирован в буфер!', '#0f0');
+  }).catch(() => {
+    showStatus('Не удалось скопировать', '#ff4444');
+  });
 }
 
 document.querySelector('.test-btn').addEventListener('click', () => {
-  showStatus('Запрос теста отправлен...');
-  try {
-    tg.sendData(JSON.stringify({ action: 'test_24h' }));
-    showStatus('Ожидание конфигурации...', '#ffa500');
-    fetchConfig();
-  } catch (e) {
-    showStatus('Ошибка отправки: ' + e.message, '#ff4444');
-  }
+  showStatus('Генерируем тестовый конфиг...', '#ffa500');
+
+  // Фейковый конфиг для теста (можно заменить на реальный fetch позже)
+  const config = {
+    vless_url: `vless://${uuid.v4()}@45.133.251.210:443?type=tcp&encryption=none&security=reality&pbk=gWh9LgUlh6M5tdf-2jBJsFrSkDnqxUtXCUWJry3IyQc&fp=chrome&sni=www.oracle.com&sid=17b6ca0b&spx=%2F#Test_${userId || 'User'}`,
+    sub_url: `https://45.133.251.210:2053/sub/test_${userId || 'guest'}`,
+    days: 1,
+    traffic: 10
+  };
+
+  document.getElementById('vless-url').textContent = config.vless_url;
+  document.getElementById('sub-url').textContent = config.sub_url;
+  document.getElementById('config-section').classList.add('visible');
+
+  new QRCode(document.getElementById('qr'), {
+    text: config.vless_url,
+    width: 256,
+    height: 256,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  showStatus('Тестовый конфиг готов! Скопируй и подключись', '#0f0');
 });
 
+// Тарифные кнопки (пока симуляция)
 document.querySelectorAll('.btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    const card = btn.closest('.tariff-card');
-    const name = card.querySelector('.tariff-name').textContent.trim();
-    const priceText = card.querySelector('.tariff-price').textContent.trim();
-    const amount = parseInt(priceText) || 99;
-    tg.showPopup({
-      title: 'Подтверждение',
-      message: `Оплатить тариф "${name}" за ${amount} Stars?`,
-      buttons: [
-        {id: 'pay', type: 'default', text: `Оплатить ${amount} Stars`},
-        {type: 'cancel'}
-      ]
-    }, (btnId) => {
-      if (btnId === 'pay') {
-        showStatus('Запускаем оплату...');
-        try {
-          // Симуляция оплаты; для реальной настройте tg.openInvoice
-          showStatus('Оплата прошла (симуляция)!', '#0f0');
-          tg.sendData(JSON.stringify({
-            action: 'payment_success',
-            plan: name.toLowerCase(),
-            amount: amount
-          }));
-          showStatus('Ожидание конфигурации...', '#ffa500');
-          fetchConfig();
-        } catch (e) {
-          showStatus('Ошибка оплаты: ' + e.message, '#ff4444');
-        }
-      }
-    });
+    showStatus('Оплата тарифа в разработке (симуляция)', '#ffa500');
   });
 });
 </script>
