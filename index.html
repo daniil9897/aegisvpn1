@@ -294,52 +294,45 @@ function showStatus(text, color = '#0f0') {
 function copyVless() {
   const text = document.getElementById('vless-url').textContent;
   navigator.clipboard.writeText(text).then(() => {
-    showStatus('VLESS скопирован в буфер!', '#0f0');
+    showStatus('VLESS скопирован!', '#0f0');
   }).catch(() => {
     showStatus('Не удалось скопировать', '#ff4444');
-  });
-}
-
-function generateUUID() {
-  // Простая генерация UUID без библиотеки
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
   });
 }
 
 document.querySelector('.test-btn').addEventListener('click', () => {
   showStatus('Генерируем тестовый конфиг...', '#ffa500');
 
-  const uuid = generateUUID();
+  const shortUuid = Math.random().toString(36).substring(2, 15); // короткий uuid
   const config = {
-    vless_url: `vless://${uuid}@45.133.251.210:443?type=tcp&encryption=none&security=reality&pbk=gWh9LgUlh6M5tdf-2jBJsFrSkDnqxUtXCUWJry3IyQc&fp=chrome&sni=www.oracle.com&sid=17b6ca0b&spx=%2F#Test_${userId || 'User'}`,
+    vless_url: `vless://${shortUuid}@45.133.251.210:443?type=tcp&encryption=none&security=reality&pbk=gWh9LgUlh6M5tdf-2jBJsFrSkDnqxUtXCUWJry3IyQc&fp=chrome&sni=www.oracle.com&sid=17b6ca0b&spx=%2F#Test_${userId || 'User'}`,
     sub_url: `https://45.133.251.210:2053/sub/test_${userId || 'guest'}`,
     days: 1,
     traffic: 10
   };
 
+  // Показываем полный URL в тексте
   document.getElementById('vless-url').textContent = config.vless_url;
   document.getElementById('sub-url').textContent = config.sub_url;
   document.getElementById('config-section').classList.add('visible');
 
+  // Генерируем QR с пониженным уровнем коррекции и меньшим размером
   new QRCode(document.getElementById('qr'), {
     text: config.vless_url,
-    width: 256,
-    height: 256,
+    width: 220,
+    height: 220,
     colorDark: "#000000",
     colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
+    correctLevel: QRCode.CorrectLevel.M  // M = 15% коррекции, вмещает больше символов
   });
 
   showStatus('Тестовый конфиг готов! Скопируй и подключись', '#0f0');
 });
 
-// Тарифные кнопки (пока симуляция, можно добавить fetch позже)
+// Тарифные кнопки — пока симуляция
 document.querySelectorAll('.btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    showStatus('Оплата тарифа в разработке (симуляция)', '#ffa500');
+    showStatus('Оплата в разработке (симуляция)', '#ffa500');
   });
 });
 </script>
