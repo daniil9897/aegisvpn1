@@ -218,7 +218,6 @@
 
   <div class="section-title">Выберите тариф</div>
   <div class="tariff-grid">
-    <!-- Тарифы без изменений, но кнопки пока симулируют -->
     <div class="tariff-card">
       <div class="tariff-name">Basic</div>
       <div class="tariff-price">99 <small>XTR</small></div>
@@ -301,12 +300,21 @@ function copyVless() {
   });
 }
 
+function generateUUID() {
+  // Простая генерация UUID без библиотеки
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 document.querySelector('.test-btn').addEventListener('click', () => {
   showStatus('Генерируем тестовый конфиг...', '#ffa500');
 
-  // Фейковый конфиг для теста (можно заменить на реальный fetch позже)
+  const uuid = generateUUID();
   const config = {
-    vless_url: `vless://${uuid.v4()}@45.133.251.210:443?type=tcp&encryption=none&security=reality&pbk=gWh9LgUlh6M5tdf-2jBJsFrSkDnqxUtXCUWJry3IyQc&fp=chrome&sni=www.oracle.com&sid=17b6ca0b&spx=%2F#Test_${userId || 'User'}`,
+    vless_url: `vless://${uuid}@45.133.251.210:443?type=tcp&encryption=none&security=reality&pbk=gWh9LgUlh6M5tdf-2jBJsFrSkDnqxUtXCUWJry3IyQc&fp=chrome&sni=www.oracle.com&sid=17b6ca0b&spx=%2F#Test_${userId || 'User'}`,
     sub_url: `https://45.133.251.210:2053/sub/test_${userId || 'guest'}`,
     days: 1,
     traffic: 10
@@ -328,7 +336,7 @@ document.querySelector('.test-btn').addEventListener('click', () => {
   showStatus('Тестовый конфиг готов! Скопируй и подключись', '#0f0');
 });
 
-// Тарифные кнопки (пока симуляция)
+// Тарифные кнопки (пока симуляция, можно добавить fetch позже)
 document.querySelectorAll('.btn').forEach(btn => {
   btn.addEventListener('click', () => {
     showStatus('Оплата тарифа в разработке (симуляция)', '#ffa500');
