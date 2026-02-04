@@ -1,179 +1,82 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AEGISVPN</title>
-
-  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
   <style>
-    body{background:#0b0f14;color:#e8eef7;font-family:system-ui;margin:0;padding:16px}
-    .card{background:#121826;border:1px solid #263041;border-radius:14px;padding:14px;margin-bottom:12px}
-    .title{font-size:18px;font-weight:800}
-    .muted{opacity:.8}
-    .row{display:flex;gap:10px}
-    .row>*{flex:1}
-    button{width:100%;padding:12px;border-radius:12px;border:0;background:#6d28d9;color:white;font-weight:800}
-    select{width:100%;padding:12px;border-radius:12px;border:1px solid #263041;background:#0b0f14;color:#e8eef7}
-    code{display:block;word-break:break-all;white-space:pre-wrap;background:#0b0f14;border:1px solid #263041;border-radius:12px;padding:10px;margin-top:10px}
-    .err{color:#ff6b6b}
-    .ok{color:#7CFC9A}
+    body{margin:0;background:#0b0f17;color:#fff;font-family:system-ui;padding:16px}
+    .card{background:#121a2a;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px}
+    button{width:100%;padding:14px;border:0;border-radius:12px;background:#6d5efc;color:#fff;font-size:16px;font-weight:700}
+    .muted{opacity:.7;font-size:13px}
+    textarea{width:100%;height:140px;background:#0b1222;color:#fff;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px}
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="title">AEGISVPN</div>
-    <div id="status" class="muted" style="margin-top:6px">Подключение…</div>
-  </div>
+    <div id="user" class="muted">Загрузка профиля Telegram…</div>
+    <div style="height:12px"></div>
 
-  <div class="card">
-    <div style="font-weight:800;margin-bottom:8px">Выдача конфига</div>
+    <button id="btn">Получить конфиг</button>
 
-    <div class="row">
-      <select id="slot">
-        <option value="1">Устройство 1</option>
-        <option value="2">Устройство 2</option>
-        <option value="3">Устройство 3</option>
-        <option value="4">Устройство 4</option>
-        <option value="5">Устройство 5</option>
-      </select>
-      <button id="btn">Получить VLESS</button>
-    </div>
+    <div style="height:12px"></div>
+    <textarea id="out" placeholder="Тут появится vless://..." readonly></textarea>
 
-    <div id="out" style="margin-top:12px"></div>
-  </div>
-
-  <div class="card">
-    <div style="font-weight:800;margin-bottom:8px">Тарифы</div>
-    <div id="plans" class="muted">Загрузка…</div>
-  </div>
-
-  <div class="card">
-    <div style="font-weight:800;margin-bottom:8px">Инструкция</div>
-    <div class="muted">
-      1) Нажми “Получить VLESS”<br>
-      2) Скопируй ссылку<br>
-      3) Вставь в V2Box / Hiddify / v2rayNG и подключись
-    </div>
+    <div style="height:10px"></div>
+    <button id="copy" style="background:#20c997;display:none">Скопировать</button>
   </div>
 
   <script>
-    // ==========================
-    // 1) НАСТРОЙКА
-    // ==========================
-    // ВАЖНО: Backend должен быть по HTTPS, иначе Mini App не сможет нормально ходить.
-    // Пример: https://api.yourdomain.com
-const API = "https://walls-atomic-colorado-poems.trycloudflare.com";
-    let token = null;
+    const tg = window.Telegram?.WebApp;
+    if (tg) tg.ready();
 
-    const el = (id) => document.getElementById(id);
+    const API_BASE = "http://45.133.251.210:8008"; // потом заменим на https://api.домен
 
-    async function post(path, body) {
-      const r = await fetch(API + path, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+    const user = tg?.initDataUnsafe?.user;
+    document.getElementById("user").textContent =
+      user ? `Привет, ${user.first_name} (id: ${user.id})` : "Открой это внутри Telegram";
 
-      const txt = await r.text();
-      let data = null;
-      try { data = JSON.parse(txt); } catch(e) {}
+    const btn = document.getElementById("btn");
+    const out = document.getElementById("out");
+    const copy = document.getElementById("copy");
 
-      if (!r.ok) {
-        const msg = (data && (data.detail || data.error)) ? (data.detail || data.error) : txt;
-        throw new Error(msg);
+    btn.onclick = async () => {
+      if (!user) { alert("Открой Mini App внутри Telegram"); return; }
+
+      btn.disabled = true;
+      btn.textContent = "Получаю…";
+
+      try {
+        const user_key = "tg" + user.id;
+        const res = await fetch(API_BASE + "/issue-config", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ inbound_id: 1, user_key, days: 30, limit_ip: 0 })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Ошибка");
+
+        out.value = data.link;
+        copy.style.display = "block";
+      } catch (e) {
+        alert("Ошибка: " + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Получить конфиг";
       }
-      return data ?? {};
-    }
+    };
 
-    async function get(path) {
-      const r = await fetch(API + path);
-      if (!r.ok) throw new Error("GET " + path + " failed: " + r.status);
-      return await r.json();
-    }
-
-    function showError(where, msg) {
-      where.innerHTML = `<div class="err">Ошибка: ${escapeHtml(msg)}</div>`;
-    }
-
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, m => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-      }[m]));
-    }
-
-    function fmtDate(ts) {
-      try { return new Date(ts * 1000).toLocaleString(); } catch(e) { return String(ts); }
-    }
-
-    async function boot() {
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-      tg.expand();
-
-      // 2) AUTH через Telegram initData
-      const initData = tg.initData;
-      if (!initData) {
-        el("status").innerHTML = `<span class="err">initData пустой. Открой это как Telegram Mini App, не в браузере.</span>`;
-        return;
+    copy.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(out.value);
+        alert("Скопировано");
+      } catch {
+        out.select();
+        document.execCommand("copy");
+        alert("Скопировано");
       }
-
-      const auth = await post("/auth/telegram", { initData });
-      token = auth.token;
-
-      // 3) Тарифы
-      const plans = await get("/plans");
-      el("plans").innerHTML = plans.plans.map(p =>
-        `<div style="margin:6px 0;opacity:.95">• <b>${escapeHtml(p.title)}</b> — ${p.price_rub}₽ (${p.devices} устройств)</div>`
-      ).join("");
-
-      // 4) Статус
-      const me = await post("/me", { token, device_slot: 1 });
-      const sub = me.subscription;
-
-      if (!sub) {
-        el("status").innerHTML = `Статус: <span class="err">нет подписки</span>`;
-      } else {
-        el("status").innerHTML =
-          `Статус: <span class="ok">${escapeHtml(sub.status)}</span>, до <b>${fmtDate(sub.expires_at)}</b> · ` +
-          `Устройства: <b>${me.used_devices}/${sub.devices}</b>`;
-      }
-
-      // 5) Выдать конфиг
-      el("btn").onclick = async () => {
-        const out = el("out");
-        out.innerHTML = `<span class="muted">Загрузка…</span>`;
-        try {
-          const slot = parseInt(el("slot").value || "1", 10);
-          const res = await post("/vpn/issue", { token, device_slot: slot });
-
-          out.innerHTML =
-            `<div class="ok"><b>Готово (устройство ${res.device_slot})</b></div>` +
-            `<div class="muted">Действует до: <b>${fmtDate(res.expires_at)}</b></div>` +
-            `<code id="vless">${escapeHtml(res.vless)}</code>` +
-            `<button id="copy" style="margin-top:10px;background:#1f2937">Скопировать</button>`;
-
-          document.getElementById("copy").onclick = async () => {
-            const text = res.vless;
-            try {
-              await navigator.clipboard.writeText(text);
-              tg.showPopup({ title: "Скопировано", message: "Ссылка VLESS скопирована в буфер.", buttons: [{type:"ok"}] });
-            } catch (e) {
-              tg.showPopup({ title: "Не скопировалось", message: "Скопируй вручную из блока.", buttons: [{type:"ok"}] });
-            }
-          };
-
-        } catch (e) {
-          showError(out, e.message);
-        }
-      };
-    }
-
-    boot().catch(e => {
-      el("status").innerHTML = `<span class="err">Ошибка запуска: ${escapeHtml(e.message)}</span>`;
-    });
+    };
   </script>
 </body>
 </html>
