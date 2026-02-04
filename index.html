@@ -2,96 +2,540 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AEGISVPN</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Porsche VPN</title>
+
   <style>
-    body{margin:0;background:#0b0f17;color:#fff;font-family:system-ui;padding:16px}
-    .card{max-width:520px;margin:0 auto;background:#121a2a;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px}
-    h1{font-size:18px;margin:0 0 10px}
-    .muted{opacity:.7;font-size:13px;line-height:1.4}
-    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    button{flex:1;min-width:180px;padding:14px;border:0;border-radius:12px;background:#6d5efc;color:#fff;font-size:15px;font-weight:700;cursor:pointer}
-    button.secondary{background:#20c997}
-    button:disabled{opacity:.6;cursor:not-allowed}
-    textarea{width:100%;height:140px;margin-top:12px;background:#0b1222;color:#fff;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px;resize:none}
-    code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:8px}
+    :root{
+      --bg0:#07090d;
+      --bg1:#0b0f16;
+      --card:#0e141f;
+      --card2:#0c1018;
+      --line: rgba(255,255,255,.10);
+      --line2: rgba(255,255,255,.06);
+      --text:#e8ecf3;
+      --muted: rgba(232,236,243,.72);
+      --red:#d5001c;          /* Porsche-like red */
+      --red2:#ff2a3c;
+      --ok:#20c997;
+      --warn:#ffcc00;
+
+      --r: 18px;
+      --shadow: 0 20px 70px rgba(0,0,0,.55);
+      --shadow2: 0 10px 40px rgba(0,0,0,.35);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1200px 700px at 15% -10%, rgba(213,0,28,.18), transparent 55%),
+        radial-gradient(900px 600px at 90% 10%, rgba(255,42,60,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    /* subtle “track lines” */
+    body:before{
+      content:"";
+      position:fixed; inset:0;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,.03) 0px,
+          rgba(255,255,255,.03) 1px,
+          transparent 1px,
+          transparent 26px
+        );
+      opacity:.12;
+      pointer-events:none;
+      mask-image: radial-gradient(70% 50% at 50% 0%, black, transparent 70%);
+    }
+
+    .wrap{max-width:980px;margin:0 auto;padding:22px 16px 60px}
+    .top{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:14px; margin-top:8px;
+    }
+
+    .brand{
+      display:flex; align-items:baseline; gap:10px;
+      letter-spacing:.3px;
+    }
+    .brand .name{
+      font-weight:800;
+      font-size:18px;
+      text-transform:uppercase;
+    }
+    .brand .name span{color:var(--red)}
+    .brand .tag{
+      font-size:12px;
+      color:var(--muted);
+      padding:4px 10px;
+      border:1px solid var(--line2);
+      border-radius:999px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .pill{
+      display:flex; align-items:center; gap:8px;
+      border:1px solid var(--line2);
+      background:rgba(255,255,255,.02);
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:12px;
+      color:var(--muted);
+      box-shadow: var(--shadow2);
+    }
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background:var(--warn);
+      box-shadow: 0 0 0 4px rgba(255,204,0,.12);
+    }
+    .dot.ok{
+      background:var(--ok);
+      box-shadow: 0 0 0 4px rgba(32,201,151,.12);
+    }
+
+    .hero{
+      margin-top:18px;
+      border:1px solid var(--line2);
+      border-radius: calc(var(--r) + 6px);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .hero:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        linear-gradient(90deg,
+          transparent 0%,
+          rgba(213,0,28,.10) 30%,
+          rgba(255,42,60,.06) 55%,
+          transparent 80%);
+      transform: translateX(-70%);
+      animation: sweep 6.2s ease-in-out infinite;
+      pointer-events:none;
+      opacity:.7;
+    }
+    @keyframes sweep{
+      0%{transform:translateX(-70%)}
+      50%{transform:translateX(35%)}
+      100%{transform:translateX(120%)}
+    }
+
+    .hero-inner{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:16px;
+      padding:18px;
+    }
+    @media (max-width: 860px){
+      .hero-inner{grid-template-columns: 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line2);
+      border-radius: var(--r);
+      background: rgba(0,0,0,.18);
+      box-shadow: 0 10px 35px rgba(0,0,0,.35);
+      padding:16px;
+    }
+
+    .h1{
+      margin:0;
+      font-size:26px;
+      line-height:1.1;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .grid2{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 520px){
+      .grid2{grid-template-columns: 1fr}
+    }
+
+    .mini{
+      border:1px solid var(--line2);
+      border-radius: 14px;
+      background: rgba(255,255,255,.02);
+      padding:12px;
+    }
+    .mini .k{font-size:12px;color:var(--muted)}
+    .mini .v{margin-top:6px;font-weight:700;font-size:14px}
+    .mini code{
+      font-family:var(--mono);
+      font-size:12px;
+      color:rgba(232,236,243,.88);
+      background:rgba(255,255,255,.04);
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .plans{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 860px){
+      .plans{grid-template-columns: 1fr}
+    }
+
+    .plan{
+      border:1px solid var(--line2);
+      border-radius: 16px;
+      background: rgba(255,255,255,.02);
+      padding:14px;
+      cursor:pointer;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+      position:relative;
+    }
+    .plan:hover{transform: translateY(-2px); border-color: rgba(213,0,28,.35)}
+    .plan.active{
+      border-color: rgba(213,0,28,.65);
+      box-shadow: 0 0 0 4px rgba(213,0,28,.10);
+      background: rgba(213,0,28,.08);
+    }
+    .plan .t{font-weight:800;letter-spacing:.2px}
+    .plan .p{margin-top:6px;color:var(--muted);font-size:12px}
+    .badge{
+      position:absolute; top:10px; right:10px;
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(213,0,28,.35);
+      background: rgba(213,0,28,.10);
+      color: rgba(255,255,255,.92);
+    }
+
+    .btn{
+      width:100%;
+      border:0;
+      border-radius: 14px;
+      padding:14px 14px;
+      font-weight:900;
+      letter-spacing:.3px;
+      color:white;
+      background: linear-gradient(135deg, var(--red), var(--red2));
+      box-shadow: 0 14px 35px rgba(213,0,28,.25);
+      cursor:pointer;
+      transition: transform .12s ease, filter .12s ease;
+    }
+    .btn:hover{transform: translateY(-1px); filter:saturate(1.05)}
+    .btn:disabled{opacity:.6; cursor:not-allowed; transform:none}
+
+    .btn2{
+      width:100%;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      padding:12px 14px;
+      font-weight:800;
+      color: rgba(255,255,255,.92);
+      background: rgba(255,255,255,.04);
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .btn2:hover{transform: translateY(-1px); background: rgba(255,255,255,.06)}
+    .btn2:disabled{opacity:.6; cursor:not-allowed; transform:none}
+
+    textarea{
+      width:100%;
+      height:150px;
+      margin-top:10px;
+      border-radius: 14px;
+      border:1px solid var(--line2);
+      background: rgba(0,0,0,.28);
+      color: rgba(232,236,243,.92);
+      padding:12px 12px;
+      resize:none;
+      outline:none;
+      font-family: var(--mono);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 520px){
+      .row{grid-template-columns:1fr}
+    }
+
+    .note{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:16px;
+      transform:translateX(-50%);
+      background: rgba(15,20,31,.92);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      padding:10px 14px;
+      color: rgba(255,255,255,.92);
+      box-shadow: var(--shadow2);
+      font-size:12px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(-3px);
+    }
+
+    .footer{
+      margin-top:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .footer code{
+      font-family:var(--mono);
+      font-size:11px;
+      padding:3px 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      color:rgba(232,236,243,.88);
+    }
   </style>
 </head>
+
 <body>
-  <div class="card">
-    <h1>AEGISVPN (заглушка без Telegram)</h1>
-    <div class="muted">
-      Сейчас сайт работает без Telegram Mini App.  
-      Твой уникальный ID хранится в браузере (localStorage).
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="name">Porsche <span>VPN</span></div>
+        <div class="tag">performance mode</div>
+      </div>
+
+      <div class="pill" title="Статус API">
+        <span class="dot" id="dot"></span>
+        <span id="status">checking…</span>
+      </div>
     </div>
 
-    <div style="margin-top:12px" class="muted">
-      Ваш ID: <code id="uid"></code>
-    </div>
+    <div class="hero">
+      <div class="hero-inner">
+        <!-- LEFT -->
+        <div class="card">
+          <div class="h1">Премиум-подключение<br/>в один клик</div>
+          <div class="sub">
+            Сейчас работает <b>заглушка</b> вместо Telegram профиля: мы создаём уникальный ID в браузере.
+            Потом заменим на Telegram ID без переделки дизайна.
+          </div>
 
-    <div class="row">
-      <button id="btn">Получить конфиг</button>
-      <button id="copy" class="secondary" style="display:none">Скопировать</button>
-    </div>
+          <div class="grid2">
+            <div class="mini">
+              <div class="k">Ваш ID</div>
+              <div class="v"><code id="uid">…</code></div>
+            </div>
+            <div class="mini">
+              <div class="k">Сервер</div>
+              <div class="v"><code id="srv">45.133.251.210</code></div>
+            </div>
+          </div>
 
-    <textarea id="out" readonly placeholder="Тут появится vless://..."></textarea>
+          <div class="sub" style="margin-top:14px; font-weight:800; letter-spacing:.2px;">
+            Тариф (время доступа)
+          </div>
+          <div class="plans" id="plans">
+            <div class="plan active" data-days="30">
+              <div class="t">30 дней</div>
+              <div class="p">Старт. Быстро проверить и поехать.</div>
+            </div>
+            <div class="plan" data-days="90">
+              <div class="badge">best value</div>
+              <div class="t">90 дней</div>
+              <div class="p">Оптимально. Меньше действий — больше скорости.</div>
+            </div>
+            <div class="plan" data-days="180">
+              <div class="t">180 дней</div>
+              <div class="p">Максимум. Для тех, кто “всегда онлайн”.</div>
+            </div>
+          </div>
 
-    <div class="muted" style="margin-top:10px">
-      API: <code>https://api.45.133.251.210.nip.io:8443</code>
+          <div class="note">
+            ⚙️ Сейчас это просто параметр <code>days</code> при создании клиента. Позже повяжем на оплату.
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="card">
+          <div class="sub" style="margin-top:0; font-weight:900; letter-spacing:.2px;">
+            Ваш конфиг
+          </div>
+
+          <button class="btn" id="btn">Получить конфиг</button>
+
+          <textarea id="out" readonly placeholder="vless://..."></textarea>
+
+          <div class="row">
+            <button class="btn2" id="copy" disabled>Скопировать</button>
+            <button class="btn2" id="open" disabled>Открыть в приложении</button>
+          </div>
+
+          <div class="note">
+            Если “Открыть в приложении” не сработало — просто нажми “Скопировать” и импортируй в V2Box / v2rayNG.
+          </div>
+
+          <div class="footer">
+            <div>API: <code id="apiTxt"></code></div>
+            <div>Inbound: <code>1</code></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
+  <div class="toast" id="toast">Скопировано</div>
+
   <script>
+    // === CONFIG ===
     const API = "https://api.45.133.251.210.nip.io:8443";
+    const INBOUND_ID = 1;
 
-    function getUserKey() {
-      let k = localStorage.getItem("aegis_user_key");
-      if (!k) {
-        k = "site-" + (crypto.randomUUID ? crypto.randomUUID() : (Math.random().toString(16).slice(2))) .toString().replace(/-/g,'').slice(0,8);
-        localStorage.setItem("aegis_user_key", k);
-      }
-      return k;
-    }
-
-    const user_key = getUserKey();
-    document.getElementById("uid").textContent = user_key;
+    const dot = document.getElementById("dot");
+    const statusEl = document.getElementById("status");
+    const uidEl = document.getElementById("uid");
+    const apiTxt = document.getElementById("apiTxt");
 
     const btn = document.getElementById("btn");
     const out = document.getElementById("out");
     const copy = document.getElementById("copy");
+    const openBtn = document.getElementById("open");
+    const toast = document.getElementById("toast");
 
-    btn.onclick = async () => {
+    apiTxt.textContent = API.replace("https://","");
+
+    function toastShow(text){
+      toast.textContent = text;
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"), 1200);
+    }
+
+    function getUserKey(){
+      let k = localStorage.getItem("porschevpn_user_key");
+      if(!k){
+        const id = (crypto.randomUUID ? crypto.randomUUID() : (Math.random().toString(16).slice(2))).toString().replace(/-/g,'');
+        k = "site-" + id.slice(0, 10);
+        localStorage.setItem("porschevpn_user_key", k);
+      }
+      return k;
+    }
+
+    let user_key = getUserKey();
+    uidEl.textContent = user_key;
+
+    let selectedDays = 30;
+    const plans = document.getElementById("plans");
+    plans.addEventListener("click", (e)=>{
+      const card = e.target.closest(".plan");
+      if(!card) return;
+      [...plans.querySelectorAll(".plan")].forEach(p=>p.classList.remove("active"));
+      card.classList.add("active");
+      selectedDays = parseInt(card.dataset.days || "30", 10);
+    });
+
+    async function checkHealth(){
+      try{
+        const r = await fetch(API + "/health", { method:"GET" });
+        if(!r.ok) throw new Error("bad");
+        dot.classList.add("ok");
+        statusEl.textContent = "API online";
+      }catch{
+        dot.classList.remove("ok");
+        statusEl.textContent = "API offline";
+      }
+    }
+
+    btn.addEventListener("click", async ()=>{
       btn.disabled = true;
       btn.textContent = "Получаю…";
-      try {
+      out.value = "";
+
+      try{
         const r = await fetch(API + "/issue-config", {
-          method: "POST",
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({ inbound_id: 1, user_key, days: 30, limit_ip: 0 })
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({
+            inbound_id: INBOUND_ID,
+            user_key,
+            days: selectedDays,
+            limit_ip: 0
+          })
         });
+
         const data = await r.json();
-        if (!r.ok) throw new Error(data.detail || "Ошибка");
-        out.value = data.link;
-        copy.style.display = "block";
-      } catch (e) {
-        alert("Ошибка: " + e.message);
-      } finally {
+        if(!r.ok) throw new Error(data.detail || "Ошибка");
+
+        out.value = data.link || "";
+        const ok = !!out.value;
+
+        copy.disabled = !ok;
+        openBtn.disabled = !ok;
+
+        if(ok) toastShow("Конфиг готов");
+      }catch(err){
+        alert("Ошибка: " + (err?.message || err));
+      }finally{
         btn.disabled = false;
         btn.textContent = "Получить конфиг";
       }
-    };
+    });
 
-    copy.onclick = async () => {
-      if (!out.value) return;
-      try {
+    copy.addEventListener("click", async ()=>{
+      if(!out.value) return;
+      try{
         await navigator.clipboard.writeText(out.value);
-        alert("Скопировано");
-      } catch {
+        toastShow("Скопировано");
+      }catch{
         out.select();
         document.execCommand("copy");
-        alert("Скопировано");
+        toastShow("Скопировано");
       }
-    };
+    });
+
+    openBtn.addEventListener("click", ()=>{
+      if(!out.value) return;
+      // Попытка открыть как deep-link. Если ОС/браузер не поддерживает — будет молча игнор.
+      window.location.href = out.value;
+    });
+
+    checkHealth();
+    setInterval(checkHealth, 10000);
   </script>
 </body>
 </html>
