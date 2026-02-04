@@ -4,59 +4,73 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AEGISVPN</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body{margin:0;background:#0b0f17;color:#fff;font-family:system-ui;padding:16px}
-    .card{background:#121a2a;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px}
-    button{width:100%;padding:14px;border:0;border-radius:12px;background:#6d5efc;color:#fff;font-size:16px;font-weight:700}
-    .muted{opacity:.7;font-size:13px}
-    textarea{width:100%;height:140px;background:#0b1222;color:#fff;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px}
+    .card{max-width:520px;margin:0 auto;background:#121a2a;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px}
+    h1{font-size:18px;margin:0 0 10px}
+    .muted{opacity:.7;font-size:13px;line-height:1.4}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{flex:1;min-width:180px;padding:14px;border:0;border-radius:12px;background:#6d5efc;color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+    button.secondary{background:#20c997}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    textarea{width:100%;height:140px;margin-top:12px;background:#0b1222;color:#fff;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px;resize:none}
+    code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:8px}
   </style>
 </head>
 <body>
   <div class="card">
-    <div id="user" class="muted">Загрузка профиля Telegram…</div>
-    <div style="height:12px"></div>
+    <h1>AEGISVPN (заглушка без Telegram)</h1>
+    <div class="muted">
+      Сейчас сайт работает без Telegram Mini App.  
+      Твой уникальный ID хранится в браузере (localStorage).
+    </div>
 
-    <button id="btn">Получить конфиг</button>
+    <div style="margin-top:12px" class="muted">
+      Ваш ID: <code id="uid"></code>
+    </div>
 
-    <div style="height:12px"></div>
-    <textarea id="out" placeholder="Тут появится vless://..." readonly></textarea>
+    <div class="row">
+      <button id="btn">Получить конфиг</button>
+      <button id="copy" class="secondary" style="display:none">Скопировать</button>
+    </div>
 
-    <div style="height:10px"></div>
-    <button id="copy" style="background:#20c997;display:none">Скопировать</button>
+    <textarea id="out" readonly placeholder="Тут появится vless://..."></textarea>
+
+    <div class="muted" style="margin-top:10px">
+      API: <code>https://api.45.133.251.210.nip.io:8443</code>
+    </div>
   </div>
 
   <script>
-    const tg = window.Telegram?.WebApp;
-    if (tg) tg.ready();
+    const API = "https://api.45.133.251.210.nip.io:8443";
 
-   const API = "https://api.45.133.251.210.nip.io:8443";
+    function getUserKey() {
+      let k = localStorage.getItem("aegis_user_key");
+      if (!k) {
+        k = "site-" + (crypto.randomUUID ? crypto.randomUUID() : (Math.random().toString(16).slice(2))) .toString().replace(/-/g,'').slice(0,8);
+        localStorage.setItem("aegis_user_key", k);
+      }
+      return k;
+    }
 
-    const user = tg?.initDataUnsafe?.user;
-    document.getElementById("user").textContent =
-      user ? `Привет, ${user.first_name} (id: ${user.id})` : "Открой это внутри Telegram";
+    const user_key = getUserKey();
+    document.getElementById("uid").textContent = user_key;
 
     const btn = document.getElementById("btn");
     const out = document.getElementById("out");
     const copy = document.getElementById("copy");
 
     btn.onclick = async () => {
-      if (!user) { alert("Открой Mini App внутри Telegram"); return; }
-
       btn.disabled = true;
       btn.textContent = "Получаю…";
-
       try {
-        const user_key = "tg" + user.id;
-        const res = await fetch(API_BASE + "/issue-config", {
+        const r = await fetch(API + "/issue-config", {
           method: "POST",
-          headers: {"Content-Type": "application/json"},
+          headers: {"Content-Type":"application/json"},
           body: JSON.stringify({ inbound_id: 1, user_key, days: 30, limit_ip: 0 })
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || "Ошибка");
-
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.detail || "Ошибка");
         out.value = data.link;
         copy.style.display = "block";
       } catch (e) {
@@ -68,6 +82,7 @@
     };
 
     copy.onclick = async () => {
+      if (!out.value) return;
       try {
         await navigator.clipboard.writeText(out.value);
         alert("Скопировано");
