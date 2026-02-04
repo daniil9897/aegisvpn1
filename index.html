@@ -31,7 +31,7 @@
     const tg = window.Telegram?.WebApp;
     if (tg) tg.ready();
 
-    const API_BASE = "http://45.133.251.210:8008"; // потом заменим на https://api.домен
+   const API = "https://api.45.133.251.210.nip.io:8443";
 
     const user = tg?.initDataUnsafe?.user;
     document.getElementById("user").textContent =
