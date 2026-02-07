@@ -8,34 +8,34 @@
 
   <style>
     :root{
-      /* Zeus palette */
-      --bg0:#05060a;
-      --bg1:#070a14;
-      --sky:#0b1030;
+      /* Zeus: royal blue + marble + gold accent */
+      --bg0:#050812;
+      --bg1:#071028;
+      --blue:#0B2A6A;
+      --blue2:#0E3DA0;
+      --cyan:#48D7FF;
+      --text:#F4F7FF;
+      --muted: rgba(244,247,255,.72);
 
-      --text:#f3f6ff;
-      --muted:#aab3d3;
+      --card: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12);
 
-      --gold:#f6d36b;
-      --gold2:#ffbf2f;
-      --gold3:#b48722;
-
-      --bolt:#7cd6ff;
-      --bolt2:#3f7bff;
-
-      --marbleA: rgba(255,255,255,.10);
+      --marbleA: rgba(255,255,255,.12);
       --marbleB: rgba(255,255,255,.06);
 
-      --card: rgba(10,12,20,.66);
-      --stroke: rgba(255,255,255,.10);
+      --gold:#F7D37A;
+      --gold2:#FFB940;
 
-      --ok:#24d38c;
-      --warn:#ffd66a;
-      --bad:#ff4d4d;
+      --ok:#27D89A;
+      --warn:#FFC76A;
+      --bad:#FF5A5A;
 
       --r16:16px;
       --r20:20px;
-      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --r24:24px;
+
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --shadowSoft: 0 12px 28px rgba(0,0,0,.28);
     }
 
     *{box-sizing:border-box}
@@ -45,65 +45,27 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--text);
       background:
-        radial-gradient(900px 520px at 50% -12%, rgba(124,214,255,.16), transparent 60%),
-        radial-gradient(720px 420px at 110% 8%, rgba(246,211,107,.12), transparent 60%),
-        radial-gradient(980px 640px at 35% 120%, rgba(63,123,255,.14), transparent 60%),
-        linear-gradient(180deg, var(--sky), var(--bg0));
+        radial-gradient(900px 520px at 50% -10%, rgba(72,215,255,.18), transparent 60%),
+        radial-gradient(980px 620px at 100% 20%, rgba(255,185,64,.10), transparent 65%),
+        radial-gradient(900px 520px at 0% 40%, rgba(14,61,160,.16), transparent 65%),
+        linear-gradient(180deg, var(--bg1), var(--bg0));
       overflow-x:hidden;
     }
 
-    /* film grain */
+    /* premium grain (very subtle) */
     body:before{
       content:"";
       position:fixed; inset:0;
       pointer-events:none;
-      opacity:.25;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.10'/%3E%3C/svg%3E");
+      opacity:.14;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
       mix-blend-mode:overlay;
-    }
-
-    /* Zeus lightning sweeps */
-    .storm{
-      position:fixed; inset:0;
-      pointer-events:none;
-      opacity:.9;
-      z-index:0;
-    }
-    .storm:before, .storm:after{
-      content:"";
-      position:absolute; inset:-20%;
-      background:
-        linear-gradient(115deg,
-          transparent 0 44%,
-          rgba(124,214,255,.10) 47%,
-          transparent 50%),
-        linear-gradient(70deg,
-          transparent 0 60%,
-          rgba(246,211,107,.08) 63%,
-          transparent 66%),
-        radial-gradient(240px 120px at 20% 18%, rgba(124,214,255,.10), transparent 70%),
-        radial-gradient(260px 140px at 80% 16%, rgba(246,211,107,.08), transparent 70%);
-      filter: blur(.2px);
-      animation: sweep 7.5s linear infinite;
-      opacity:.35;
-    }
-    .storm:after{
-      animation-duration: 10.5s;
-      opacity:.22;
-      transform: rotate(12deg);
-    }
-    @keyframes sweep{
-      0%{ transform: translateX(-6%) translateY(0) }
-      50%{ transform: translateX(6%) translateY(1%) }
-      100%{ transform: translateX(-6%) translateY(0) }
     }
 
     .app{
       max-width:520px;
       margin:0 auto;
       padding: 16px 14px 96px;
-      position:relative;
-      z-index:1;
     }
 
     /* Header */
@@ -112,348 +74,289 @@
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      padding: 6px 2px 10px;
+      padding: 6px 2px 14px;
     }
-
     .brand{
       display:flex;
       align-items:center;
       gap:12px;
       min-width:0;
     }
-
-    .emblem{
-      width:46px; height:46px;
-      border-radius:16px;
+    .logo{
+      width:42px; height:42px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:
+        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.22), transparent 70%),
+        linear-gradient(145deg, rgba(14,61,160,.95), rgba(72,215,255,.70));
+      box-shadow: 0 16px 40px rgba(14,61,160,.18);
       position:relative;
       overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:
-        0 18px 40px rgba(0,0,0,.40),
-        0 16px 36px rgba(63,123,255,.12);
-      background:
-        radial-gradient(18px 18px at 32% 28%, rgba(255,255,255,.18), transparent 70%),
-        linear-gradient(145deg, rgba(246,211,107,.95), rgba(63,123,255,.92));
     }
-    .emblem:before{
-      /* tiny lightning mark */
+    /* clean lightning mark */
+    .logo:after{
       content:"";
       position:absolute;
       left:50%; top:50%;
       width:16px; height:24px;
-      transform: translate(-50%,-50%) skewX(-10deg);
-      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.18));
+      transform: translate(-50%,-50%);
+      background: rgba(255,255,255,.88);
       clip-path: polygon(55% 0, 100% 0, 62% 45%, 92% 45%, 35% 100%, 50% 58%, 18% 58%);
-      opacity:.85;
-      filter: drop-shadow(0 0 10px rgba(124,214,255,.35));
-    }
-    .emblem:after{
-      /* shine */
-      content:"";
-      position:absolute; inset:-50%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
-      transform: rotate(25deg);
-      animation: shine 3.2s linear infinite;
-      opacity:.8;
-    }
-    @keyframes shine{
-      0%{transform:translateX(-55%) rotate(25deg)}
-      100%{transform:translateX(55%) rotate(25deg)}
+      filter: drop-shadow(0 0 12px rgba(72,215,255,.25));
+      opacity:.92;
     }
 
-    .brand h1{
+    .brandTitle{
+      min-width:0;
+    }
+    .brandTitle h1{
       margin:0;
-      font-size:18px;
-      letter-spacing: 1.1px;
+      font-size: 16px;
+      letter-spacing: .9px;
+      font-weight: 900;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
-    .brand small{
+    .brandTitle small{
       display:block;
-      margin-top:2px;
-      color:var(--muted);
-      font-size:12px;
-      letter-spacing:.2px;
+      margin-top:3px;
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .pill{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding:8px 10px;
+      padding: 8px 10px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(10,12,20,.45);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 14px 36px rgba(0,0,0,.28);
-      font-size:12px;
-      color:var(--muted);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadowSoft);
+      font-size: 12px;
+      color: var(--muted);
       white-space:nowrap;
     }
     .dot{
       width:8px; height:8px; border-radius:50%;
       background: var(--warn);
-      box-shadow: 0 0 14px rgba(255,214,106,.45);
+      box-shadow: 0 0 10px rgba(255,199,106,.35);
     }
 
     /* Hero */
     .hero{
-      border-radius: var(--r20);
-      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--r24);
+      border:1px solid rgba(255,255,255,.12);
       background:
-        radial-gradient(600px 240px at 20% 0%, rgba(246,211,107,.10), transparent 60%),
-        radial-gradient(600px 240px at 82% 12%, rgba(124,214,255,.10), transparent 60%),
-        linear-gradient(180deg, rgba(10,14,30,.68), rgba(6,8,14,.68));
+        radial-gradient(800px 360px at 20% 0%, rgba(14,61,160,.32), transparent 60%),
+        radial-gradient(700px 280px at 80% 10%, rgba(72,215,255,.18), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
       box-shadow: var(--shadow);
-      overflow:hidden;
+      padding: 16px;
       position:relative;
-      padding:16px;
+      overflow:hidden;
       margin-bottom: 12px;
     }
-    .hero:before{
-      /* Greek key border (meander) */
-      content:"";
-      position:absolute;
-      left:0; right:0; top:0;
-      height:34px;
-      background:
-        linear-gradient(180deg, rgba(0,0,0,.20), transparent),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='34' viewBox='0 0 72 34'%3E%3Cg fill='none' stroke='%23f6d36b' stroke-opacity='.45' stroke-width='2'%3E%3Cpath d='M2 30V6h22v10H12v14h24V18h10v12h24V6H48V2h22v28'/%3E%3C/g%3E%3C/svg%3E");
-      background-repeat: repeat-x;
-      background-position: center;
-      opacity:.9;
-    }
-    .hero:after{
-      /* temple columns silhouette */
-      content:"";
-      position:absolute; inset:0;
-      opacity:.10;
-      background:
-        radial-gradient(520px 260px at 50% 100%, rgba(255,255,255,.18), transparent 70%),
-        linear-gradient(180deg, transparent 60%, rgba(0,0,0,.32));
-      mask-image:
-        radial-gradient(580px 260px at 50% 100%, #000 50%, transparent 75%);
-      pointer-events:none;
+
+    /* clean greek key line */
+    .greekline{
+      height:2px;
+      border-radius:999px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), rgba(247,211,122,.45), rgba(72,215,255,.35), rgba(255,255,255,.08), transparent);
+      margin: 10px 0 12px;
     }
 
     .heroTitle{
-      margin: 18px 0 6px;
-      font-size: 20px;
-      letter-spacing: .6px;
-      line-height:1.15;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: .3px;
+      line-height: 1.2;
     }
     .heroSub{
-      margin:0;
+      margin: 8px 0 0;
       color: var(--muted);
       font-size: 12.5px;
-      line-height:1.45;
-      max-width: 36ch;
+      line-height: 1.45;
+      max-width: 46ch;
     }
 
-    .heroRow{
+    .stats{
       display:flex;
       gap:10px;
       margin-top: 14px;
-      align-items:stretch;
     }
-
-    .miniStat{
+    .stat{
       flex:1;
-      padding:10px 10px;
-      border-radius:16px;
+      border-radius: 16px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      position:relative;
-      overflow:hidden;
+      background: rgba(10,18,40,.28);
+      padding: 10px;
     }
-    .miniStat:before{
-      content:"";
-      position:absolute; inset:-60%;
-      background: linear-gradient(90deg, transparent, rgba(124,214,255,.14), transparent);
-      transform: rotate(18deg);
-      animation: statshine 4.2s linear infinite;
-      opacity:.7;
-    }
-    @keyframes statshine{
-      0%{transform:translateX(-55%) rotate(18deg)}
-      100%{transform:translateX(55%) rotate(18deg)}
-    }
-    .miniStat b{
+    .stat b{
       display:block;
-      font-size: 13px;
-      letter-spacing:.3px;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-    .miniStat span{
       font-size: 12px;
+      letter-spacing:.2px;
+      margin-bottom: 5px;
+    }
+    .stat span{
       color: var(--muted);
+      font-size: 12px;
     }
 
-    /* Card (marble) */
+    /* Cards */
     .card{
-      border-radius: var(--r20);
-      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--r24);
+      border:1px solid rgba(255,255,255,.12);
       background:
-        radial-gradient(520px 220px at 18% 0%, rgba(124,214,255,.10), transparent 60%),
-        radial-gradient(520px 240px at 88% 10%, rgba(246,211,107,.10), transparent 60%),
-        linear-gradient(180deg, rgba(10,12,20,.70), rgba(6,8,14,.70));
+        radial-gradient(760px 280px at 15% 0%, rgba(255,255,255,.08), transparent 60%),
+        radial-gradient(700px 260px at 85% 10%, rgba(72,215,255,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       box-shadow: var(--shadow);
       padding: 14px;
       margin: 12px 0;
       position:relative;
       overflow:hidden;
     }
-    .card .marble{
+
+    /* marble overlay (clean) */
+    .card:before{
+      content:"";
       position:absolute; inset:0;
-      opacity:.42;
       pointer-events:none;
+      opacity:.28;
       background:
-        radial-gradient(400px 220px at 20% 30%, rgba(255,255,255,.07), transparent 65%),
-        radial-gradient(400px 220px at 70% 60%, rgba(255,255,255,.05), transparent 65%),
+        radial-gradient(420px 220px at 20% 30%, rgba(255,255,255,.10), transparent 65%),
+        radial-gradient(420px 240px at 70% 60%, rgba(255,255,255,.08), transparent 65%),
         linear-gradient(120deg,
           transparent 0%,
-          rgba(255,255,255,.05) 8%,
-          transparent 16%,
-          rgba(255,255,255,.04) 24%,
-          transparent 34%,
-          rgba(255,255,255,.03) 44%,
-          transparent 58%,
-          rgba(255,255,255,.03) 66%,
-          transparent 80%,
-          rgba(255,255,255,.02) 90%,
-          transparent 100%);
+          rgba(255,255,255,.05) 10%,
+          transparent 22%,
+          rgba(255,255,255,.04) 35%,
+          transparent 48%,
+          rgba(255,255,255,.03) 63%,
+          transparent 78%,
+          rgba(255,255,255,.02) 100%);
       mix-blend-mode: overlay;
     }
 
     .head{
+      position:relative;
       display:flex;
-      align-items:center;
+      align-items:flex-end;
       justify-content:space-between;
       gap:10px;
-      margin-bottom:10px;
-      position:relative;
       z-index:1;
     }
     .head h2{
       margin:0;
-      font-size: 14px;
-      letter-spacing:.4px;
+      font-size: 13px;
+      letter-spacing:.35px;
+      font-weight: 900;
+      text-transform: uppercase;
     }
     .head small{
-      color: var(--muted);
-      font-size:12px;
-    }
-
-    .meanderLine{
-      height:2px;
-      border-radius:999px;
-      margin: 10px 0 12px;
-      background: linear-gradient(90deg,
-        transparent,
-        rgba(246,211,107,.55),
-        rgba(124,214,255,.55),
-        transparent);
-      box-shadow: 0 0 22px rgba(124,214,255,.10);
-      position:relative;
-      z-index:1;
-    }
-
-    /* Inputs */
-    .input{
-      width:100%;
-      padding:12px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(5,6,10,.55);
-      color: var(--text);
-      outline:none;
-      font-size:14px;
-      position:relative;
-      z-index:1;
-    }
-    .hint{
+      margin:0;
       color: var(--muted);
       font-size: 12px;
-      line-height:1.45;
-      position:relative;
-      z-index:1;
     }
 
-    /* Buttons */
+    .input{
+      position:relative;
+      z-index:1;
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(4,8,18,.35);
+      color: var(--text);
+      outline:none;
+      font-size: 14px;
+    }
+    .hint{
+      position:relative;
+      z-index:1;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    /* premium buttons */
     .btn{
+      position:relative;
+      z-index:1;
       width:100%;
       border: none;
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 14px 14px;
-      cursor:pointer;
       font-weight: 900;
-      letter-spacing:.35px;
-      position:relative;
-      overflow:hidden;
-      transform: translateZ(0);
-      z-index:1;
+      letter-spacing:.25px;
+      cursor:pointer;
+      box-shadow: var(--shadowSoft);
+      transition: transform .06s ease, filter .12s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
+    .btn:active{ transform: translateY(1px); }
+    .btn[disabled]{opacity:.55; cursor:not-allowed; filter:saturate(.75);}
+
+    /* Zeus main: royal blue glossy */
     .btn.primary{
-      color: #0b0f19;
+      color: #06102a;
       background:
-        radial-gradient(160px 50px at 30% 0%, rgba(255,255,255,.35), transparent 55%),
+        radial-gradient(220px 60px at 30% 0%, rgba(255,255,255,.36), transparent 60%),
+        linear-gradient(180deg, #4BE0FF, #1D6CFF);
+      box-shadow:
+        0 16px 44px rgba(29,108,255,.22),
+        0 12px 30px rgba(0,0,0,.26);
+    }
+    /* Gold accent: for Stars */
+    .btn.gold{
+      color:#1a1200;
+      background:
+        radial-gradient(220px 60px at 30% 0%, rgba(255,255,255,.36), transparent 60%),
         linear-gradient(180deg, var(--gold), var(--gold2));
       box-shadow:
-        0 18px 48px rgba(246,211,107,.15),
-        0 14px 34px rgba(0,0,0,.32);
+        0 16px 44px rgba(255,185,64,.18),
+        0 12px 30px rgba(0,0,0,.26);
     }
-    .btn.primary:before{
-      content:"";
-      position:absolute; inset:-55%;
-      background: linear-gradient(90deg, transparent, rgba(124,214,255,.22), transparent);
-      transform: rotate(18deg);
-      animation: btnshine 2.6s linear infinite;
-      opacity:.75;
-      pointer-events:none;
-    }
-    @keyframes btnshine{
-      0%{transform:translateX(-55%) rotate(18deg)}
-      100%{transform:translateX(55%) rotate(18deg)}
-    }
-    .btn.secondary{
+    /* Outline: for USDT */
+    .btn.outline{
       color: var(--text);
-      border:1px solid rgba(124,214,255,.24);
-      background:
-        radial-gradient(160px 50px at 30% 0%, rgba(255,255,255,.10), transparent 55%),
-        linear-gradient(180deg, rgba(124,214,255,.22), rgba(63,123,255,.18));
-      box-shadow: 0 18px 48px rgba(63,123,255,.12);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(72,215,255,.28);
+      box-shadow: none;
     }
     .btn.ghost{
       color: var(--muted);
-      border:1px dashed rgba(255,255,255,.18);
       background: transparent;
+      border: 1px dashed rgba(255,255,255,.18);
       box-shadow:none;
-      font-weight:800;
     }
-    .btn:active{ transform: translateY(1px); }
-    .btn[disabled]{opacity:.45; cursor:not-allowed; filter:saturate(.7);}
 
     .row{display:flex; gap:10px; position:relative; z-index:1;}
     .row .btn{flex:1}
 
-    /* Boxes */
     .box{
-      margin-top: 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(5,6,10,.52);
-      padding: 12px;
       position:relative;
       z-index:1;
+      margin-top: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(4,8,18,.30);
+      padding: 12px;
     }
     .mono{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 12px;
       line-height: 1.35;
       word-break: break-all;
-      color: #e9eeff;
+      color: rgba(244,247,255,.92);
     }
 
     .statusRow{
@@ -462,21 +365,22 @@
       justify-content:space-between;
       gap:10px;
     }
+
     .badge{
       display:inline-flex;
       align-items:center;
       gap:8px;
       padding: 6px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      font-weight: 850;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      font-weight: 900;
       font-size: 12px;
-      white-space: nowrap;
+      white-space:nowrap;
     }
-    .badge.ok{border-color: rgba(36,211,140,.35); background: rgba(36,211,140,.08); color:#c7ffe7;}
-    .badge.warn{border-color: rgba(255,214,106,.35); background: rgba(255,214,106,.08); color:#fff0c2;}
-    .badge.bad{border-color: rgba(255,77,77,.35); background: rgba(255,77,77,.08); color:#ffc6c6;}
+    .badge.ok{border-color: rgba(39,216,154,.35); background: rgba(39,216,154,.08); color:#c7ffe8;}
+    .badge.warn{border-color: rgba(255,199,106,.35); background: rgba(255,199,106,.08); color:#fff1c9;}
+    .badge.bad{border-color: rgba(255,90,90,.35); background: rgba(255,90,90,.08); color:#ffd1d1;}
 
     .hidden{display:none !important;}
 
@@ -485,8 +389,8 @@
       position:fixed;
       left:0; right:0; bottom:0;
       padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(5,6,10,.72);
-      border-top: 1px solid rgba(255,255,255,.08);
+      background: rgba(5,8,18,.72);
+      border-top: 1px solid rgba(255,255,255,.10);
       backdrop-filter: blur(12px);
       z-index:5;
     }
@@ -499,23 +403,24 @@
     .tab{
       flex:1;
       padding: 12px 10px;
-      border-radius: 16px;
+      border-radius: 18px;
       border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--muted);
+      background: rgba(255,255,255,.04);
+      color: rgba(244,247,255,.70);
       font-weight: 900;
       letter-spacing:.2px;
       cursor:pointer;
     }
     .tab.active{
       color: var(--text);
-      border-color: rgba(246,211,107,.26);
+      border-color: rgba(72,215,255,.28);
       background:
-        radial-gradient(220px 60px at 50% 0%, rgba(246,211,107,.14), rgba(255,255,255,.05)),
-        linear-gradient(180deg, rgba(124,214,255,.10), rgba(63,123,255,.06));
+        radial-gradient(240px 60px at 50% 0%, rgba(72,215,255,.14), rgba(255,255,255,.04)),
+        linear-gradient(180deg, rgba(14,61,160,.20), rgba(255,255,255,.03));
+      box-shadow: 0 16px 34px rgba(14,61,160,.18);
     }
 
-    /* Swipe cards (instructions) */
+    /* Instructions: simple swipe cards */
     .carousel{
       display:flex;
       gap:12px;
@@ -523,73 +428,56 @@
       scroll-snap-type:x mandatory;
       -webkit-overflow-scrolling:touch;
       padding-bottom: 6px;
+      position:relative;
+      z-index:1;
     }
     .carousel::-webkit-scrollbar{display:none}
     .slide{
       min-width: 86%;
       scroll-snap-align: start;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.10);
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,.12);
       background:
-        radial-gradient(340px 180px at 20% 0%, rgba(246,211,107,.10), transparent 60%),
-        radial-gradient(340px 180px at 82% 10%, rgba(124,214,255,.10), transparent 60%),
-        linear-gradient(180deg, rgba(10,12,20,.68), rgba(6,8,14,.68));
+        radial-gradient(520px 220px at 30% 0%, rgba(72,215,255,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       padding: 14px;
-      position:relative;
-      overflow:hidden;
-    }
-    .slide:before{
-      content:"";
-      position:absolute; inset:0;
-      opacity:.35;
-      background:
-        linear-gradient(120deg,
-          transparent 0%,
-          rgba(255,255,255,.05) 12%,
-          transparent 24%,
-          rgba(255,255,255,.035) 36%,
-          transparent 52%,
-          rgba(255,255,255,.03) 68%,
-          transparent 82%,
-          rgba(255,255,255,.02) 100%);
-      mix-blend-mode: overlay;
-      pointer-events:none;
     }
     .slideTitle{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      margin-bottom: 8px;
-      position:relative; z-index:1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
     }
-    .slideTitle b{ font-size: 14px; letter-spacing:.3px; }
-    .slideTitle span{
+    .slideTitle b{
+      font-size: 14px;
+      letter-spacing:.2px;
+    }
+    .chip{
       font-size: 12px;
-      color: var(--muted);
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
+      color: rgba(244,247,255,.75);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
       padding: 6px 10px;
       border-radius: 999px;
-      white-space: nowrap;
+      white-space:nowrap;
     }
     .steps{
-      position:relative; z-index:1;
-      color: var(--muted);
+      color: rgba(244,247,255,.76);
       font-size: 12.5px;
       line-height: 1.55;
     }
-
   </style>
 </head>
 
 <body>
-  <div class="storm"></div>
-
   <div class="app">
     <div class="topbar">
       <div class="brand">
-        <div class="emblem"></div>
-        <div style="min-width:0">
+        <div class="logo"></div>
+        <div class="brandTitle">
           <h1>ZEUSVPN</h1>
-          <small>Олимпийская скорость • молниеносный VLESS</small>
+          <small>Royal Blue • Fast VLESS • Premium feel</small>
         </div>
       </div>
 
@@ -599,24 +487,25 @@
       </div>
     </div>
 
-    <!-- HERO -->
     <div class="hero">
-      <div class="heroTitle">Щит Олимпа. Молния в один тап.</div>
+      <p class="heroTitle">Сила ZEUS в один тап</p>
       <p class="heroSub">
-        Получай индивидуальный VLESS-конфиг. Оплата Stars/USDT уже встроена (покажем конфиг после подтверждения).
+        Получи индивидуальный VLESS-конфиг. Оплата Stars/USDT встроена: после подтверждения — показываем конфиг и “Активна до…”.
       </p>
 
-      <div class="heroRow">
-        <div class="miniStat">
+      <div class="greekline"></div>
+
+      <div class="stats">
+        <div class="stat">
           <b>Подписка</b>
           <span id="heroSub">пока без оплаты</span>
         </div>
-        <div class="miniStat">
+        <div class="stat">
           <b>Устройства</b>
-          <span>1/5/10 (UI)</span>
+          <span>1 / 5 / 10 (UI)</span>
         </div>
-        <div class="miniStat">
-          <b>Статус</b>
+        <div class="stat">
+          <b>API</b>
           <span id="heroApi">—</span>
         </div>
       </div>
@@ -625,33 +514,31 @@
     <!-- HOME -->
     <div id="screenHome">
       <div class="card">
-        <div class="marble"></div>
-
         <div class="head">
-          <h2>Конфиг ZEUS</h2>
-          <small>уникально для каждого</small>
+          <h2>Конфиг</h2>
+          <small>уникальный для тебя</small>
         </div>
-        <div class="meanderLine"></div>
+        <div class="greekline"></div>
 
-        <input class="input" id="userKey" placeholder="ID пользователя (можно оставить пустым)" />
+        <input class="input" id="userKey" placeholder="ID пользователя (можно пусто)" />
         <div style="height:8px"></div>
         <div class="hint">
-          Оставь пустым — сделаем ID автоматически. Позже тут будет Telegram профиль (tg id).
+          Если пусто — создадим ID автоматически. Позже это станет Telegram ID.
         </div>
 
         <div style="height:12px"></div>
-        <button class="btn primary" id="btnGetConfig">⚡ Получить конфиг</button>
+        <button class="btn primary" id="btnGetConfig">Получить конфиг</button>
 
         <div id="configBox" class="box hidden">
           <div class="statusRow">
             <div class="badge ok">VLESS</div>
-            <button class="btn secondary" id="btnCopy" style="width:auto; padding:10px 12px;">Скопировать</button>
+            <button class="btn outline" id="btnCopy" style="width:auto; padding:10px 12px; border-radius:14px;">Скопировать</button>
           </div>
-          <div class="meanderLine"></div>
+          <div class="greekline"></div>
           <div class="mono" id="configText"></div>
         </div>
 
-        <div id="errBox" class="box hidden" style="border-color: rgba(255,77,77,.35);">
+        <div id="errBox" class="box hidden" style="border-color: rgba(255,90,90,.35);">
           <div class="statusRow">
             <div class="badge bad">Ошибка</div>
             <div class="hint" id="errText" style="text-align:right"></div>
@@ -660,52 +547,50 @@
       </div>
 
       <div class="card">
-        <div class="marble"></div>
-
         <div class="head">
           <h2>Оплата</h2>
           <small>Stars / USDT</small>
         </div>
-        <div class="meanderLine"></div>
+        <div class="greekline"></div>
 
         <div class="row">
-          <button class="btn primary" id="btnPayStars">⭐ Оплатить Stars</button>
-          <button class="btn secondary" id="btnPayUsdt">💎 Оплатить USDT</button>
+          <button class="btn gold" id="btnPayStars">Оплатить Stars</button>
+          <button class="btn outline" id="btnPayUsdt">Оплатить USDT</button>
         </div>
 
         <div id="payBox" class="box hidden">
           <div class="statusRow">
-            <div>Статус заказа</div>
+            <div class="hint">Статус заказа</div>
             <div class="badge warn" id="payStatus">pending</div>
           </div>
           <div class="hint" id="payMeta" style="margin-top:6px"></div>
-          <div class="meanderLine"></div>
-          <div class="hint">После оплаты каждые ~1.2 сек проверяем заказ. Когда <b>paid</b> — покажем конфиг и активность.</div>
+          <div class="greekline"></div>
+          <div class="hint">
+            После оплаты автоматически проверяем заказ каждые ~1.2 сек. Когда станет <b>paid</b> — покажем конфиг и дату активности.
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- INSTRUCTIONS -->
+    <!-- GUIDE -->
     <div id="screenGuide" class="hidden">
       <div class="card">
-        <div class="marble"></div>
-
         <div class="head">
           <h2>Инструкции</h2>
-          <small>свайп-карточки</small>
+          <small>свайп</small>
         </div>
-        <div class="meanderLine"></div>
+        <div class="greekline"></div>
 
-        <div class="carousel" id="carousel">
+        <div class="carousel">
           <div class="slide">
             <div class="slideTitle">
               <b>iOS</b>
-              <span>V2Box / Shadowrocket</span>
+              <span class="chip">V2Box / Shadowrocket</span>
             </div>
             <div class="steps">
-              1) Нажми “Получить конфиг” на главной<br/>
-              2) Скопируй VLESS<br/>
-              3) В приложении: Import → “From Clipboard / Вставить”<br/>
+              1) На главной нажми “Получить конфиг”<br/>
+              2) Скопируй ссылку VLESS<br/>
+              3) В приложении: Import → From Clipboard<br/>
               4) Connect
             </div>
           </div>
@@ -713,12 +598,12 @@
           <div class="slide">
             <div class="slideTitle">
               <b>Android</b>
-              <span>v2rayNG</span>
+              <span class="chip">v2rayNG</span>
             </div>
             <div class="steps">
               1) Нажми “Получить конфиг”<br/>
               2) Скопируй VLESS<br/>
-              3) v2rayNG: + → Import from Clipboard<br/>
+              3) v2rayNG: “+” → Import from Clipboard<br/>
               4) Connect
             </div>
           </div>
@@ -726,7 +611,7 @@
           <div class="slide">
             <div class="slideTitle">
               <b>Desktop</b>
-              <span>Nekoray / v2rayN</span>
+              <span class="chip">Nekoray / v2rayN</span>
             </div>
             <div class="steps">
               1) Получи конфиг и скопируй<br/>
@@ -737,20 +622,18 @@
         </div>
 
         <div style="height:10px"></div>
-        <div class="hint">Подсказка: свайпай влево/вправо по карточкам.</div>
+        <div class="hint">Свайпай карточки влево/вправо.</div>
       </div>
     </div>
 
     <!-- PROFILE -->
     <div id="screenProfile" class="hidden">
       <div class="card">
-        <div class="marble"></div>
-
         <div class="head">
           <h2>Профиль</h2>
-          <small>потом подключим Telegram</small>
+          <small>Telegram подключим позже</small>
         </div>
-        <div class="meanderLine"></div>
+        <div class="greekline"></div>
 
         <div class="statusRow">
           <div class="hint">ID</div>
@@ -765,24 +648,24 @@
         </div>
         <div class="hint" id="activeUntil" style="margin-top:6px">Активна до: —</div>
 
-        <div class="meanderLine"></div>
+        <div class="greekline"></div>
 
         <div class="row">
-          <button class="btn secondary" id="btnResetId">Новый ID</button>
+          <button class="btn outline" id="btnResetId">Новый ID</button>
           <button class="btn ghost" id="btnHistory" disabled>История (скоро)</button>
         </div>
 
         <div class="box" style="margin-top:12px">
-          <div class="hint"><b>Рефералка (UI сейчас, логика уже есть):</b><br/>“Пригласи друга — +7 дней”</div>
+          <div class="hint"><b>Рефералка:</b> “Пригласи друга — +7 дней” (UI сейчас)</div>
           <div style="height:10px"></div>
-          <button class="btn secondary" id="btnRefCreate">Создать реф-код</button>
+          <button class="btn outline" id="btnRefCreate">Создать реф-код</button>
           <div class="hint" id="refOut" style="margin-top:8px"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Nav -->
+  <!-- Bottom nav -->
   <div class="nav">
     <div class="navInner">
       <button class="tab active" id="tabHome">Главная</button>
@@ -792,10 +675,9 @@
   </div>
 
 <script>
-  // === CONFIG ===
+  // ===== CONFIG =====
   const API_BASE = "https://api.45.133.251.210.nip.io:8443";
 
-  // Telegram WebApp safe init
   const tg = window.Telegram?.WebApp;
   if (tg) {
     try { tg.ready(); } catch(e){}
@@ -824,7 +706,6 @@
     localStorage.setItem("zeus_user_key", id || "");
   }
 
-  // API check
   async function pingApi(){
     try{
       const r = await fetch(API_BASE + "/health", { method:"GET" });
@@ -833,21 +714,19 @@
 
       $("apiText").textContent = "API: online";
       $("apiDot").style.background = "var(--ok)";
-      $("apiDot").style.boxShadow = "0 0 14px rgba(36,211,140,.55)";
-
+      $("apiDot").style.boxShadow = "0 0 10px rgba(39,216,154,.45)";
       $("heroApi").textContent = "online";
       return true;
     }catch(e){
       $("apiText").textContent = "API: offline";
       $("apiDot").style.background = "var(--bad)";
-      $("apiDot").style.boxShadow = "0 0 14px rgba(255,77,77,.55)";
-
+      $("apiDot").style.boxShadow = "0 0 10px rgba(255,90,90,.45)";
       $("heroApi").textContent = "offline";
       return false;
     }
   }
 
-  // CONFIG issuance
+  // ===== CONFIG ISSUE =====
   let lastConfig = "";
 
   $("btnGetConfig").addEventListener("click", async ()=>{
@@ -862,7 +741,7 @@
     setProfileId(user_key);
 
     $("btnGetConfig").disabled = true;
-    $("btnGetConfig").textContent = "⚡ Добываю молнию…";
+    $("btnGetConfig").textContent = "Получаю…";
 
     try{
       const r = await fetch(API_BASE + "/issue-config", {
@@ -880,9 +759,7 @@
       let data;
       try { data = JSON.parse(txt); } catch(e){ data = { raw: txt }; }
 
-      if(!r.ok){
-        throw new Error(data?.detail || ("HTTP " + r.status + ": " + txt));
-      }
+      if(!r.ok) throw new Error(data?.detail || ("HTTP " + r.status));
 
       lastConfig = data.link || "";
       if(!lastConfig) throw new Error("Пустой ответ: нет поля link");
@@ -893,7 +770,7 @@
       setError(e?.message || String(e));
     }finally{
       $("btnGetConfig").disabled = false;
-      $("btnGetConfig").textContent = "⚡ Получить конфиг";
+      $("btnGetConfig").textContent = "Получить конфиг";
     }
   });
 
@@ -904,11 +781,11 @@
       $("btnCopy").textContent = "Скопировано";
       setTimeout(()=> $("btnCopy").textContent = old, 900);
     }catch(e){
-      alert("Не смог скопировать автоматически. Скопируй вручную:\n\n" + lastConfig);
+      alert("Скопируй вручную:\n\n" + lastConfig);
     }
   });
 
-  // PAYMENTS + polling
+  // ===== PAYMENTS + POLLING =====
   let pollTimer = null;
 
   async function pollOrder(orderId){
@@ -944,7 +821,7 @@
           }
         }
       }catch(e){
-        // молчим, чтобы не бесить юзера
+        // тихо, чтобы UI не дергался
       }
     }, 1200);
   }
@@ -1027,7 +904,7 @@
     }
   });
 
-  // REF
+  // ===== REF =====
   $("btnRefCreate").addEventListener("click", async ()=>{
     clearError();
     $("refOut").textContent = "создаю…";
@@ -1056,7 +933,7 @@
     setProfileId(id);
   });
 
-  // Tabs
+  // ===== Tabs =====
   function setTab(tab){
     const map = [
       ["tabHome","screenHome"],
@@ -1072,7 +949,7 @@
   $("tabGuide").onclick = ()=>setTab("tabGuide");
   $("tabProfile").onclick = ()=>setTab("tabProfile");
 
-  // Init
+  // ===== Init =====
   (async ()=>{
     const saved = localStorage.getItem("zeus_user_key") || "";
     if(saved){
@@ -1080,8 +957,9 @@
       $("profileId").textContent = saved;
     }
     $("userKey").addEventListener("change", ()=>{
-      localStorage.setItem("zeus_user_key", $("userKey").value.trim());
-      $("profileId").textContent = $("userKey").value.trim() || "—";
+      const v = $("userKey").value.trim();
+      localStorage.setItem("zeus_user_key", v);
+      $("profileId").textContent = v || "—";
     });
 
     await pingApi();
