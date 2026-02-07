@@ -5,62 +5,82 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ZEUSVPN</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     :root{
-      --ink:#0B1221;
-      --ink2:#1B2743;
-      --muted:rgba(11,18,33,.62);
+      --bg0:#050812;        /* deep space */
+      --bg1:#07132D;        /* navy */
+      --bg2:#0A1E46;        /* royal */
+      --ink:#EAF0FF;
+      --ink2:rgba(234,240,255,.78);
+      --muted:rgba(234,240,255,.62);
+      --line:rgba(255,255,255,.10);
 
-      --blue:#0B2A6A;
-      --blue2:#1547B6;
+      --blue:#2E6BFF;
+      --blue2:#0F3AAE;
 
-      --gold:#C9A24A;
-      --gold2:#E1C06A;
+      --gold:#D7B46A;
+      --gold2:#F1D18C;
 
-      --marble:#F6F6F7;
-      --card:#FFFFFF;
-      --stroke:rgba(11,18,33,.10);
-      --shadow: 0 18px 55px rgba(11,18,33,.10);
-      --shadow2: 0 10px 28px rgba(11,18,33,.08);
+      --glass: rgba(255,255,255,.06);
+      --glass2: rgba(255,255,255,.08);
 
-      --ok:#0FAF76;
-      --warn:#C08A18;
-      --bad:#D84242;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --shadow2: 0 10px 28px rgba(0,0,0,.35);
 
-      --r14:14px;
-      --r18:18px;
-      --r22:22px;
-      --r28:28px;
+      --ok:#23E6A8;
+      --warn:#FFC14A;
+      --bad:#FF5B6B;
+
+      --r16:16px;
+      --r20:20px;
+      --r26:26px;
+      --r32:32px;
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
-
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--ink);
-      background: var(--marble);
+      background: radial-gradient(1200px 900px at 20% -10%, rgba(46,107,255,.22), transparent 60%),
+                  radial-gradient(900px 800px at 90% 10%, rgba(215,180,106,.12), transparent 62%),
+                  radial-gradient(900px 700px at 10% 90%, rgba(255,255,255,.06), transparent 65%),
+                  linear-gradient(180deg, var(--bg0), var(--bg1) 45%, var(--bg0));
       overflow-x:hidden;
     }
 
-    /* Marble texture */
+    /* fine grain */
     body:before{
       content:"";
       position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
+      opacity:.10;
+      pointer-events:none;
+      mix-blend-mode: overlay;
+    }
+
+    /* lightning flashes */
+    .flash{
+      position:fixed; inset:-40px;
       pointer-events:none;
       background:
-        radial-gradient(1200px 600px at 20% 0%, rgba(11,42,106,.07), transparent 55%),
-        radial-gradient(900px 520px at 90% 12%, rgba(201,162,74,.07), transparent 60%),
-        linear-gradient(135deg,
-          rgba(0,0,0,.03) 0%,
-          rgba(0,0,0,.00) 18%,
-          rgba(0,0,0,.02) 36%,
-          rgba(0,0,0,.00) 54%,
-          rgba(0,0,0,.02) 72%,
-          rgba(0,0,0,.00) 100%),
-        radial-gradient(900px 800px at 10% 70%, rgba(0,0,0,.03), transparent 65%);
-      opacity:1;
+        radial-gradient(900px 480px at 60% 18%, rgba(255,255,255,.22), transparent 65%),
+        radial-gradient(700px 400px at 18% 28%, rgba(46,107,255,.24), transparent 70%);
+      opacity:0;
+      animation: flash 8.5s infinite;
+      mix-blend-mode: screen;
+      filter: blur(2px);
+    }
+    @keyframes flash{
+      0%, 56%, 100% { opacity:0; }
+      57% { opacity:.10; }
+      58% { opacity:0; }
+      63% { opacity:.14; }
+      64% { opacity:0; }
+      66% { opacity:.18; }
+      67% { opacity:0; }
     }
 
     .app{
@@ -71,28 +91,37 @@
       z-index:1;
     }
 
-    /* Top hero (temple feel) */
+    /* TOP HERO */
     .hero{
-      border-radius: var(--r28);
+      border-radius: var(--r32);
+      border:1px solid rgba(255,255,255,.10);
       background:
-        linear-gradient(180deg, rgba(11,42,106,.92), rgba(11,42,106,.85));
-      color:#fff;
-      box-shadow: 0 28px 70px rgba(11,42,106,.22);
-      padding: 16px 16px 14px;
+        radial-gradient(900px 420px at 18% -10%, rgba(46,107,255,.30), transparent 60%),
+        radial-gradient(700px 420px at 100% 0%, rgba(215,180,106,.16), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
       overflow:hidden;
+      padding: 16px;
+      backdrop-filter: blur(10px);
       position:relative;
     }
 
-    /* Greek key lines */
-    .hero:before{
+    .hero:after{
       content:"";
       position:absolute; inset:0;
       background:
-        radial-gradient(600px 260px at 12% 0%, rgba(255,255,255,.16), transparent 60%),
-        radial-gradient(520px 240px at 92% 30%, rgba(201,162,74,.18), transparent 62%),
-        linear-gradient(90deg, rgba(255,255,255,.10), rgba(255,255,255,0));
-      opacity:.9;
+        linear-gradient(90deg, transparent 0%, rgba(255,255,255,.08) 40%, transparent 70%);
+      opacity:.22;
+      transform: translateX(-40%);
+      animation: sheen 7s infinite;
       pointer-events:none;
+    }
+    @keyframes sheen{
+      0%{ transform: translateX(-55%); opacity:.0; }
+      10%{ opacity:.18; }
+      35%{ opacity:.12; }
+      60%{ transform: translateX(55%); opacity:0; }
+      100%{ opacity:0; }
     }
 
     .topRow{
@@ -112,51 +141,67 @@
     }
 
     .mark{
-      width:44px; height:44px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.18);
-      backdrop-filter: blur(10px);
+      width:48px; height:48px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      box-shadow: 0 18px 45px rgba(0,0,0,.35);
       display:flex;
       align-items:center;
       justify-content:center;
-      box-shadow: 0 16px 40px rgba(0,0,0,.20);
+      position:relative;
+      overflow:hidden;
     }
-    .mark svg{display:block}
+    .mark:before{
+      content:"";
+      position:absolute; inset:-40%;
+      background: conic-gradient(from 180deg,
+        rgba(46,107,255,.0),
+        rgba(46,107,255,.35),
+        rgba(215,180,106,.18),
+        rgba(46,107,255,.0));
+      animation: spin 6.8s linear infinite;
+      opacity:.55;
+      filter: blur(4px);
+    }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
+
+    .mark svg{ position:relative; z-index:2; }
 
     .brandText{min-width:0}
-    .brandText .name{
-      font-weight: 900;
-      letter-spacing: .6px;
+    .name{
       margin:0;
+      font-weight: 900;
+      letter-spacing: .8px;
       font-size: 16px;
-      line-height: 1.1;
+      line-height: 1.05;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
-    .brandText .tag{
-      margin:6px 0 0;
-      font-size: 12px;
-      color: rgba(255,255,255,.76);
+    .tag{
+      margin:7px 0 0;
+      font-size: 12.4px;
+      color: var(--muted);
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
 
-    .apiChip{
-      flex:0 0 auto;
+    .pill{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding: 9px 10px;
+      padding: 9px 11px;
       border-radius:999px;
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.88);
       font-size: 12px;
-      color: rgba(255,255,255,.86);
       white-space:nowrap;
+      backdrop-filter: blur(10px);
     }
-    .apiDot{
+    .dot{
       width:8px; height:8px;
       border-radius:50%;
-      background: rgba(255,255,255,.70);
+      background: rgba(255,255,255,.55);
+      box-shadow: 0 0 14px rgba(46,107,255,.35);
     }
 
     .heroMain{
@@ -171,153 +216,143 @@
       font-size: 18px;
       font-weight: 900;
       letter-spacing:.2px;
-      line-height:1.2;
+      line-height:1.18;
     }
     .heroSub{
       margin:0;
-      font-size: 12.6px;
-      color: rgba(255,255,255,.78);
-      line-height:1.45;
-      max-width: 48ch;
+      font-size: 12.8px;
+      line-height:1.55;
+      color: var(--muted);
+      max-width: 52ch;
     }
 
-    .heroStats{
+    .stats{
       display:flex;
       gap:10px;
       margin-top: 10px;
     }
-    .hStat{
+    .stat{
       flex:1;
-      border-radius: 16px;
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
       padding: 10px 10px;
+      min-width:0;
     }
-    .hStat b{
+    .stat b{
       display:block;
       font-size: 12px;
       letter-spacing:.2px;
       margin-bottom: 6px;
+      color: rgba(255,255,255,.92);
     }
-    .hStat span{
+    .stat span{
       font-size: 12px;
-      color: rgba(255,255,255,.76);
+      color: rgba(255,255,255,.70);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
 
     /* Cards */
     .card{
       margin-top: 12px;
-      background: var(--card);
-      border:1px solid var(--stroke);
-      border-radius: var(--r28);
-      box-shadow: var(--shadow);
+      border-radius: var(--r32);
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      box-shadow: var(--shadow2);
       overflow:hidden;
+      backdrop-filter: blur(10px);
     }
-    .cardHead{
+    .head{
       padding: 14px 14px 10px;
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
       gap:10px;
     }
-    .cardHead h2{
+    .head h2{
       margin:0;
       font-size: 12px;
-      letter-spacing:.32px;
+      letter-spacing:.38px;
       text-transform:uppercase;
-      color: var(--ink2);
       font-weight: 900;
+      color: rgba(255,255,255,.92);
     }
-    .cardHead small{
-      color: var(--muted);
+    .head small{
+      color: rgba(255,255,255,.55);
       font-size: 12px;
     }
-
     .divider{
       height:1px;
-      background: linear-gradient(90deg, transparent, rgba(11,18,33,.12), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
       margin: 0 14px;
     }
-
-    .cardBody{
+    .body{
       padding: 12px 14px 14px;
     }
 
-    .field{
-      display:grid;
-      gap:8px;
-      margin-bottom: 10px;
-    }
-    .label{
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .field{ display:grid; gap:8px; margin-bottom: 10px; }
+    .label{ font-size: 12px; color: rgba(255,255,255,.62); }
+
     .input{
       width:100%;
       padding: 13px 12px;
-      border-radius: 16px;
-      border:1px solid rgba(11,18,33,.14);
-      background: #FBFBFC;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      color: rgba(255,255,255,.92);
       outline:none;
       font-size: 14px;
-      color: var(--ink);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
     }
+    .input::placeholder{ color: rgba(255,255,255,.42); }
 
     .btn{
       width:100%;
       padding: 14px 14px;
-      border-radius: 18px;
+      border-radius: 20px;
       border: 0;
       cursor:pointer;
       font-weight: 900;
-      letter-spacing:.2px;
-      transition: transform .06s ease, filter .12s ease;
+      letter-spacing:.25px;
+      transition: transform .06s ease, filter .14s ease, box-shadow .14s ease;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
     .btn:active{ transform: translateY(1px); }
     .btn[disabled]{opacity:.55; cursor:not-allowed;}
 
-    /* Zeus primary: carved + royal */
     .btnPrimary{
       color:#fff;
       background:
-        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 28%),
-        linear-gradient(180deg, var(--blue2), var(--blue));
-      box-shadow: 0 16px 34px rgba(11,42,106,.22);
+        linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0) 32%),
+        linear-gradient(180deg, var(--blue), var(--blue2));
+      box-shadow: 0 18px 40px rgba(46,107,255,.22);
     }
+    .btnPrimary:hover{ filter: brightness(1.04); }
 
-    /* Gold payment */
     .btnGold{
-      color:#2a1a00;
+      color:#1A1406;
       background:
         linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 35%),
         linear-gradient(180deg, var(--gold2), var(--gold));
-      box-shadow: 0 16px 34px rgba(201,162,74,.20);
+      box-shadow: 0 18px 40px rgba(215,180,106,.18);
     }
-
-    /* Neutral outline */
     .btnOutline{
-      background:#FBFBFC;
-      color: var(--ink2);
-      border:1px solid rgba(11,18,33,.16);
-      box-shadow: var(--shadow2);
+      color: rgba(255,255,255,.86);
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow: 0 10px 22px rgba(0,0,0,.28);
     }
 
-    .row{
-      display:flex;
-      gap:10px;
-      margin-top: 10px;
-    }
-    .row .btn{flex:1}
+    .row{ display:flex; gap:10px; margin-top: 10px; }
+    .row .btn{ flex:1; }
 
     .notice{
       margin-top: 10px;
       padding: 12px;
-      border-radius: 18px;
-      border:1px solid rgba(11,18,33,.12);
-      background: #FBFBFC;
+      border-radius: 20px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
     }
     .noticeTop{
       display:flex;
@@ -326,6 +361,7 @@
       gap:10px;
       margin-bottom: 10px;
     }
+
     .badge{
       display:inline-flex;
       align-items:center;
@@ -334,34 +370,24 @@
       border-radius:999px;
       font-size: 12px;
       font-weight: 900;
-      border:1px solid rgba(11,18,33,.12);
-      background: #fff;
-      color: var(--ink2);
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.84);
       white-space:nowrap;
     }
-    .badge.ok{border-color: rgba(15,175,118,.25); color: var(--ok);}
-    .badge.warn{border-color: rgba(192,138,24,.25); color: var(--warn);}
-    .badge.bad{border-color: rgba(216,66,66,.25); color: var(--bad);}
+    .badge.ok{ border-color: rgba(35,230,168,.28); color: var(--ok); }
+    .badge.warn{ border-color: rgba(255,193,74,.28); color: var(--warn); }
+    .badge.bad{ border-color: rgba(255,91,107,.30); color: var(--bad); }
 
     .mono{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 12px;
       line-height:1.35;
       word-break:break-all;
-      color: rgba(11,18,33,.92);
+      color: rgba(255,255,255,.90);
     }
-
-    .muted{
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .hidden{display:none !important;}
-
-    /* Screens */
-    .screen{ margin-top: 12px; }
-    .screen.hidden{display:none}
+    .muted{ color: rgba(255,255,255,.62); font-size: 12px; line-height:1.45; }
+    .hidden{ display:none !important; }
 
     /* Instructions carousel */
     .carousel{
@@ -377,12 +403,12 @@
       min-width: 86%;
       scroll-snap-align:start;
       border-radius: 22px;
-      border:1px solid rgba(11,18,33,.12);
+      border:1px solid rgba(255,255,255,.12);
       background:
-        radial-gradient(520px 260px at 20% 0%, rgba(11,42,106,.06), transparent 60%),
-        linear-gradient(180deg, #FFFFFF, #FBFBFC);
+        radial-gradient(520px 260px at 20% 0%, rgba(46,107,255,.18), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
       padding: 14px;
-      box-shadow: var(--shadow2);
+      box-shadow: 0 12px 28px rgba(0,0,0,.32);
     }
     .slideTop{
       display:flex;
@@ -395,25 +421,25 @@
       font-size: 12px;
       padding: 6px 10px;
       border-radius: 999px;
-      border:1px solid rgba(11,18,33,.12);
-      background:#fff;
-      color: rgba(11,18,33,.70);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.72);
       white-space:nowrap;
     }
     .steps{
-      font-size: 12.8px;
-      color: rgba(11,18,33,.72);
-      line-height: 1.55;
+      font-size: 13px;
+      color: rgba(255,255,255,.74);
+      line-height: 1.6;
     }
 
-    /* Bottom nav (stone tabs) */
+    /* Bottom nav */
     .nav{
       position:fixed;
       left:0; right:0; bottom:0;
       padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(246,246,247,.92);
-      border-top: 1px solid rgba(11,18,33,.10);
-      backdrop-filter: blur(10px);
+      background: rgba(5,8,18,.65);
+      border-top: 1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(12px);
       z-index:10;
     }
     .navInner{
@@ -426,65 +452,66 @@
       flex:1;
       padding: 12px 10px;
       border-radius: 18px;
-      border:1px solid rgba(11,18,33,.12);
-      background: #FFFFFF;
-      color: rgba(11,18,33,.66);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.70);
       font-weight: 900;
       letter-spacing:.15px;
       cursor:pointer;
-      box-shadow: var(--shadow2);
+      box-shadow: 0 10px 22px rgba(0,0,0,.22);
     }
     .tab.active{
       color: #fff;
-      border-color: rgba(11,42,106,.30);
+      border-color: rgba(46,107,255,.35);
       background:
-        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 28%),
-        linear-gradient(180deg, var(--blue2), var(--blue));
-      box-shadow: 0 16px 34px rgba(11,42,106,.18);
+        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 32%),
+        linear-gradient(180deg, var(--blue), var(--blue2));
+      box-shadow: 0 16px 34px rgba(46,107,255,.20);
     }
   </style>
 </head>
 
 <body>
+  <div class="flash" aria-hidden="true"></div>
+
   <div class="app">
     <div class="hero">
       <div class="topRow">
         <div class="brand">
           <div class="mark" aria-hidden="true">
-            <!-- Clean Zeus lightning -->
-            <svg width="22" height="26" viewBox="0 0 22 26" fill="none">
-              <path d="M12.8 1.5H21L12.2 13.2H18.8L7.6 24.5L9.8 14.1H3L12.8 1.5Z"
-                    fill="rgba(255,255,255,.92)"/>
+            <!-- Zeus lightning -->
+            <svg width="22" height="28" viewBox="0 0 22 28" fill="none">
+              <path d="M12.9 2H21L12 14.4H18.9L7.3 26L9.8 15.1H3L12.9 2Z" fill="rgba(255,255,255,.92)"/>
             </svg>
           </div>
           <div class="brandText">
             <p class="name">ZEUSVPN</p>
-            <p class="tag">Marble • Royal Blue • VLESS</p>
+            <p class="tag">Thunder-class • Premium VLESS</p>
           </div>
         </div>
 
-        <div class="apiChip" id="apiPill">
-          <span class="apiDot" id="apiDot"></span>
+        <div class="pill" id="apiPill">
+          <span class="dot" id="apiDot"></span>
           <span id="apiText">API: checking…</span>
         </div>
       </div>
 
       <div class="heroMain">
-        <p class="heroTitle">Премиум-конфиг за 1 тап</p>
+        <p class="heroTitle">Конфиг за 1 тап. Как молния.</p>
         <p class="heroSub">
-          Оплата Stars / USDT → после подтверждения показываем конфиг и “Активна до…”.
+          Stars / USDT → автоматическая проверка оплаты → выдаём личный VLESS конфиг и показываем “Активна до…”.
         </p>
 
-        <div class="heroStats">
-          <div class="hStat">
+        <div class="stats">
+          <div class="stat">
             <b>Подписка</b>
             <span id="heroSubStat">не оплачено</span>
           </div>
-          <div class="hStat">
+          <div class="stat">
             <b>Устройства</b>
             <span>1 / 5 / 10 (UI)</span>
           </div>
-          <div class="hStat">
+          <div class="stat">
             <b>API</b>
             <span id="heroApi">—</span>
           </div>
@@ -495,17 +522,17 @@
     <!-- HOME -->
     <div class="screen" id="screenHome">
       <div class="card">
-        <div class="cardHead">
+        <div class="head">
           <h2>Конфиг</h2>
-          <small>индивидуально</small>
+          <small>персонально</small>
         </div>
         <div class="divider"></div>
 
-        <div class="cardBody">
+        <div class="body">
           <div class="field">
             <div class="label">ID пользователя (можно пусто)</div>
             <input class="input" id="userKey" placeholder="например: zeus-1234" />
-            <div class="muted">Позже это станет Telegram ID автоматически.</div>
+            <div class="muted">Позже заменим на Telegram ID автоматически.</div>
           </div>
 
           <button class="btn btnPrimary" id="btnGetConfig">Получить конфиг</button>
@@ -513,12 +540,12 @@
           <div class="notice hidden" id="configBox">
             <div class="noticeTop">
               <span class="badge ok">VLESS</span>
-              <button class="btn btnOutline" id="btnCopy" style="width:auto; padding:10px 12px; border-radius:14px;">Скопировать</button>
+              <button class="btn btnOutline" id="btnCopy" style="width:auto; padding:10px 12px; border-radius:16px;">Скопировать</button>
             </div>
             <div class="mono" id="configText"></div>
           </div>
 
-          <div class="notice hidden" id="errBox" style="border-color: rgba(216,66,66,.25);">
+          <div class="notice hidden" id="errBox" style="border-color: rgba(255,91,107,.30);">
             <div class="noticeTop">
               <span class="badge bad">Ошибка</span>
               <span class="muted" id="errText" style="text-align:right"></span>
@@ -528,13 +555,13 @@
       </div>
 
       <div class="card">
-        <div class="cardHead">
+        <div class="head">
           <h2>Оплата</h2>
           <small>Stars / USDT</small>
         </div>
         <div class="divider"></div>
 
-        <div class="cardBody">
+        <div class="body">
           <div class="row">
             <button class="btn btnGold" id="btnPayStars">Оплатить Stars</button>
             <button class="btn btnOutline" id="btnPayUsdt">Оплатить USDT</button>
@@ -557,7 +584,7 @@
     <!-- GUIDE -->
     <div class="screen hidden" id="screenGuide">
       <div class="card">
-        <div class="cardHead">
+        <div class="head">
           <h2>Инструкции</h2>
           <small>свайп</small>
         </div>
@@ -603,7 +630,7 @@
           </div>
         </div>
 
-        <div class="cardBody" style="padding-top:0">
+        <div class="body" style="padding-top:0">
           <div class="muted">Свайпай карточки влево/вправо.</div>
         </div>
       </div>
@@ -612,13 +639,13 @@
     <!-- PROFILE -->
     <div class="screen hidden" id="screenProfile">
       <div class="card">
-        <div class="cardHead">
+        <div class="head">
           <h2>Профиль</h2>
           <small>Telegram позже</small>
         </div>
         <div class="divider"></div>
 
-        <div class="cardBody">
+        <div class="body">
           <div class="notice" style="margin-top:0">
             <div class="noticeTop">
               <span class="muted">ID</span>
@@ -694,12 +721,12 @@
       await r.json();
 
       $("apiText").textContent = "API: online";
-      $("apiDot").style.background = "#22D09A";
+      $("apiDot").style.background = "#23E6A8";
       $("heroApi").textContent = "online";
       return true;
     }catch(e){
       $("apiText").textContent = "API: offline";
-      $("apiDot").style.background = "#FF6262";
+      $("apiDot").style.background = "#FF5B6B";
       $("heroApi").textContent = "offline";
       return false;
     }
@@ -707,7 +734,6 @@
 
   // ===== CONFIG ISSUE =====
   let lastConfig = "";
-
   $("btnGetConfig").addEventListener("click", async ()=>{
     clearError();
     hide($("configBox"));
@@ -809,9 +835,7 @@
             show($("configBox"));
           }
         }
-      }catch(e){
-        // тихо, чтобы не шуметь
-      }
+      }catch(e){}
     }, 1200);
   }
 
