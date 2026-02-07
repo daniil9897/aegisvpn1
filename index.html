@@ -2,504 +2,809 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Porsche VPN</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>ZEUSVPN</title>
+
+  <!-- Telegram WebApp (не ломает обычный браузер) -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     :root{
-      --bg:#07080b;
-      --card:#0f1118;
-      --card2:#0c0e14;
-      --txt:#e9ecff;
-      --muted:#a9b0d6;
-      --line:rgba(255,255,255,.08);
-      --red:#ff2a3d;
-      --red2:#ff3b30;
-      --ok:#2cff9a;
+      --bg0:#06070b;
+      --bg1:#070915;
+      --card: rgba(10,14,26,.70);
+      --card2: rgba(7,10,18,.70);
+      --stroke: rgba(255,255,255,.09);
+
+      --text:#eaf0ff;
+      --muted:#9aa6c0;
+
+      --gold:#ffd56a;
+      --gold2:#ffb900;
+      --blue:#4db9ff;
+      --blue2:#2c6bff;
+      --cyan:#38f9ff;
+
+      --ok:#20d67b;
+      --warn:#ffcc00;
+      --bad:#ff3b3b;
+
+      --radius: 18px;
+      --shadow: 0 18px 50px rgba(0,0,0,.55);
     }
+
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: radial-gradient(1200px 600px at 30% -10%, rgba(255,42,61,.22), transparent 60%),
-                  radial-gradient(900px 500px at 85% 0%, rgba(255,42,61,.18), transparent 55%),
-                  linear-gradient(180deg, #05060a 0%, #07080b 100%);
-      color:var(--txt);
+      color:var(--text);
+      background:
+        radial-gradient(900px 420px at 50% -10%, rgba(77,185,255,.16), transparent 60%),
+        radial-gradient(720px 400px at 110% 10%, rgba(255,213,106,.12), transparent 60%),
+        radial-gradient(900px 520px at 45% 110%, rgba(44,107,255,.14), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg0));
+      overflow-x:hidden;
     }
-    .grain{
-      position:fixed; inset:0; pointer-events:none; opacity:.06; mix-blend-mode:overlay;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+
+    /* Ultra subtle grain */
+    body:before{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");
+      mix-blend-mode:overlay;
+      opacity:.35;
     }
-    .wrap{max-width:520px;margin:0 auto;padding:18px 14px 90px}
-    .top{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:12px 12px;border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-      border-radius:18px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+
+    /* Lightning streaks */
+    .storm{
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.22;
+      filter: blur(.2px);
+      background:
+        radial-gradient(240px 120px at 18% 12%, rgba(56,249,255,.22), transparent 60%),
+        radial-gradient(220px 140px at 82% 16%, rgba(255,213,106,.18), transparent 60%),
+        linear-gradient(115deg, transparent 0 40%, rgba(77,185,255,.10) 44%, transparent 48%),
+        linear-gradient(65deg, transparent 0 58%, rgba(255,213,106,.10) 62%, transparent 66%);
     }
-    .brand{display:flex;flex-direction:column;gap:2px}
-    .brand b{font-size:16px;letter-spacing:.2px}
-    .brand span{font-size:12px;color:var(--muted)}
-    .pill{
-      font-size:12px;color:#fff;padding:7px 10px;border-radius:999px;
-      background:linear-gradient(90deg, rgba(255,42,61,.95), rgba(255,60,48,.85));
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow: 0 12px 30px rgba(255,42,61,.22);
+
+    .app{
+      max-width:520px;
+      margin:0 auto;
+      padding:18px 14px 92px;
+      position:relative;
+      z-index:2;
+    }
+
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:6px 4px 10px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .logo{
+      width:44px; height:44px;
+      border-radius:16px;
+      background:
+        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.22), transparent 70%),
+        linear-gradient(145deg, rgba(255,213,106,.95), rgba(44,107,255,.95));
+      box-shadow:
+        0 14px 30px rgba(44,107,255,.18),
+        0 10px 26px rgba(255,213,106,.12);
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:-40%;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.26), transparent);
+      transform:rotate(25deg);
+      animation: shine 3.2s linear infinite;
+    }
+    @keyframes shine{
+      0%{transform:translateX(-60%) rotate(25deg)}
+      100%{transform:translateX(60%) rotate(25deg)}
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.8px;
       white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .brand small{
+      display:block;
+      color:var(--muted);
+      margin-top:2px;
+      font-size:12px;
+      letter-spacing:.2px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(10,12,18,.55);
+      border-radius:999px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      font-size:12px;
+      color:var(--muted);
+    }
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background:var(--ok);
+      box-shadow: 0 0 14px rgba(32,214,123,.6);
     }
 
     .card{
-      margin-top:14px;
+      background:linear-gradient(180deg, var(--card), var(--card2));
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
       padding:14px;
-      border-radius:20px;
-      border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+      margin:12px 0;
+      position:relative;
+      overflow:hidden;
     }
-    .card h2{margin:0 0 10px;font-size:14px;color:var(--muted);font-weight:600}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{
-      appearance:none; border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.04);
-      color:var(--txt);
-      padding:12px 12px;
-      border-radius:16px;
-      font-weight:700;
-      cursor:pointer;
-      transition:.15s transform,.15s filter,.15s background;
-      flex:1;
-      min-width: 140px;
+
+    /* Zeus aura */
+    .card:before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(520px 220px at 14% 0%, rgba(77,185,255,.16), transparent 60%),
+        radial-gradient(520px 240px at 88% 10%, rgba(255,213,106,.12), transparent 60%);
+      pointer-events:none;
     }
-    .btn:active{transform:scale(.98)}
-    .btn-primary{
-      background:linear-gradient(180deg, rgba(255,42,61,.95), rgba(255,60,48,.75));
-      border:1px solid rgba(255,255,255,.22);
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
     }
-    .btn-secondary{
-      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+    .section-title h2{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.3px;
     }
-    .btn[disabled]{opacity:.45;cursor:not-allowed;filter:saturate(.3)}
-    .divider{
-      height:1px; background:linear-gradient(90deg, transparent, rgba(255,42,61,.65), transparent);
-      margin:14px 0;
-      opacity:.7;
-    }
-    .small{font-size:12px;color:var(--muted);line-height:1.35}
-    .mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    .section-title span{
+      color:var(--muted);
       font-size:12px;
-      background:rgba(0,0,0,.35);
-      border:1px solid rgba(255,255,255,.10);
-      padding:10px;
+    }
+
+    /* “Thunder line” separator */
+    .accent-line{
+      height:2px;
+      background:linear-gradient(90deg, transparent, rgba(255,213,106,.55), rgba(77,185,255,.55), transparent);
+      border-radius:999px;
+      margin:10px 0 12px;
+      box-shadow: 0 0 22px rgba(77,185,255,.12);
+    }
+
+    .btn{
+      width:100%;
+      border:none;
       border-radius:14px;
+      padding:14px 14px;
+      font-weight:800;
+      letter-spacing:.3px;
+      cursor:pointer;
+      color:#08101f;
+      background:
+        radial-gradient(140px 50px at 30% 0%, rgba(255,255,255,.35), transparent 55%),
+        linear-gradient(180deg, var(--gold), var(--gold2));
+      box-shadow:
+        0 16px 38px rgba(255,213,106,.14),
+        0 10px 26px rgba(0,0,0,.30);
+      transition:transform .08s ease, filter .2s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .btn:before{
+      content:"";
+      position:absolute; inset:-40%;
+      background:linear-gradient(90deg, transparent, rgba(77,185,255,.22), transparent);
+      transform:rotate(18deg);
+      animation: bolt 2.8s linear infinite;
+      opacity:.7;
+      pointer-events:none;
+    }
+    @keyframes bolt{
+      0%{transform:translateX(-55%) rotate(18deg)}
+      100%{transform:translateX(55%) rotate(18deg)}
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.secondary{
+      color:var(--text);
+      background:
+        radial-gradient(140px 50px at 30% 0%, rgba(255,255,255,.12), transparent 55%),
+        linear-gradient(180deg, rgba(77,185,255,.35), rgba(44,107,255,.35));
+      border:1px solid rgba(77,185,255,.25);
+      box-shadow: 0 16px 38px rgba(44,107,255,.10);
+    }
+    .btn.ghost{
+      background:transparent;
+      border:1px dashed rgba(255,255,255,.18);
+      color:var(--muted);
+      font-weight:700;
+      box-shadow:none;
+    }
+    .btn[disabled]{
+      opacity:.45;
+      cursor:not-allowed;
+      filter:saturate(.5);
+    }
+
+    .row{display:flex; gap:10px;}
+    .row .btn{flex:1}
+
+    .field{display:flex; gap:10px; align-items:center; margin:10px 0;}
+    .input{
+      flex:1;
+      background:rgba(6,9,16,.65);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:12px 12px;
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    .label{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:6px;
+    }
+
+    .box{
+      background:rgba(6,8,14,.55);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:12px;
+      margin-top:10px;
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;
       word-break:break-all;
-      white-space:pre-wrap;
+      color:#dfe6ff;
+      line-height:1.35;
     }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
     .status{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      padding:10px 12px;border-radius:16px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-size:12px;
+      color:var(--muted);
     }
-    .dot{width:10px;height:10px;border-radius:50%;}
-    .dot.pending{background:#ffd56a}
-    .dot.paid{background:var(--ok)}
-    .dot.err{background:#ff6a6a}
-    .kv{display:flex;flex-direction:column;gap:2px}
-    .kv b{font-size:13px}
-    .kv span{font-size:12px;color:var(--muted)}
-    .tabs{
-      position:fixed;left:0;right:0;bottom:0;
-      background:rgba(8,9,14,.75);
-      backdrop-filter: blur(14px);
-      border-top:1px solid rgba(255,255,255,.10);
-      padding:10px 14px;
+    .badge{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      font-weight:750;
+      font-size:12px;
+      white-space:nowrap;
     }
-    .tabs .twrap{max-width:520px;margin:0 auto;display:flex;gap:10px}
+    .badge.ok{border-color:rgba(32,214,123,.35); color:#bdf7d7; background:rgba(32,214,123,.08)}
+    .badge.warn{border-color:rgba(255,204,0,.35); color:#fff2b3; background:rgba(255,204,0,.08)}
+    .badge.bad{border-color:rgba(255,59,59,.35); color:#ffb3b3; background:rgba(255,59,59,.08)}
+
+    /* bottom nav */
+    .nav{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+      background:rgba(6,7,10,.72);
+      backdrop-filter: blur(12px);
+      border-top:1px solid rgba(255,255,255,.08);
+      z-index:5;
+    }
+    .nav-inner{
+      max-width:520px;
+      margin:0 auto;
+      display:flex;
+      gap:10px;
+    }
     .tab{
-      flex:1; padding:12px 10px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      color:var(--txt); font-weight:800; cursor:pointer;
+      flex:1;
+      padding:12px 10px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+      color:var(--muted);
+      font-weight:800;
+      cursor:pointer;
     }
     .tab.active{
-      background:linear-gradient(180deg, rgba(255,42,61,.95), rgba(255,60,48,.70));
-      border-color:rgba(255,255,255,.20);
+      color:var(--text);
+      border-color: rgba(255,213,106,.28);
+      background:
+        radial-gradient(220px 60px at 50% 0%, rgba(255,213,106,.14), rgba(255,255,255,.05)),
+        linear-gradient(180deg, rgba(77,185,255,.10), rgba(44,107,255,.06));
     }
-    .hide{display:none !important}
+
+    .hidden{display:none !important;}
   </style>
 </head>
+
 <body>
-<div class="grain"></div>
+  <div class="storm"></div>
 
-<div class="wrap">
-  <div class="top">
-    <div class="brand">
-      <b>Porsche VPN</b>
-      <span id="hello">Премиум доступ • быстрый старт</span>
+  <div class="app">
+    <div class="header">
+      <div class="brand">
+        <div class="logo"></div>
+        <div style="min-width:0">
+          <h1>ZEUSVPN</h1>
+          <small>Thunder-fast VLESS • Mobile-first</small>
+        </div>
+      </div>
+
+      <div class="pill" id="apiPill">
+        <span class="dot"></span>
+        <span id="apiText">API: проверяю…</span>
+      </div>
     </div>
-    <div class="pill" id="subPill">Подписка: —</div>
-  </div>
 
-  <!-- HOME -->
-  <section id="screenHome" class="">
-    <div class="card">
-      <h2>Покупка</h2>
+    <!-- HOME -->
+    <div id="screenHome">
+      <div class="card">
+        <div class="section-title">
+          <h2>Конфиг</h2>
+          <span>быстро • индивидуально</span>
+        </div>
+        <div class="accent-line"></div>
 
-      <div class="status" id="payStatus">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="dot pending" id="stDot"></div>
-          <div class="kv">
-            <b id="stTitle">Готово к оплате</b>
-            <span id="stDesc">Выбери Stars или USDT</span>
+        <div class="field">
+          <input class="input" id="userKey" placeholder="ID пользователя (можно оставить авто)" />
+        </div>
+        <div class="hint">
+          Оставь пустым — сделаем ID автоматически. Позже здесь будет Telegram ID/профиль.
+        </div>
+
+        <div style="height:12px"></div>
+        <button class="btn" id="btnGetConfig">⚡ Получить конфиг</button>
+
+        <div id="configBox" class="box hidden">
+          <div class="status">
+            <div>Твой VLESS</div>
+            <button class="btn secondary" style="width:auto; padding:10px 12px" id="btnCopy">Скопировать</button>
+          </div>
+          <div class="accent-line"></div>
+          <div class="mono" id="configText"></div>
+        </div>
+
+        <div id="errBox" class="box hidden" style="border-color: rgba(255,59,59,.35)">
+          <div class="status">
+            <div class="badge bad">Ошибка</div>
+            <div class="hint" id="errText"></div>
           </div>
         </div>
-        <div class="small" id="stHint">30 дней • 1 устройство</div>
       </div>
 
-      <div class="divider"></div>
-
-      <div class="row">
-        <button class="btn btn-primary" id="btnStars">Оплатить Stars</button>
-        <button class="btn btn-secondary" id="btnUSDT">Оплатить USDT</button>
-      </div>
-
-      <p class="small" style="margin-top:10px">
-        После оплаты мы автоматически выдадим твой персональный VLESS-конфиг и покажем кнопку “Скопировать”.
-      </p>
-    </div>
-
-    <div class="card">
-      <h2>Твой конфиг</h2>
-
-      <div class="mono" id="configBox">Пока нет конфига. Оплати — и он появится тут.</div>
-
-      <div class="row" style="margin-top:10px">
-        <button class="btn btn-secondary" id="btnCopy" disabled>Скопировать</button>
-        <button class="btn btn-secondary" id="btnReset" title="Просто заглушка под будущий reset/new id">Сбросить/Новый ID</button>
-      </div>
-
-      <p class="small" style="margin-top:10px">
-        Проверка: вставь конфиг в клиент (V2Box / v2rayN / Shadowrocket) и нажми подключить.
-      </p>
-    </div>
-  </section>
-
-  <!-- INSTRUCTIONS -->
-  <section id="screenHow" class="hide">
-    <div class="card">
-      <h2>Инструкции (3 карточки)</h2>
-      <div class="small">Листай: iOS → Android → Desktop. (Пока простая заглушка, можно сделать свайпом позже)</div>
-      <div class="divider"></div>
-      <div class="card" style="margin-top:0;background:rgba(255,255,255,.02)">
-        <b>iOS</b>
-        <p class="small">1) Установи V2Box/Shadowrocket<br>2) Вставь конфиг<br>3) Connect</p>
-      </div>
-      <div class="card" style="background:rgba(255,255,255,.02)">
-        <b>Android</b>
-        <p class="small">1) Установи v2rayNG<br>2) Import from clipboard<br>3) Start</p>
-      </div>
-      <div class="card" style="background:rgba(255,255,255,.02)">
-        <b>Desktop</b>
-        <p class="small">1) v2rayN (Windows) / Nekoray (macOS/Linux)<br>2) Import link<br>3) Run</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROFILE -->
-  <section id="screenProfile" class="hide">
-    <div class="card">
-      <h2>Профиль</h2>
-      <div class="status">
-        <div class="kv">
-          <b>ID пользователя</b>
-          <span id="userIdView">—</span>
+      <div class="card">
+        <div class="section-title">
+          <h2>Оплата</h2>
+          <span>Stars / USDT</span>
         </div>
-        <button class="btn btn-secondary" id="btnNewId">Новый ID</button>
-      </div>
+        <div class="accent-line"></div>
 
-      <div class="divider"></div>
-
-      <div class="status">
-        <div class="kv">
-          <b>Статус подписки</b>
-          <span id="profileSub">—</span>
+        <div class="row">
+          <button class="btn" id="btnPayStars">⭐ Оплатить Stars</button>
+          <button class="btn secondary" id="btnPayUsdt">💎 Оплатить USDT</button>
         </div>
-        <div class="kv" style="text-align:right">
-          <b>Устройства</b>
-          <span id="slots">1/1</span>
+
+        <div id="payBox" class="box hidden">
+          <div class="status">
+            <div>Статус заказа</div>
+            <div class="badge warn" id="payStatus">pending</div>
+          </div>
+          <div class="label" id="payMeta"></div>
+          <div class="accent-line"></div>
+          <div class="hint">После оплаты ждём подтверждение и покажем конфиг автоматически.</div>
         </div>
       </div>
+    </div>
 
-      <div class="divider"></div>
+    <!-- INSTRUCTIONS -->
+    <div id="screenGuide" class="hidden">
+      <div class="card">
+        <div class="section-title">
+          <h2>Инструкции</h2>
+          <span>под мобилки</span>
+        </div>
+        <div class="accent-line"></div>
 
-      <div class="small">
-        История выдач (заглушка): позже сюда добавим реальные записи из backend.
+        <div class="box" style="margin-bottom:10px">
+          <div class="badge">iOS</div>
+          <div class="hint" style="margin-top:8px">
+            1) Установи V2Box / Shadowrocket<br/>
+            2) Импорт → “Вставить из буфера / по ссылке”<br/>
+            3) Подключись
+          </div>
+        </div>
+
+        <div class="box" style="margin-bottom:10px">
+          <div class="badge">Android</div>
+          <div class="hint" style="margin-top:8px">
+            1) Установи v2rayNG<br/>
+            2) Импорт → “Из буфера”<br/>
+            3) Подключись
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="badge">Desktop</div>
+          <div class="hint" style="margin-top:8px">
+            Nekoray / v2rayN → import → connect
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <h2>Рефералка</h2>
-      <div class="small">UI сейчас, логика потом. “Пригласи друга — +7 дней”.</div>
-      <div class="divider"></div>
-      <button class="btn btn-secondary" id="btnRef">Скопировать реф-ссылку</button>
-      <p class="small" id="refOut" style="margin-top:10px"></p>
-    </div>
-  </section>
-</div>
+    <!-- PROFILE -->
+    <div id="screenProfile" class="hidden">
+      <div class="card">
+        <div class="section-title">
+          <h2>Профиль</h2>
+          <span>под Telegram позже</span>
+        </div>
+        <div class="accent-line"></div>
 
-<div class="tabs">
-  <div class="twrap">
-    <button class="tab active" id="tabHome">Главная</button>
-    <button class="tab" id="tabHow">Инструкции</button>
-    <button class="tab" id="tabProfile">Профиль</button>
+        <div class="status">
+          <div>ID</div>
+          <div class="badge" id="profileId">—</div>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="status">
+          <div>Подписка</div>
+          <div class="badge warn" id="subStatus">Не оплачено</div>
+        </div>
+
+        <div class="label" id="activeUntil">Активна до: —</div>
+
+        <div class="accent-line"></div>
+
+        <div class="row">
+          <button class="btn secondary" id="btnResetId">Новый ID</button>
+          <button class="btn ghost" id="btnHistory" disabled>История (скоро)</button>
+        </div>
+
+        <div class="box" style="margin-top:12px">
+          <div class="hint">
+            Рефералка (UI): “Пригласи друга — +7 дней”
+          </div>
+          <div style="height:10px"></div>
+          <button class="btn secondary" id="btnRefCreate">Создать реф-код</button>
+          <div class="label" id="refOut"></div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+
+  <div class="nav">
+    <div class="nav-inner">
+      <button class="tab active" id="tabHome">Главная</button>
+      <button class="tab" id="tabGuide">Инструкции</button>
+      <button class="tab" id="tabProfile">Профиль</button>
+    </div>
+  </div>
 
 <script>
-  // === НАСТРОЙКИ ===
-  const API_BASE = "https://api.45.133.251.210.nip.io:8443"; // <-- меняй только это если надо
-  const PLAN_DAYS = 30;
-  const DEVICES = 1;
+  // === CONFIG ===
+  const API_BASE = "https://api.45.133.251.210.nip.io:8443";
 
-  // === HELPERS ===
+  // Telegram WebApp safe init
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    try { tg.ready(); } catch(e){}
+    try { tg.expand(); } catch(e){}
+  }
+
+  // helpers
   const $ = (id)=>document.getElementById(id);
+  const show = (el)=>el.classList.remove("hidden");
+  const hide = (el)=>el.classList.add("hidden");
 
-  function safeRandId(){
-    return "site-" + Math.random().toString(16).slice(2,10);
+  function setError(msg){
+    $("errText").textContent = msg;
+    show($("errBox"));
+  }
+  function clearError(){
+    hide($("errBox"));
+    $("errText").textContent = "";
   }
 
-  function getUserKey(){
-    let k = localStorage.getItem("pvpn_user_key");
-    if(!k){
-      k = safeRandId();
-      localStorage.setItem("pvpn_user_key", k);
+  function genUserKey(){
+    const n = Math.floor(Math.random()*9000)+1000;
+    return "zeus-" + n;
+  }
+  function setProfileId(id){
+    $("profileId").textContent = id || "—";
+  }
+
+  // API check
+  async function pingApi(){
+    try{
+      const r = await fetch(API_BASE + "/health", { method:"GET" });
+      if(!r.ok) throw new Error("health not ok");
+      await r.json();
+      $("apiText").textContent = "API: online";
+      $("apiPill").querySelector(".dot").style.background = "var(--ok)";
+      return true;
+    }catch(e){
+      $("apiText").textContent = "API: offline";
+      $("apiPill").querySelector(".dot").style.background = "var(--bad)";
+      return false;
     }
-    return k;
   }
 
-  function setUserKey(k){
-    localStorage.setItem("pvpn_user_key", k);
-    $("userIdView").textContent = k;
-  }
+  // issue config
+  let lastConfig = "";
 
-  function setConfig(link){
-    localStorage.setItem("pvpn_config", link || "");
-    $("configBox").textContent = link ? link : "Пока нет конфига. Оплати — и он появится тут.";
-    $("btnCopy").disabled = !link;
-  }
+  $("btnGetConfig").addEventListener("click", async ()=>{
+    clearError();
+    hide($("configBox"));
 
-  function setSubUntil(unixSec){
-    if(!unixSec){
-      $("subPill").textContent = "Подписка: —";
-      $("profileSub").textContent = "—";
-      return;
+    let user_key = $("userKey").value.trim();
+    if(!user_key){
+      user_key = genUserKey();
+      $("userKey").value = user_key;
     }
-    const d = new Date(unixSec * 1000);
-    const dd = String(d.getDate()).padStart(2,"0");
-    const mm = String(d.getMonth()+1).padStart(2,"0");
-    const yy = d.getFullYear();
-    const txt = `до ${dd}.${mm}.${yy}`;
-    $("subPill").textContent = "Подписка: " + txt;
-    $("profileSub").textContent = "Активна " + txt;
-  }
+    setProfileId(user_key);
 
-  function setStatus(state, title, desc){
-    const dot = $("stDot");
-    dot.classList.remove("pending","paid","err");
-    dot.classList.add(state);
-    $("stTitle").textContent = title;
-    $("stDesc").textContent = desc;
-  }
+    $("btnGetConfig").disabled = true;
+    $("btnGetConfig").textContent = "⚡ Получаю…";
 
-  async function api(path, opts={}){
-    const url = API_BASE + path;
-    const res = await fetch(url, {
-      ...opts,
-      headers: {
-        "Content-Type":"application/json",
-        ...(opts.headers || {})
+    try{
+      const r = await fetch(API_BASE + "/issue-config", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          inbound_id: 1,
+          user_key,
+          days: 30,
+          limit_ip: 0
+        })
+      });
+
+      const txt = await r.text();
+      let data;
+      try{ data = JSON.parse(txt); } catch(e){ data = { raw: txt }; }
+
+      if(!r.ok){
+        throw new Error(data?.detail || ("HTTP " + r.status + ": " + txt));
       }
-    });
-    if(!res.ok){
-      const t = await res.text().catch(()=> "");
-      throw new Error(`${res.status} ${res.statusText} ${t}`.trim());
+
+      lastConfig = data.link || "";
+      if(!lastConfig) throw new Error("Пустой ответ: нет поля link");
+
+      $("configText").textContent = lastConfig;
+      show($("configBox"));
+    }catch(e){
+      setError(e.message || String(e));
+    }finally{
+      $("btnGetConfig").disabled = false;
+      $("btnGetConfig").textContent = "⚡ Получить конфиг";
     }
-    return res.json();
-  }
+  });
 
-  // === TELEGRAM WEBAPP ===
-  function tg(){
-    return window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-  }
-
-  function openInvoiceSmart(invoiceLink, provider){
-    const w = tg();
-
-    // Telegram WebApp openInvoice (лучший вариант для Stars)
-    if(w && typeof w.openInvoice === "function"){
-      try{
-        w.openInvoice(invoiceLink, (status)=>{
-          // status: "paid" | "cancelled" | "failed" | etc
-          // мы всё равно поллим order, поэтому просто лог.
-          console.log("invoice status", provider, status);
-        });
-        return;
-      }catch(e){
-        console.warn("openInvoice failed, fallback to window.open", e);
-      }
+  $("btnCopy").addEventListener("click", async ()=>{
+    try{
+      await navigator.clipboard.writeText(lastConfig);
+      $("btnCopy").textContent = "Скопировано";
+      setTimeout(()=> $("btnCopy").textContent="Скопировать", 1000);
+    }catch(e){
+      alert("Не смог скопировать. Держи вручную:\n\n" + lastConfig);
     }
+  });
 
-    // fallback
-    window.open(invoiceLink, "_blank");
-  }
-
-  // === PAYMENT FLOW ===
+  // payments
   let pollTimer = null;
 
-  async function startPolling(orderId){
-    localStorage.setItem("pvpn_last_order", orderId);
-
+  async function pollOrder(orderId){
     if(pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(async ()=>{
       try{
-        const o = await api(`/pay/order/${orderId}`, { method:"GET" });
+        const r = await fetch(API_BASE + "/pay/order/" + orderId);
+        const j = await r.json();
 
-        if(o.status === "paid"){
-          setStatus("paid", "Оплачено", "Конфиг готов ✅");
-          if(o.config_link) setConfig(o.config_link);
-          if(o.active_until) setSubUntil(o.active_until);
-          if(pollTimer){ clearInterval(pollTimer); pollTimer=null; }
-          return;
+        $("payStatus").textContent = j.status;
+        $("payStatus").className = "badge " + (j.status === "paid" ? "ok" : "warn");
+        $("payMeta").textContent = `order: ${j.id} • ${j.amount || ""} ${j.currency || ""} • days: ${j.plan_days || ""}`;
+
+        if(j.status === "paid"){
+          clearInterval(pollTimer);
+          pollTimer = null;
+
+          if(j.config_link){
+            lastConfig = j.config_link;
+            $("configText").textContent = lastConfig;
+            show($("configBox"));
+          }
+
+          $("subStatus").textContent = "Активна";
+          $("subStatus").className = "badge ok";
+          if(j.active_until){
+            $("activeUntil").textContent = "Активна до: " + new Date(j.active_until).toLocaleString();
+          }
         }
-
-        setStatus("pending","Ждём оплату…","После оплаты конфиг появится автоматически");
-      }catch(err){
-        console.warn(err);
-        setStatus("err","Ошибка","Не могу проверить заказ (backend недоступен?)");
+      }catch(e){
+        // silent
       }
     }, 1200);
   }
 
-  async function payStars(){
-    const user_key = getUserKey();
-    setStatus("pending","Создаю инвойс…","Stars");
-    const data = await api("/pay/stars/create", {
-      method:"POST",
-      body: JSON.stringify({ user_key, days: PLAN_DAYS, devices: DEVICES })
-    });
+  $("btnPayStars").addEventListener("click", async ()=>{
+    clearError();
+    show($("payBox"));
+    $("payStatus").textContent = "creating…";
+    $("payStatus").className = "badge warn";
+    $("payMeta").textContent = "";
 
-    // открыть инвойс
-    openInvoiceSmart(data.invoice_link, "stars");
-
-    // начинаем поллинг
-    await startPolling(data.order_id);
-  }
-
-  async function payUSDT(){
-    const user_key = getUserKey();
-    setStatus("pending","Создаю инвойс…","USDT");
-    const data = await api("/pay/crypto/create", {
-      method:"POST",
-      body: JSON.stringify({ user_key, days: PLAN_DAYS, devices: DEVICES })
-    });
-
-    // открыть ссылку на оплату (CryptoPay обычно просто URL)
-    openInvoiceSmart(data.invoice_url, "cryptopay");
-
-    await startPolling(data.order_id);
-  }
-
-  // === UI NAV ===
-  function show(screen){
-    ["screenHome","screenHow","screenProfile"].forEach(id=>$(id).classList.add("hide"));
-    $(screen).classList.remove("hide");
-
-    ["tabHome","tabHow","tabProfile"].forEach(id=>$(id).classList.remove("active"));
-    if(screen==="screenHome") $("tabHome").classList.add("active");
-    if(screen==="screenHow") $("tabHow").classList.add("active");
-    if(screen==="screenProfile") $("tabProfile").classList.add("active");
-  }
-
-  // === INIT ===
-  (function init(){
-    const user_key = getUserKey();
-    $("userIdView").textContent = user_key;
-    $("slots").textContent = `${DEVICES}/${DEVICES}`;
-
-    const savedCfg = localStorage.getItem("pvpn_config") || "";
-    if(savedCfg) setConfig(savedCfg);
-
-    const lastOrder = localStorage.getItem("pvpn_last_order");
-    if(lastOrder){
-      // при перезаходе продолжим проверять
-      startPolling(lastOrder);
+    let user_key = $("userKey").value.trim();
+    if(!user_key){
+      user_key = genUserKey();
+      $("userKey").value = user_key;
     }
+    setProfileId(user_key);
 
-    // пробуем подтянуть active_until из последнего заказа
-    if(lastOrder){
-      api(`/pay/order/${lastOrder}`, {method:"GET"})
-        .then(o=>{
-          if(o.active_until) setSubUntil(o.active_until);
-          if(o.status==="paid" && o.config_link) setConfig(o.config_link);
-        })
-        .catch(()=>{});
+    try{
+      const r = await fetch(API_BASE + "/pay/stars/create", {
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ user_key, days:30, devices:1 })
+      });
+      const j = await r.json();
+      if(!r.ok) throw new Error(j?.detail || "Stars create error");
+
+      $("payStatus").textContent = "pending";
+      $("payMeta").textContent = `order: ${j.order_id}`;
+
+      if(tg && tg.openInvoice){
+        tg.openInvoice(j.invoice_link, (status)=>{});
+      } else {
+        window.open(j.invoice_link, "_blank");
+      }
+
+      pollOrder(j.order_id);
+    }catch(e){
+      setError(e.message || String(e));
+      $("payStatus").textContent = "error";
+      $("payStatus").className = "badge bad";
     }
+  });
+
+  $("btnPayUsdt").addEventListener("click", async ()=>{
+    clearError();
+    show($("payBox"));
+    $("payStatus").textContent = "creating…";
+    $("payStatus").className = "badge warn";
+    $("payMeta").textContent = "";
+
+    let user_key = $("userKey").value.trim();
+    if(!user_key){
+      user_key = genUserKey();
+      $("userKey").value = user_key;
+    }
+    setProfileId(user_key);
+
+    try{
+      const r = await fetch(API_BASE + "/pay/crypto/create", {
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ user_key, days:30, devices:1 })
+      });
+      const j = await r.json();
+      if(!r.ok) throw new Error(j?.detail || "Crypto create error");
+
+      $("payStatus").textContent = "pending";
+      $("payMeta").textContent = `order: ${j.order_id}`;
+
+      if(j.invoice_url){
+        window.open(j.invoice_url, "_blank");
+      }
+
+      pollOrder(j.order_id);
+    }catch(e){
+      setError(e.message || String(e));
+      $("payStatus").textContent = "error";
+      $("payStatus").className = "badge bad";
+    }
+  });
+
+  // referrals
+  $("btnRefCreate").addEventListener("click", async ()=>{
+    clearError();
+    $("refOut").textContent = "создаю…";
+
+    let user_key = $("userKey").value.trim() || genUserKey();
+    $("userKey").value = user_key;
+    setProfileId(user_key);
+
+    try{
+      const r = await fetch(API_BASE + "/ref/create", {
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ user_key })
+      });
+      const j = await r.json();
+      if(!r.ok) throw new Error(j?.detail || "ref create error");
+      $("refOut").textContent = "Твой код: " + j.code;
+    }catch(e){
+      $("refOut").textContent = "";
+      setError(e.message || String(e));
+    }
+  });
+
+  $("btnResetId").addEventListener("click", ()=>{
+    const id = genUserKey();
+    $("userKey").value = id;
+    setProfileId(id);
+  });
+
+  // tabs
+  function setTab(tab){
+    const tabs = [
+      ["tabHome","screenHome"],
+      ["tabGuide","screenGuide"],
+      ["tabProfile","screenProfile"],
+    ];
+    tabs.forEach(([t,s])=>{
+      const bt = $(t), sc = $(s);
+      if(t === tab){
+        bt.classList.add("active");
+        sc.classList.remove("hidden");
+      } else {
+        bt.classList.remove("active");
+        sc.classList.add("hidden");
+      }
+    });
+  }
+  $("tabHome").onclick = ()=>setTab("tabHome");
+  $("tabGuide").onclick = ()=>setTab("tabGuide");
+  $("tabProfile").onclick = ()=>setTab("tabProfile");
+
+  // init
+  (async ()=>{
+    await pingApi();
+    const saved = localStorage.getItem("zeus_user_key");
+    if(saved){
+      $("userKey").value = saved;
+      setProfileId(saved);
+    }
+    $("userKey").addEventListener("change", ()=>{
+      localStorage.setItem("zeus_user_key", $("userKey").value.trim());
+    });
   })();
-
-  // === EVENTS ===
-  $("btnStars").addEventListener("click", ()=>payStars().catch(e=>{
-    console.error(e);
-    setStatus("err","Ошибка","Failed to fetch (проверь CORS/доступность API)");
-  }));
-
-  $("btnUSDT").addEventListener("click", ()=>payUSDT().catch(e=>{
-    console.error(e);
-    setStatus("err","Ошибка","USDT пока не настроен или CryptoPay token неверный");
-  }));
-
-  $("btnCopy").addEventListener("click", async ()=>{
-    const text = $("configBox").textContent.trim();
-    try{
-      await navigator.clipboard.writeText(text);
-      setStatus("paid","Скопировано","Вставь в VPN-клиент");
-    }catch(e){
-      alert("Не удалось скопировать. Выдели текст и скопируй вручную.");
-    }
-  });
-
-  $("btnNewId").addEventListener("click", ()=>{
-    const k = safeRandId();
-    setUserKey(k);
-    setConfig("");
-    setSubUntil(null);
-    localStorage.removeItem("pvpn_last_order");
-    if(pollTimer){clearInterval(pollTimer); pollTimer=null;}
-    setStatus("pending","Готово","Новый ID создан");
-  });
-
-  $("btnReset").addEventListener("click", ()=>{
-    alert("Заглушка: позже сделаем реальный reset/new-id на backend.");
-  });
-
-  $("btnRef").addEventListener("click", async ()=>{
-    const k = getUserKey();
-    // UI-заглушка рефералки
-    const link = `https://t.me/your_bot?start=ref_${k}`;
-    try{
-      await navigator.clipboard.writeText(link);
-      $("refOut").textContent = "Ссылка скопирована: " + link;
-    }catch(e){
-      $("refOut").textContent = link;
-    }
-  });
-
-  $("tabHome").addEventListener("click", ()=>show("screenHome"));
-  $("tabHow").addEventListener("click", ()=>show("screenHow"));
-  $("tabProfile").addEventListener("click", ()=>show("screenProfile"));
 </script>
-
-<!-- Telegram WebApp JS (не обязательно, но полезно) -->
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 </body>
 </html>
