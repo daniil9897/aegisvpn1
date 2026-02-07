@@ -1,1224 +1,1149 @@
+
 <!doctype html>
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#05070C" />
   <title>ZEUSVPN</title>
+
   <style>
     :root{
-      --bg0:#070709;
-      --bg1:#0b0b0f;
-      --card:#0f1014;
-      --card2:#12131a;
-      --stroke:rgba(255,255,255,.08);
-      --stroke2:rgba(255,255,255,.12);
-      --txt:#f2f3f5;
-      --muted:rgba(255,255,255,.62);
-      --muted2:rgba(255,255,255,.46);
-      --good:#42ffb6;
-      --warn:#ffd36b;
-      --bad:#ff5c77;
+      /* Blue-Black premium */
+      --bg:#05070C;
+      --bg2:#070A12;
+      --card:#0B1020;
+      --card2:#0A0F1E;
+      --stroke:#15203A;
+      --stroke2:#1B2A4D;
 
-      --shadow: 0 20px 70px rgba(0,0,0,.55);
-      --shadow2: 0 10px 30px rgba(0,0,0,.45);
+      --text:#F5F7FF;
+      --muted:#A9B4D1;
+      --muted2:#7D8AB0;
 
-      --r:22px;
-      --r2:18px;
+      --blue:#2F7CFF;
+      --blue2:#66A6FF;
+      --blueGlow: rgba(47,124,255,.35);
 
-      --ease:cubic-bezier(.2,.8,.2,1);
+      --shine:rgba(255,255,255,.08);
+      --shadow: 0 18px 60px rgba(0,0,0,.60);
+      --shadow2: 0 10px 26px rgba(0,0,0,.44);
+
+      --r: 18px;
+      --r2: 26px;
+
+      --fast: 220ms;
+      --med: 360ms;
+
+      --safeTop: env(safe-area-inset-top, 0px);
+      --safeBot: env(safe-area-inset-bottom, 0px);
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    html,body{ height:100%; margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text); }
     body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--txt);
       background:
-        radial-gradient(1200px 700px at 50% -10%, rgba(255,255,255,.08), transparent 55%),
-        radial-gradient(900px 500px at 85% 10%, rgba(255,255,255,.06), transparent 60%),
-        radial-gradient(900px 500px at 15% 10%, rgba(255,255,255,.05), transparent 60%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
+        radial-gradient(1200px 700px at 50% -10%, rgba(47,124,255,.22) 0%, transparent 55%),
+        radial-gradient(900px 600px at 80% 10%, rgba(102,166,255,.12) 0%, transparent 55%),
+        radial-gradient(900px 700px at 20% 120%, rgba(0,0,0,.65) 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg2), var(--bg));
       overflow-x:hidden;
     }
 
-    /* subtle premium grain */
+    /* premium grain + vignette */
     body:before{
       content:"";
-      position:fixed;
-      inset:-20%;
+      position:fixed; inset:0;
       pointer-events:none;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='210' height='210'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='210' height='210' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+      background:
+        radial-gradient(900px 600px at 50% 0%, rgba(255,255,255,.06), transparent 60%),
+        radial-gradient(900px 700px at 50% 110%, rgba(0,0,0,.55), transparent 60%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.014) 0 1px, transparent 1px 3px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.010) 0 1px, transparent 1px 4px);
       mix-blend-mode: overlay;
-      opacity:.22;
-      transform:translateZ(0);
+      opacity:.34;
+    }
+    body:after{
+      content:"";
+      position:fixed; inset:-40px;
+      pointer-events:none;
+      background: radial-gradient(700px 500px at 50% 0%, rgba(0,0,0,.0), rgba(0,0,0,.55) 70%, rgba(0,0,0,.80) 100%);
+      opacity:.92;
     }
 
     .app{
-      max-width:520px;
-      margin:0 auto;
-      padding:18px 16px 100px;
+      position:relative;
+      max-width: 520px;
+      margin: 0 auto;
+      min-height: 100%;
+      padding: calc(14px + var(--safeTop)) 14px calc(86px + var(--safeBot)) 14px;
+      z-index:1;
     }
 
+    /* Header */
     .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding-top:10px;
+      position:relative;
+      border:1px solid rgba(47,124,255,.20);
+      border-radius: var(--r2);
+      background:
+        radial-gradient(700px 220px at 10% 10%, rgba(47,124,255,.16), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      box-shadow: var(--shadow2);
+      padding: 14px;
+      overflow:hidden;
     }
-
+    .topbar .watermark{
+      position:absolute;
+      inset:-30px -40px auto auto;
+      width: 240px;
+      opacity:.06;
+      filter: blur(.2px);
+      transform: rotate(8deg);
+      pointer-events:none;
+    }
     .brand{
       display:flex;
       align-items:center;
-      gap:12px;
-      min-width:0;
+      gap: 12px;
     }
-
     .logo{
-      width:46px;height:46px;border-radius:16px;
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow2);
-      display:grid;place-items:center;
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background:
+        radial-gradient(90% 90% at 30% 20%, rgba(255,255,255,.12), rgba(255,255,255,.03));
+      border: 1px solid rgba(47,124,255,.18);
+      box-shadow: 0 14px 26px rgba(0,0,0,.55);
+      display:grid;
+      place-items:center;
       overflow:hidden;
-      position:relative;
+    }
+    .logo img{ width: 44px; height:auto; display:block; opacity:.96; }
+    .brand h1{
+      margin:0;
+      font-size: 18px;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      line-height: 1.05;
+    }
+    .brand .sub{
+      margin:4px 0 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing:.02em;
     }
 
-    /* embed YOUR logo as inline SVG (black/white only) */
-    .logo svg{width:38px;height:38px;opacity:.98}
-    .logo:after{
-      content:"";
-      position:absolute;inset:-40%;
-      background:radial-gradient(closest-side, rgba(255,255,255,.16), transparent 60%);
-      transform:translate(20%, -10%);
-      opacity:.35;
+    .stack{ margin-top: 12px; display:grid; gap: 12px; }
+
+    .panel{
+      border: 1px solid rgba(47,124,255,.16);
+      border-radius: var(--r2);
+      background:
+        radial-gradient(900px 380px at 50% 0%, rgba(47,124,255,.10), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    .panel .inner{ padding: 14px; }
+
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .section-title .t{
+      font-size: 14px;
+      color: var(--text);
+      letter-spacing:.02em;
+      font-weight: 800;
+    }
+    .section-title .hint{
+      font-size: 12px;
+      color: var(--muted2);
+    }
+
+    /* iOS-like screen transitions */
+    .screens{ position:relative; min-height: 480px; }
+    .screen{
+      position:absolute; inset:0;
+      opacity:0;
+      transform: translateY(12px);
+      transition: opacity var(--med) ease, transform var(--med) ease;
       pointer-events:none;
     }
-
-    .brandText{min-width:0}
-    .title{
-      font-weight:800;
-      letter-spacing:.06em;
-      font-size:15px;
-      text-transform:uppercase;
-      line-height:1.05;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+    .screen.active{
+      opacity:1;
+      transform: translateY(0);
+      pointer-events:auto;
     }
-    .subtitle{
-      margin-top:4px;
-      color:var(--muted);
-      font-size:12px;
+
+    /* Buttons */
+    .cta{ display:flex; gap: 10px; align-items: stretch; }
+    .btn{
+      appearance:none;
+      border: 1px solid rgba(47,124,255,.18);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      color: var(--text);
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 750;
       letter-spacing:.01em;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .chipRow{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    .chip{
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid var(--stroke);
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      color:var(--muted);
-      font-size:12px;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
+      cursor:pointer;
+      box-shadow: 0 10px 18px rgba(0,0,0,.40);
+      transition: transform var(--fast) ease, filter var(--fast) ease, background var(--fast) ease;
       user-select:none;
     }
-    .dot{
-      width:7px;height:7px;border-radius:99px;
-      background:rgba(255,255,255,.35);
-      box-shadow:0 0 0 2px rgba(255,255,255,.06);
+    .btn:active{ transform: scale(.985); }
+
+    .btn.primary{
+      flex:1;
+      border-color: rgba(47,124,255,.32);
+      background:
+        radial-gradient(900px 220px at 20% 0%, rgba(47,124,255,.22), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
+      box-shadow: 0 14px 26px rgba(0,0,0,.55), 0 0 0 1px rgba(47,124,255,.16) inset;
+    }
+    .btn.primary:hover{ filter: brightness(1.03); }
+    .btn.ghost{
+      width: 54px;
+      display:grid;
+      place-items:center;
+      border-color: rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+    }
+    .btn[disabled]{ opacity:.55; cursor:not-allowed; filter: grayscale(.15); }
+
+    /* KPIs */
+    .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .kpi .box{
+      border: 1px solid rgba(47,124,255,.14);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(0,0,0,.34), rgba(255,255,255,.03));
+      padding: 12px;
+      position:relative;
+      overflow:hidden;
+    }
+    .kpi .box:before{
+      content:"";
+      position:absolute; inset:-70px -50px auto auto;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle at 30% 30%, rgba(47,124,255,.16), transparent 60%);
+      opacity:.8;
+      pointer-events:none;
+      transform: rotate(14deg);
+    }
+    .kpi .label{ font-size: 12px; color: var(--muted2); }
+    .kpi .value{ margin-top: 6px; font-size: 14px; font-weight: 850; letter-spacing:.01em; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+
+    .mini{
+      font-size: 11px;
+      color: var(--muted2);
+      line-height: 1.5;
+      margin-top: 12px;
     }
 
-    .section{
-      margin-top:16px;
-      border-radius: var(--r);
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      border:1px solid var(--stroke);
+    /* Modal */
+    .backdrop{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.70);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 14px;
+      z-index: 50;
+    }
+    .backdrop.show{ display:flex; }
+    .sheet{
+      width: min(520px, 100%);
+      border-radius: 26px;
+      border: 1px solid rgba(47,124,255,.20);
+      background:
+        radial-gradient(900px 280px at 10% 0%, rgba(47,124,255,.18), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
       box-shadow: var(--shadow);
       overflow:hidden;
-      position:relative;
+      transform: translateY(18px);
+      opacity:0;
+      transition: transform var(--med) ease, opacity var(--med) ease;
     }
-    .sectionInner{
-      padding:14px;
-    }
+    .backdrop.show .sheet{ transform: translateY(0); opacity:1; }
 
-    .divider{
-      height:1px;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
-      margin:12px 0;
-      opacity:.9;
-    }
-
-    .hero{
+    .sheet-head{
+      padding: 14px 14px 10px 14px;
       display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .hero h1{
-      margin:0;
-      font-size:20px;
-      letter-spacing:-.02em;
-    }
-    .hero p{
-      margin:0;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.5;
-    }
-
-    .primary{
-      width:100%;
-      border-radius:16px;
-      padding:14px 14px;
-      border:1px solid rgba(255,255,255,.16);
-      background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
-      color:var(--txt);
-      font-weight:700;
-      letter-spacing:.01em;
-      box-shadow:0 14px 36px rgba(0,0,0,.55);
-      transform:translateZ(0);
-      cursor:pointer;
-      transition:transform .18s var(--ease), filter .18s var(--ease);
-    }
-    .primary:active{transform:scale(.985)}
-    .primary:hover{filter:brightness(1.05)}
-
-    .ghost{
-      width:100%;
-      border-radius:16px;
-      padding:12px 14px;
-      border:1px solid var(--stroke);
-      background:rgba(0,0,0,.15);
-      color:var(--muted);
-      font-weight:650;
-      cursor:pointer;
-      transition:transform .18s var(--ease), border-color .18s var(--ease);
-    }
-    .ghost:active{transform:scale(.99)}
-    .ghost:hover{border-color:rgba(255,255,255,.14);}
-
-    .grid2{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    .pill{
-      display:inline-flex;
       align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid var(--stroke);
-      color:var(--muted);
-      font-size:12px;
-      background:rgba(0,0,0,.18);
+      justify-content:space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .sheet-head .ttl{ font-size: 14px; font-weight: 900; letter-spacing:.02em; }
+    .xbtn{
+      width: 40px; height: 40px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      transition: transform var(--fast) ease;
+    }
+    .xbtn:active{ transform: scale(.98); }
+
+    .sheet-body{ padding: 14px; display:grid; gap: 12px; }
+
+    .row-title{ display:flex; align-items:baseline; justify-content:space-between; gap: 10px; }
+    .row-title .l{ font-size: 13px; color: var(--text); font-weight: 850; }
+    .row-title .r{ font-size: 12px; color: var(--muted2); }
+
+    .chips{ display:flex; flex-wrap:wrap; gap: 10px; }
+    .chip{
+      padding: 10px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(47,124,255,.14);
+      background: rgba(0,0,0,.16);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 850;
+      cursor:pointer;
+      transition: transform var(--fast) ease, border-color var(--fast) ease, background var(--fast) ease;
       user-select:none;
     }
+    .chip:active{ transform: scale(.985); }
+    .chip.active{
+      border-color: rgba(47,124,255,.40);
+      background:
+        radial-gradient(400px 120px at 20% 0%, rgba(47,124,255,.18), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      box-shadow: 0 0 0 1px rgba(47,124,255,.12) inset;
+    }
 
+    /* 3D selection card */
+    .selcard{
+      border-radius: 22px;
+      border: 1px solid rgba(47,124,255,.22);
+      background:
+        radial-gradient(600px 240px at 20% 0%, rgba(47,124,255,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.28));
+      box-shadow: 0 26px 60px rgba(0,0,0,.60);
+      padding: 14px;
+      position:relative;
+      overflow:hidden;
+      transform: perspective(800px) rotateX(6deg);
+    }
+    .selcard:before{
+      content:"";
+      position:absolute; inset:-120px -80px auto auto;
+      width: 260px; height: 260px;
+      background: radial-gradient(circle at 30% 30%, rgba(47,124,255,.22), transparent 62%);
+      opacity:.85;
+      transform: rotate(18deg);
+      pointer-events:none;
+    }
+    .selcard:after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,.10) 42%, transparent 66%);
+      transform: translateX(-120%);
+      animation: shimmer 5.2s ease-in-out infinite;
+      opacity:.30;
+      pointer-events:none;
+    }
+    @keyframes shimmer{
+      0%,55%{ transform: translateX(-120%); }
+      80%{ transform: translateX(120%); }
+      100%{ transform: translateX(120%); }
+    }
+
+    .selcard .big{ font-size: 16px; font-weight: 950; letter-spacing:.01em; margin:0; }
+    .selcard .meta{
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      display:flex;
+      gap: 8px;
+      flex-wrap:wrap;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      color: var(--muted);
+      font-size: 12px;
+    }
     .tag{
       display:inline-flex;
       align-items:center;
-      gap:6px;
-      font-size:11px;
-      padding:6px 9px;
-      border-radius:999px;
-      border:1px solid var(--stroke);
-      background:rgba(255,255,255,.04);
-      color:rgba(255,255,255,.74);
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(47,124,255,.28);
+      background: rgba(47,124,255,.12);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 900;
     }
-    .tag strong{font-weight:800}
-    .tag.pop{border-color:rgba(255,255,255,.14)}
-    .tag.best{border-color:rgba(255,255,255,.20)}
 
-    .muted{color:var(--muted)}
-    .small{font-size:12px}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    .sheet-foot{
+      padding: 14px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      display:grid;
+      gap: 10px;
+    }
+
+    .status{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* Config box */
+    .codebox{
+      border: 1px solid rgba(47,124,255,.16);
+      border-radius: 18px;
+      background: rgba(0,0,0,.22);
+      padding: 12px;
+      overflow:hidden;
+    }
+    .codebox .code{
+      font-size: 12px;
+      line-height: 1.45;
+      word-break: break-all;
+      color: #EEF3FF;
+    }
+    .copyrow{ display:flex; gap:10px; margin-top: 10px; }
+    .btn.small{ padding: 11px 12px; border-radius: 14px; font-size: 13px; }
+    .btn.full{ width:100%; }
 
     /* bottom nav */
     .nav{
       position:fixed;
       left:0; right:0;
       bottom:0;
-      padding:12px 14px calc(12px + env(safe-area-inset-bottom));
-      background:linear-gradient(180deg, rgba(10,10,12,0), rgba(10,10,12,.88) 30%, rgba(10,10,12,.96));
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-top:1px solid rgba(255,255,255,.08);
-      display:flex;
-      justify-content:center;
-      z-index:50;
+      padding: 10px 14px calc(10px + var(--safeBot)) 14px;
+      z-index: 40;
     }
-    .navInner{
-      max-width:520px;
-      width:100%;
+    .nav .bar{
+      max-width: 520px;
+      margin: 0 auto;
+      border-radius: 22px;
+      border: 1px solid rgba(47,124,255,.16);
+      background: rgba(8,10,16,.65);
+      box-shadow: 0 20px 70px rgba(0,0,0,.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 8px;
       display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
     }
-    .navBtn{
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(0,0,0,.22);
-      padding:12px 10px;
-      color:rgba(255,255,255,.70);
-      font-weight:700;
-      font-size:12px;
-      letter-spacing:.01em;
-      cursor:pointer;
-      transition:transform .18s var(--ease), background .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease);
-    }
-    .navBtn:active{transform:scale(.985)}
-    .navBtn.active{
-      color:var(--txt);
-      border-color:rgba(255,255,255,.18);
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-    }
-
-    /* screens with iOS-like transitions */
-    .screen{
-      display:none;
-      animation: none;
-    }
-    .screen.active{display:block}
-    .animIn{
-      animation: fadeSlideIn .28s var(--ease) both;
-    }
-    .animOut{
-      animation: fadeSlideOut .22s var(--ease) both;
-    }
-    @keyframes fadeSlideIn{
-      from{opacity:0; transform:translateY(12px)}
-      to{opacity:1; transform:translateY(0)}
-    }
-    @keyframes fadeSlideOut{
-      from{opacity:1; transform:translateY(0)}
-      to{opacity:0; transform:translateY(10px)}
-    }
-
-    /* modal */
-    .modalWrap{
-      position:fixed;
-      inset:0;
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      background:rgba(0,0,0,.55);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      z-index:80;
-      padding:14px 12px calc(14px + env(safe-area-inset-bottom));
-    }
-    .modalWrap.show{display:flex}
-    .modal{
-      width:100%;
-      max-width:520px;
-      border-radius:26px;
-      background:linear-gradient(180deg, rgba(22,22,28,.96), rgba(14,14,18,.96));
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:0 30px 120px rgba(0,0,0,.65);
-      overflow:hidden;
-      transform-origin:50% 100%;
-      animation: modalIn .24s var(--ease) both;
-    }
-    @keyframes modalIn{
-      from{transform:translateY(18px) scale(.98); opacity:0}
-      to{transform:translateY(0) scale(1); opacity:1}
-    }
-    .modalHeader{
-      padding:14px 14px 10px;
+    .tab{
+      border-radius: 18px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      padding: 10px 10px;
       display:flex;
-      justify-content:space-between;
+      flex-direction:column;
+      gap: 4px;
       align-items:center;
-      gap:10px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    .modalHeader strong{letter-spacing:.02em}
-    .xBtn{
-      width:36px;height:36px;border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
-      color:rgba(255,255,255,.72);
+      justify-content:center;
       cursor:pointer;
-      transition:transform .18s var(--ease);
+      transition: background var(--fast) ease, color var(--fast) ease, transform var(--fast) ease, border-color var(--fast) ease;
+      font-size: 12px;
+      font-weight: 850;
     }
-    .xBtn:active{transform:scale(.97)}
-    .modalBody{padding:14px}
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
+    .tab:active{ transform: scale(.985); }
+    .tab.active{
+      color: var(--text);
+      background:
+        radial-gradient(400px 140px at 20% 0%, rgba(47,124,255,.20), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      border-color: rgba(47,124,255,.18);
     }
-    .selectGroup{
-      margin-bottom:14px;
-    }
-    .label{
-      display:flex;align-items:center;justify-content:space-between;
-      margin:0 0 8px 0;
-      color:rgba(255,255,255,.75);
-      font-size:12px;
-      letter-spacing:.02em;
-    }
+    .ico{ width: 20px; height: 20px; opacity:.92; display:block; }
 
-    .opt{
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
-      color:rgba(255,255,255,.72);
-      font-weight:750;
-      font-size:12px;
-      cursor:pointer;
-      user-select:none;
-      transition:transform .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease), color .18s var(--ease);
-    }
-    .opt:active{transform:scale(.985)}
-    .opt.active{
-      color:var(--txt);
-      border-color:rgba(255,255,255,.22);
-      background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
-    }
-
-    /* 3D choice card */
-    .choiceCard{
-      margin-top:10px;
-      border-radius:22px;
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow: 0 20px 70px rgba(0,0,0,.55);
-      padding:14px;
-      position:relative;
-      overflow:hidden;
-      transform: perspective(900px) rotateX(10deg);
-    }
-    .choiceCard:before{
-      content:"";
-      position:absolute; inset:-40%;
-      background:radial-gradient(closest-side, rgba(255,255,255,.16), transparent 60%);
-      transform:translate(-10%, -10%);
-      opacity:.28;
-      pointer-events:none;
-    }
-    /* ultra light shimmer */
-    .choiceCard:after{
-      content:"";
-      position:absolute;
-      inset:-60%;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent);
-      transform:translateX(-40%) rotate(10deg);
-      animation: shimmer 2.8s var(--ease) infinite;
-      opacity:.20;
-      pointer-events:none;
-    }
-    @keyframes shimmer{
-      0%{transform:translateX(-45%) rotate(10deg)}
-      50%{transform:translateX(45%) rotate(10deg)}
-      100%{transform:translateX(45%) rotate(10deg)}
-    }
-    .choiceTop{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-    }
-    .choiceTop h3{
-      margin:0;
-      font-size:15px;
-      letter-spacing:.01em;
-    }
-    .price{
-      font-weight:900;
-      letter-spacing:.02em;
-      font-size:16px;
-      white-space:nowrap;
-    }
-    .choiceMeta{
-      margin-top:6px;
-      color:rgba(255,255,255,.68);
-      font-size:12px;
-      line-height:1.4;
-    }
-
-    .payRow{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:12px;
-    }
-    .payBtn{
-      border-radius:16px;
-      padding:12px 12px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.18);
-      color:rgba(255,255,255,.78);
-      font-weight:850;
-      cursor:pointer;
-      transition:transform .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease), color .18s var(--ease);
-    }
-    .payBtn:active{transform:scale(.985)}
-    .payBtn.primaryPay{
-      background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
-      border-color:rgba(255,255,255,.18);
-      color:var(--txt);
-    }
-    .payBtn[disabled]{
-      opacity:.45;
-      cursor:not-allowed;
-      transform:none!important;
-    }
-
-    .statusLine{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.16);
-      color:rgba(255,255,255,.70);
-      font-size:12px;
-      line-height:1.35;
-    }
-
-    .codeBox{
-      margin-top:10px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.28);
-      padding:12px;
-      overflow:hidden;
-    }
-    .codeBox pre{
-      margin:0;
-      white-space:pre-wrap;
-      word-break:break-all;
-      font-size:12px;
-      color:rgba(255,255,255,.86);
-    }
-    .copyBtn{
-      margin-top:10px;
-      width:100%;
-      border-radius:16px;
-      padding:12px 14px;
-      border:1px solid rgba(255,255,255,.16);
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-      color:var(--txt);
-      font-weight:900;
-      cursor:pointer;
-      transition:transform .18s var(--ease);
-    }
-    .copyBtn:active{transform:scale(.985)}
-
-    /* instructions swipe */
+    /* Instruction cards (swipe) */
     .swipe{
       display:flex;
-      gap:10px;
+      gap: 12px;
       overflow:auto;
-      scroll-snap-type:x mandatory;
+      scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
-      padding:12px 14px 14px;
+      padding-bottom: 2px;
     }
-    .swipe::-webkit-scrollbar{display:none}
-    .swCard{
-      min-width:84%;
-      scroll-snap-align:center;
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
-      padding:14px;
-      box-shadow:0 16px 45px rgba(0,0,0,.45);
+    .swipe::-webkit-scrollbar{ display:none; }
+    .icard{
+      min-width: 86%;
+      scroll-snap-align: center;
+      border-radius: 22px;
+      border: 1px solid rgba(47,124,255,.14);
+      background:
+        radial-gradient(600px 220px at 15% 0%, rgba(47,124,255,.14), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.34), rgba(255,255,255,.03));
+      box-shadow: var(--shadow2);
+      padding: 14px;
+      position:relative;
+      overflow:hidden;
     }
-    .swCard h3{margin:0 0 6px 0; font-size:15px}
-    .swCard ol{margin:0; padding-left:18px; color:rgba(255,255,255,.74); font-size:13px; line-height:1.5}
-    .swHint{
-      text-align:center;
-      color:rgba(255,255,255,.45);
-      font-size:11px;
-      padding:0 14px 14px;
-    }
-
-    /* small badges */
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:5px 9px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.05);
-      color:rgba(255,255,255,.75);
-      font-size:11px;
-      font-weight:850;
-      letter-spacing:.01em;
+    .icard h3{ margin:0; font-size: 14px; letter-spacing:.02em; }
+    .icard p{ margin: 10px 0 0 0; font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .steps{ margin-top: 10px; display:grid; gap: 8px; }
+    .step{ display:flex; gap: 10px; align-items:flex-start; font-size: 12px; color: var(--text); line-height: 1.45; }
+    .dot{
+      margin-top: 2px;
+      width: 18px; height: 18px;
+      border-radius: 8px;
+      display:grid;
+      place-items:center;
+      background: rgba(47,124,255,.12);
+      border:1px solid rgba(47,124,255,.18);
+      color: var(--text);
+      font-weight: 900;
+      font-size: 11px;
+      flex: 0 0 18px;
     }
 
-    /* toast */
+    /* Profile */
+    .pgrid{ display:grid; gap: 10px; }
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(47,124,255,.12);
+      background: rgba(0,0,0,.18);
+    }
+    .row .l{ font-size: 12px; color: var(--muted2); }
+    .row .v{ font-size: 13px; font-weight: 900; letter-spacing:.01em; color: var(--text); text-align:right; word-break:break-all; }
+
     .toast{
       position:fixed;
       left:50%;
-      bottom:90px;
-      transform:translateX(-50%);
-      background:rgba(18,18,22,.92);
-      border:1px solid rgba(255,255,255,.14);
-      color:rgba(255,255,255,.82);
-      padding:10px 12px;
-      border-radius:14px;
-      box-shadow:0 20px 70px rgba(0,0,0,.6);
-      font-size:12px;
+      transform: translateX(-50%);
+      bottom: calc(92px + var(--safeBot));
+      background: rgba(8,10,16,.84);
+      border:1px solid rgba(47,124,255,.16);
+      border-radius: 16px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 12px;
       opacity:0;
       pointer-events:none;
-      transition:opacity .2s var(--ease), transform .2s var(--ease);
-      z-index:90;
-      max-width:92%;
-      text-align:center;
+      transition: opacity var(--fast) ease, transform var(--fast) ease;
+      z-index: 60;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
-    .toast.show{opacity:1; transform:translateX(-50%) translateY(-4px);}
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(-4px); }
   </style>
 </head>
+
 <body>
   <div class="app">
-
     <div class="topbar">
+      <img class="watermark" id="wmLogo" alt="" />
       <div class="brand">
-        <div class="logo" aria-label="ZEUSVPN Logo">
-          <!-- Simple Zeus profile (black/white) inside a rounded tile -->
-          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path fill="#fff" d="M42.7 10.2c-6.7 1.2-12.9 5.8-16.1 11.7-2.3 4.3-3 9.3-1.8 13.9 1 3.7 3.2 7 6.4 9.3 2.1 1.5 4.5 2.6 6.9 3.2 1.6.4 3.4.7 5 .7 2.7 0 4.9-.5 7.2-1.6 4.5-2.2 7.8-6.1 9.3-10.8.9-2.8 1-6.1.2-8.9-.9-3.1-2.6-5.9-5-8.1-3-2.8-6.8-4.4-11.1-4.4-.4 0-.8 0-1.2.1ZM49.1 27.4c.8.8.8 2 0 2.8l-3.2 3.2c-.7.7-1.8.8-2.6.2-.3-.2-.5-.4-.7-.7-.5-.8-.4-1.9.2-2.6l3.2-3.2c.8-.8 2-.8 2.8 0Z"/>
-            <path fill="#fff" d="M20.3 52.2c-.9 0-1.6.7-1.6 1.6 0 .9.7 1.6 1.6 1.6h23.4c.9 0 1.6-.7 1.6-1.6 0-.9-.7-1.6-1.6-1.6H20.3Z"/>
-          </svg>
+        <div class="logo">
+          <img id="logoImg" alt="ZEUSVPN logo" />
         </div>
-        <div class="brandText">
-          <div class="title">ZEUSVPN</div>
-          <div class="subtitle">Premium • Dark • Minimal</div>
-        </div>
-      </div>
-
-      <div class="chipRow">
-        <div class="chip" title="Backend status">
-          <span class="dot" id="apiDot"></span>
-          <span id="apiText">API</span>
+        <div>
+          <h1>ZEUSVPN</h1>
+          <div class="sub">Blue-Black premium • Stars / USDT • конфиг после оплаты</div>
         </div>
       </div>
     </div>
 
-    <!-- HOME -->
-    <div class="screen active animIn" id="screen-home">
-      <div class="section">
-        <div class="sectionInner hero">
-          <h1>Быстрый доступ к конфигу</h1>
-          <p>Выбираешь срок и устройства → оплачиваешь → получаешь персональный VLESS конфиг.</p>
+    <div class="stack">
+      <div class="panel">
+        <div class="inner screens">
 
-          <div class="divider"></div>
-
-          <div class="grid2">
-            <div class="pill"><span class="badge">Популярно</span> 30 дней</div>
-            <div class="pill"><span class="badge">Выгоднее</span> 180 дней</div>
-          </div>
-
-          <button class="primary" id="btnGetConfig">Получить конфиг</button>
-          <button class="ghost" id="btnQuickCheck">Проверить активность</button>
-
-          <div class="statusLine" id="homeStatus">
-            Статус: <b id="subStatus">не активна</b><br/>
-            Активна до: <b id="activeUntilText">—</b>
-          </div>
-        </div>
-      </div>
-
-      <div class="section" style="margin-top:14px;">
-        <div class="sectionInner">
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-            <strong>Тарифы</strong>
-            <span class="small muted">выбор внутри “Получить конфиг”</span>
-          </div>
-          <div class="divider"></div>
-          <div class="small muted" style="line-height:1.45">
-            • 30 дней — <b>199</b> (Stars)<br/>
-            • 90 дней — <b>399</b> (Stars)<br/>
-            • 180 дней — <b>599</b> (Stars)<br/>
-            <span class="muted2">USDT через CryptoPay включается отдельно.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PROFILE -->
-    <div class="screen" id="screen-profile">
-      <div class="section">
-        <div class="sectionInner">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
-            <div>
-              <strong>Профиль</strong><br/>
-              <span class="small muted">твоя учётка на сайте (потом заменим на Telegram ID)</span>
+          <!-- HOME -->
+          <div class="screen active" id="screen-home">
+            <div class="section-title">
+              <div class="t">Главная</div>
+              <div class="hint" id="subHint">готов к работе</div>
             </div>
-            <span class="tag pop">ID</span>
+
+            <div class="cta">
+              <button class="btn primary" id="btnOpen">Приобрести подписку</button>
+              <button class="btn ghost" id="btnRefresh" title="Новый ID">↻</button>
+            </div>
+
+            <div class="kpi">
+              <div class="box">
+                <div class="label">Ваш ID</div>
+                <div class="value mono" id="userId">—</div>
+              </div>
+              <div class="box">
+                <div class="label">Активна до</div>
+                <div class="value" id="activeUntil">—</div>
+              </div>
+            </div>
+
+            <div class="mini">
+              После оплаты ты увидишь VLESS-конфиг и кнопку “Скопировать”.
+              В Telegram invoice откроется внутри Mini App, в браузере — по ссылке.
+            </div>
           </div>
 
-          <div class="divider"></div>
+          <!-- INSTRUCTIONS -->
+          <div class="screen" id="screen-help">
+            <div class="section-title">
+              <div class="t">Инструкции</div>
+              <div class="hint">свайпай →</div>
+            </div>
 
-          <div class="pill" style="justify-content:space-between;width:100%;">
-            <span class="small muted">User Key</span>
-            <span class="mono" id="userKeyText">—</span>
+            <div class="swipe">
+              <div class="icard">
+                <h3>iOS (V2Box / Streisand)</h3>
+                <p>Импортируй ссылку vless:// и подключись.</p>
+                <div class="steps">
+                  <div class="step"><div class="dot">1</div><div>Скопируй конфиг.</div></div>
+                  <div class="step"><div class="dot">2</div><div>Открой приложение → Import / Add profile.</div></div>
+                  <div class="step"><div class="dot">3</div><div>Вставь → Save → Connect.</div></div>
+                </div>
+              </div>
+
+              <div class="icard">
+                <h3>Android (v2rayNG)</h3>
+                <p>Удобнее всего импорт из буфера.</p>
+                <div class="steps">
+                  <div class="step"><div class="dot">1</div><div>Скопируй конфиг.</div></div>
+                  <div class="step"><div class="dot">2</div><div>v2rayNG → “+” → Import from clipboard.</div></div>
+                  <div class="step"><div class="dot">3</div><div>Start.</div></div>
+                </div>
+              </div>
+
+              <div class="icard">
+                <h3>Desktop</h3>
+                <p>v2rayN / Nekoray / Hiddify: импорт по ссылке.</p>
+                <div class="steps">
+                  <div class="step"><div class="dot">1</div><div>Скопируй конфиг.</div></div>
+                  <div class="step"><div class="dot">2</div><div>Import / Add profile → вставь ссылку.</div></div>
+                  <div class="step"><div class="dot">3</div><div>Connect.</div></div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div style="margin-top:10px" class="pill">
-            <span class="small muted">Активна до</span>&nbsp;—&nbsp;<b id="profileActiveUntil">—</b>
+          <!-- PROFILE -->
+          <div class="screen" id="screen-profile">
+            <div class="section-title">
+              <div class="t">Профиль</div>
+              <div class="hint">пока заглушка</div>
+            </div>
+
+            <div class="pgrid">
+              <div class="row">
+                <div class="l">ID</div>
+                <div class="v mono" id="profileId">—</div>
+              </div>
+              <div class="row">
+                <div class="l">Тариф</div>
+                <div class="v" id="profilePlan">—</div>
+              </div>
+              <div class="row">
+                <div class="l">Активна до</div>
+                <div class="v" id="profileUntil">—</div>
+              </div>
+
+              <button class="btn full" id="btnResetId">Сбросить / новый ID</button>
+              <div class="mini">
+                История и реальные лимиты устройств подключим позже.
+              </div>
+            </div>
           </div>
 
-          <div class="grid2" style="margin-top:10px;">
-            <button class="ghost" id="btnResetId">Сбросить / новый ID</button>
-            <button class="ghost" id="btnClearHistory">Очистить историю</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="backdrop" id="backdrop">
+      <div class="sheet" role="dialog" aria-modal="true">
+        <div class="sheet-head">
+          <div class="ttl" id="modalTitle">Выбор подписки</div>
+          <button class="xbtn" id="btnClose" aria-label="close">✕</button>
+        </div>
+
+        <div class="sheet-body">
+          <div>
+            <div class="row-title">
+              <div class="l">Устройства</div>
+              <div class="r">выбери</div>
+            </div>
+            <div class="chips" id="chipsDevices"></div>
           </div>
 
-          <div class="divider"></div>
+          <div>
+            <div class="row-title">
+              <div class="l">Срок</div>
+              <div class="r">дней</div>
+            </div>
+            <div class="chips" id="chipsDays"></div>
+          </div>
 
-          <strong class="small">История заказов (локально)</strong>
-          <div class="small muted" id="ordersList" style="margin-top:8px;line-height:1.5;">
-            — пусто —
+          <div class="selcard" id="selcard" style="display:none;">
+            <p class="big" id="selTitle">—</p>
+            <div class="meta">
+              <span class="badge">Устройства: <b id="selDev">—</b></span>
+              <span class="badge">Срок: <b id="selDays">—</b> дней</span>
+              <span class="tag" id="selTag" style="display:none;"></span>
+            </div>
+          </div>
+
+          <div class="status">
+            <div>Цена:</div>
+            <div><b id="priceText">—</b></div>
+          </div>
+        </div>
+
+        <div class="sheet-foot">
+          <button class="btn primary full" id="btnPayStars" disabled>Оплатить Stars</button>
+
+          <div id="payState" style="display:none;">
+            <div class="status">
+              <div>Статус:</div>
+              <div id="orderStatus"><b>pending</b></div>
+            </div>
+
+            <div class="codebox" id="configBox" style="display:none;">
+              <div class="mini" style="margin-top:0;">Ваш конфиг:</div>
+              <div class="code mono" id="configText">—</div>
+              <div class="copyrow">
+                <button class="btn small primary" id="btnCopy">Скопировать</button>
+                <button class="btn small" id="btnClose2">Закрыть</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini" id="footHint">
+            Оплата Stars: invoice откроется внутри Telegram (или в браузере по ссылке). После оплаты конфиг появится сам.
           </div>
         </div>
       </div>
     </div>
 
-    <!-- INSTRUCTIONS -->
-    <div class="screen" id="screen-instructions">
-      <div class="section">
-        <div style="padding:14px 14px 0;">
-          <strong>Инструкции</strong>
-          <div class="small muted" style="margin-top:6px;">Листай карточки → выбери свою платформу.</div>
-        </div>
-
-        <div class="swipe" id="swipe">
-          <div class="swCard">
-            <h3>iOS</h3>
-            <ol>
-              <li>Установи клиент: V2Box / Shadowrocket (если есть).</li>
-              <li>Нажми “Скопировать” конфиг в ZEUSVPN.</li>
-              <li>В приложении импортируй ссылку (Import from clipboard).</li>
-              <li>Подключись.</li>
-            </ol>
-          </div>
-          <div class="swCard">
-            <h3>Android</h3>
-            <ol>
-              <li>Установи v2rayNG.</li>
-              <li>Скопируй конфиг-ссылку.</li>
-              <li>В v2rayNG → “+” → Import from clipboard.</li>
-              <li>Подключись.</li>
-            </ol>
-          </div>
-          <div class="swCard">
-            <h3>Desktop</h3>
-            <ol>
-              <li>Windows: v2rayN / Nekoray.</li>
-              <li>macOS: V2RayU / Nekoray.</li>
-              <li>Импортируй ссылку VLESS.</li>
-              <li>Подключись.</li>
-            </ol>
-          </div>
-        </div>
-        <div class="swHint">↔ свайп</div>
-      </div>
-    </div>
-
+    <div class="toast" id="toast">Скопировано</div>
   </div>
 
-  <!-- Bottom nav -->
   <div class="nav">
-    <div class="navInner">
-      <button class="navBtn active" data-go="home">Главная</button>
-      <button class="navBtn" data-go="instructions">Инструкции</button>
-      <button class="navBtn" data-go="profile">Профиль</button>
+    <div class="bar">
+      <button class="tab active" id="tabHome">
+        <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M4 10.5 12 4l8 6.5V20a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 20v-9.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        Главная
+      </button>
+      <button class="tab" id="tabHelp">
+        <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M12 18h.01M9.5 9.25a2.7 2.7 0 1 1 4.1 2.3c-.95.6-1.6 1.18-1.6 2.45v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Инструкции
+      </button>
+      <button class="tab" id="tabProfile">
+        <svg class="ico" viewBox="0 0 24 24" fill="none"><path d="M20 21a8 8 0 0 0-16 0M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Профиль
+      </button>
     </div>
   </div>
 
-  <!-- Modal: choose plan & pay -->
-  <div class="modalWrap" id="modalWrap">
-    <div class="modal" role="dialog" aria-modal="true">
-      <div class="modalHeader">
-        <strong>Получить конфиг</strong>
-        <button class="xBtn" id="modalClose" aria-label="Close">✕</button>
-      </div>
-      <div class="modalBody">
-        <div class="selectGroup">
-          <div class="label">
-            <span>Устройства</span>
-            <span class="small muted" id="devicesHint">выбери слот</span>
-          </div>
-          <div class="row" id="devicesRow">
-            <div class="opt active" data-dev="1">1</div>
-            <div class="opt" data-dev="3">3</div>
-            <div class="opt" data-dev="5">5</div>
-            <div class="opt" data-dev="10">10</div>
-          </div>
-        </div>
+  <script>
+    // === CONFIG ===
+    const DEFAULT_API = "https://api.45.133.251.210.nip.io:8443";
 
-        <div class="selectGroup">
-          <div class="label">
-            <span>Срок</span>
-            <span class="small muted" id="daysHint">выбери период</span>
-          </div>
-          <div class="row" id="daysRow">
-            <div class="opt active" data-days="30">30 дней <span class="tag pop" style="margin-left:8px;">Популярно</span></div>
-            <div class="opt" data-days="90">90 дней</div>
-            <div class="opt" data-days="180">180 дней <span class="tag best" style="margin-left:8px;">Выгоднее</span></div>
-          </div>
-        </div>
+    // ЛОГО: положи рядом файл logo.jpg (или logo.png) и укажи имя здесь:
+    const LOGO_SRC = "logo.jpg";
 
-        <div class="choiceCard" id="choiceCard">
-          <div class="choiceTop">
-            <div>
-              <h3 id="choiceTitle">Твой выбор</h3>
-              <div class="choiceMeta" id="choiceMeta">—</div>
-            </div>
-            <div class="price" id="choicePrice">—</div>
-          </div>
+    const DEVICE_OPTIONS = [1,3,5,10];
+    const DAY_OPTIONS = [30,90,180];
+    const PRICE_MAP = { 30:199, 90:399, 180:599 };
 
-          <div class="payRow">
-            <button class="payBtn primaryPay" id="payStarsBtn">Оплатить Stars</button>
-            <button class="payBtn" id="payCryptoBtn">Оплатить USDT</button>
-          </div>
+    // === helpers ===
+    const $ = (id)=>document.getElementById(id);
 
-          <div class="statusLine" id="payStatus">
-            Выбери параметры → нажми оплату. После оплаты конфиг появится автоматически.
-          </div>
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1100);
+    }
 
-          <div id="configArea" style="display:none;">
-            <div class="codeBox">
-              <pre id="configText"></pre>
-            </div>
-            <button class="copyBtn" id="copyConfigBtn">Скопировать конфиг</button>
-          </div>
-        </div>
+    function getApiBase(){
+      const url = new URL(location.href);
+      const qp = url.searchParams.get("api");
+      const fromStore = localStorage.getItem("zeusvpn_api");
+      const api = (qp || fromStore || DEFAULT_API).trim();
+      localStorage.setItem("zeusvpn_api", api);
+      return api.replace(/\/$/, "");
+    }
 
-      </div>
-    </div>
-  </div>
+    function uuidLike(){
+      const a = crypto.getRandomValues(new Uint8Array(16));
+      a[6] = (a[6] & 0x0f) | 0x40;
+      a[8] = (a[8] & 0x3f) | 0x80;
+      const hex = [...a].map(b=>b.toString(16).padStart(2,"0")).join("");
+      return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+    }
 
-  <div class="toast" id="toast"></div>
-
-<script>
-/** ============================
- *  CONFIG
- *  ============================ */
-const API_BASE = "https://api.45.133.251.210.nip.io:8443"; // <-- твой backend через nginx
-const DEFAULT_INBOUND_ID = 1;
-
-// Stars prices (в идеале подтягивать с backend, но пока локально)
-const PRICE_STARS = { 30:199, 90:399, 180:599 };
-
-/** ============================
- *  TELEGRAM WEBAPP
- *  ============================ */
-const TG = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-if (TG) {
-  TG.ready();
-  try { TG.expand(); } catch(e){}
-}
-
-function haptic(type="light") {
-  try {
-    if (TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(type);
-  } catch(e){}
-}
-
-/** ============================
- *  STATE / STORAGE
- *  ============================ */
-function uid(n=8){
-  const chars="abcdefghijklmnopqrstuvwxyz0123456789";
-  let s="";
-  for(let i=0;i<n;i++) s += chars[Math.floor(Math.random()*chars.length)];
-  return s;
-}
-
-const store = {
-  get(key, fallback=null){
-    try{
-      const v = localStorage.getItem(key);
-      return v ? JSON.parse(v) : fallback;
-    } catch(e){ return fallback; }
-  },
-  set(key, val){
-    try{ localStorage.setItem(key, JSON.stringify(val)); } catch(e){}
-  }
-};
-
-let userKey = store.get("zeus_user_key");
-if (!userKey) {
-  userKey = "user-" + uid(10);
-  store.set("zeus_user_key", userKey);
-}
-
-let lastActiveUntil = store.get("zeus_active_until", null);
-let orderHistory = store.get("zeus_orders", []); // [{id, provider, days, devices, status, ts, active_until}]
-
-/** ============================
- *  UI HELPERS
- *  ============================ */
-const $ = (id) => document.getElementById(id);
-function toast(msg){
-  const t = $("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"), 1600);
-}
-
-function fmtDate(iso){
-  if(!iso) return "—";
-  try{
-    const d = new Date(iso);
-    return d.toLocaleString("ru-RU", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
-  }catch(e){ return iso; }
-}
-
-/** ============================
- *  SCREEN NAV
- *  ============================ */
-const screens = {
-  home: $("screen-home"),
-  profile: $("screen-profile"),
-  instructions: $("screen-instructions"),
-};
-
-let current = "home";
-
-function go(to){
-  if (to === current) return;
-  const fromEl = screens[current];
-  const toEl = screens[to];
-
-  fromEl.classList.remove("animIn");
-  fromEl.classList.add("animOut");
-
-  setTimeout(()=>{
-    fromEl.classList.remove("active","animOut");
-    toEl.classList.add("active","animIn");
-    current = to;
-
-    document.querySelectorAll(".navBtn").forEach(b=>{
-      b.classList.toggle("active", b.dataset.go === to);
-    });
-  }, 190);
-}
-
-document.querySelectorAll(".navBtn").forEach(b=>{
-  b.addEventListener("click", ()=>{ haptic("light"); go(b.dataset.go); });
-});
-
-/** ============================
- *  API
- *  ============================ */
-async function apiGet(path){
-  const r = await fetch(API_BASE + path, { method:"GET" });
-  if(!r.ok) throw new Error("HTTP "+r.status);
-  return await r.json();
-}
-async function apiPost(path, body){
-  const r = await fetch(API_BASE + path, {
-    method:"POST",
-    headers: { "Content-Type":"application/json" },
-    body: JSON.stringify(body||{})
-  });
-  if(!r.ok) {
-    const txt = await r.text().catch(()=> "");
-    throw new Error("HTTP "+r.status + (txt?(" "+txt):""));
-  }
-  return await r.json();
-}
-
-async function checkApi(){
-  try{
-    const j = await apiGet("/health");
-    $("apiDot").style.background = "rgba(255,255,255,.55)";
-    $("apiText").textContent = j && j.ok ? "API online" : "API";
-  }catch(e){
-    $("apiDot").style.background = "rgba(255,255,255,.22)";
-    $("apiText").textContent = "API offline";
-  }
-}
-
-/** ============================
- *  PROFILE RENDER
- *  ============================ */
-function renderProfile(){
-  $("userKeyText").textContent = userKey;
-  $("profileActiveUntil").textContent = fmtDate(lastActiveUntil);
-
-  if (!orderHistory.length) {
-    $("ordersList").textContent = "— пусто —";
-  } else {
-    const lines = orderHistory
-      .slice().reverse().slice(0,8)
-      .map(o=>{
-        const when = new Date(o.ts).toLocaleString("ru-RU",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
-        const au = o.active_until ? (" • до " + fmtDate(o.active_until)) : "";
-        return `• ${when} • ${o.provider.toUpperCase()} • ${o.days}д • ${o.devices} dev • ${o.status}${au} • id=${o.id}`;
-      });
-    $("ordersList").textContent = lines.join("\n");
-    $("ordersList").classList.add("mono");
-  }
-}
-
-function renderHome(){
-  $("activeUntilText").textContent = fmtDate(lastActiveUntil);
-  $("subStatus").textContent = lastActiveUntil ? "активна" : "не активна";
-}
-
-$("btnResetId").addEventListener("click", ()=>{
-  haptic("medium");
-  userKey = "user-" + uid(10);
-  store.set("zeus_user_key", userKey);
-  toast("Новый ID создан");
-  renderProfile();
-});
-
-$("btnClearHistory").addEventListener("click", ()=>{
-  haptic("light");
-  orderHistory = [];
-  store.set("zeus_orders", orderHistory);
-  toast("История очищена");
-  renderProfile();
-});
-
-/** ============================
- *  MODAL: PLAN SELECT
- *  ============================ */
-let selectedDevices = 1;
-let selectedDays = 30;
-let currentOrderId = null;
-let pollTimer = null;
-
-function calcPriceStars(days){ return PRICE_STARS[days] ?? 0; }
-
-function updateChoiceCard(){
-  const price = calcPriceStars(selectedDays);
-  $("choiceMeta").textContent = `${selectedDays} дней • ${selectedDevices} устройств • привязка к ID: ${userKey}`;
-  $("choicePrice").textContent = price ? `${price} XTR` : "—";
-}
-
-function setActiveOpt(rowEl, attr, val){
-  rowEl.querySelectorAll(".opt").forEach(o=>{
-    o.classList.toggle("active", o.getAttribute(attr) === String(val));
-  });
-}
-
-$("devicesRow").addEventListener("click", (e)=>{
-  const opt = e.target.closest(".opt");
-  if(!opt) return;
-  haptic("light");
-  selectedDevices = parseInt(opt.dataset.dev,10);
-  setActiveOpt($("devicesRow"), "data-dev", selectedDevices);
-  updateChoiceCard();
-});
-
-$("daysRow").addEventListener("click", (e)=>{
-  const opt = e.target.closest(".opt");
-  if(!opt) return;
-  haptic("light");
-  selectedDays = parseInt(opt.dataset.days,10);
-  setActiveOpt($("daysRow"), "data-days", selectedDays);
-  updateChoiceCard();
-});
-
-function openModal(){
-  $("modalWrap").classList.add("show");
-  updateChoiceCard();
-  $("payStatus").innerHTML = "Выбери параметры → нажми оплату. После оплаты конфиг появится автоматически.";
-  $("configArea").style.display = "none";
-  $("configText").textContent = "";
-  currentOrderId = null;
-  stopPoll();
-}
-
-function closeModal(){
-  $("modalWrap").classList.remove("show");
-  stopPoll();
-}
-
-$("btnGetConfig").addEventListener("click", ()=>{
-  haptic("medium");
-  openModal();
-});
-
-$("modalClose").addEventListener("click", ()=>{ haptic("light"); closeModal(); });
-$("modalWrap").addEventListener("click", (e)=>{
-  if(e.target === $("modalWrap")) closeModal();
-});
-
-/** ============================
- *  PAYMENTS + POLL
- *  ============================ */
-function saveOrderToHistory(order){
-  const item = {
-    id: order.id || order.order_id || currentOrderId,
-    provider: order.provider || "stars",
-    days: order.plan_days || selectedDays,
-    devices: order.devices || selectedDevices,
-    status: order.status || "pending",
-    ts: Date.now(),
-    active_until: order.active_until || null
-  };
-  // avoid duplicates
-  orderHistory = orderHistory.filter(x=>x.id !== item.id);
-  orderHistory.push(item);
-  store.set("zeus_orders", orderHistory);
-  renderProfile();
-}
-
-function stopPoll(){
-  if(pollTimer) clearInterval(pollTimer);
-  pollTimer = null;
-}
-
-async function pollOrder(orderId){
-  stopPoll();
-  pollTimer = setInterval(async ()=>{
-    try{
-      const j = await apiGet(`/pay/order/${orderId}`);
-      // update history + subscription
-      if (j.active_until) {
-        lastActiveUntil = j.active_until;
-        store.set("zeus_active_until", lastActiveUntil);
-        renderHome();
-        renderProfile();
+    function getUserKey(){
+      let id = localStorage.getItem("zeusvpn_user_key");
+      if(!id){
+        id = "user-" + uuidLike().slice(0,8);
+        localStorage.setItem("zeusvpn_user_key", id);
       }
-      saveOrderToHistory({ id: j.id, provider:j.provider, plan_days:j.plan_days, devices:j.devices, status:j.status, active_until:j.active_until });
-
-      if (j.status === "paid") {
-        haptic("medium");
-        $("payStatus").innerHTML = `Оплата подтверждена ✅<br/>Активна до: <b>${fmtDate(j.active_until)}</b><br/>Получаю конфиг…`;
-        // выдаём конфиг
-        const cfg = await apiPost("/issue-config", {
-          inbound_id: DEFAULT_INBOUND_ID,
-          user_key: userKey,
-          days: selectedDays,
-          limit_ip: 0
-        });
-        $("configText").textContent = cfg.link || "";
-        $("configArea").style.display = "block";
-        $("payStatus").innerHTML = `Готово ✅<br/>Активна до: <b>${fmtDate(j.active_until)}</b>`;
-        stopPoll();
-      }
-    }catch(e){
-      // keep polling quietly
+      return id;
     }
-  }, 1200);
-}
 
-async function payStars(){
-  $("payStatus").textContent = "Создаю инвойс Stars…";
-  try{
-    const j = await apiPost("/pay/stars/create", {
-      user_key: userKey,
-      days: selectedDays,
-      devices: selectedDevices
-    });
-    const orderId = j.order_id;
-    currentOrderId = orderId;
+    function resetUserKey(){
+      const id = "user-" + uuidLike().slice(0,8);
+      localStorage.setItem("zeusvpn_user_key", id);
+      // при смене ID очищаем "последний заказ"
+      localStorage.removeItem("zeusvpn_last_order_id");
+      return id;
+    }
 
-    $("payStatus").innerHTML = `Инвойс создан. Открой оплату → затем ждём подтверждение…<br/><span class="muted mono">order: ${orderId}</span>`;
+    function parseDateSafe(v){
+      try{
+        const d = new Date(v);
+        if(String(d) === "Invalid Date") return null;
+        return d;
+      }catch(e){ return null; }
+    }
 
-    // Save initial order
-    saveOrderToHistory({ id: orderId, provider:"stars", plan_days:selectedDays, devices:selectedDevices, status:"pending" });
+    function formatUntil(v){
+      if(!v) return "—";
+      const d = parseDateSafe(v);
+      if(!d) return String(v);
+      const dd = d.toLocaleDateString("ru-RU",{year:"numeric",month:"2-digit",day:"2-digit"});
+      const tt = d.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
+      return `${dd} ${tt}`;
+    }
 
-    // Open invoice:
-    const link = j.invoice_link;
+    function isActiveUntilFuture(v){
+      if(!v) return false;
+      const d = parseDateSafe(v);
+      if(!d) return false;
+      return d.getTime() > Date.now();
+    }
 
-    // If inside Telegram Mini App, prefer openInvoice
-    if (TG && typeof TG.openInvoice === "function") {
-      TG.openInvoice(link, (status)=>{
-        // status может быть "paid", "cancelled", "failed", но мы всё равно поллим бекенд
+    function haptic(type="light"){
+      try{
+        const tg = window.Telegram?.WebApp;
+        if(tg?.HapticFeedback){
+          if(type==="success") tg.HapticFeedback.notificationOccurred("success");
+          else tg.HapticFeedback.impactOccurred("light");
+        }
+      }catch(e){}
+    }
+
+    // === state ===
+    let selectedDevices = null;
+    let selectedDays = null;
+    let currentOrderId = null;
+    let pollTimer = null;
+
+    // === UI ===
+    function setScreen(name){
+      const map = { home:$("screen-home"), help:$("screen-help"), profile:$("screen-profile") };
+      for(const k in map) map[k].classList.toggle("active", k===name);
+      $("tabHome").classList.toggle("active", name==="home");
+      $("tabHelp").classList.toggle("active", name==="help");
+      $("tabProfile").classList.toggle("active", name==="profile");
+    }
+
+    function openModal(){
+      $("backdrop").classList.add("show");
+      haptic("light");
+    }
+    function closeModal(){
+      $("backdrop").classList.remove("show");
+      $("payState").style.display = "none";
+      $("configBox").style.display = "none";
+      $("orderStatus").innerHTML = "<b>pending</b>";
+      stopPolling();
+      currentOrderId = null;
+      haptic("light");
+    }
+
+    function stopPolling(){
+      if(pollTimer){ clearInterval(pollTimer); pollTimer=null; }
+    }
+
+    function renderChips(container, values, onPick){
+      container.innerHTML = "";
+      values.forEach(v=>{
+        const b = document.createElement("button");
+        b.className = "chip";
+        b.textContent = v;
+        b.onclick = ()=> onPick(v);
+        container.appendChild(b);
       });
-    } else {
-      // In browser: open link (оплата произойдёт в Telegram)
-      window.open(link, "_blank");
     }
 
-    // start polling
-    pollOrder(orderId);
-
-  }catch(e){
-    $("payStatus").innerHTML = `Ошибка создания инвойса ❌<br/><span class="muted mono">${String(e.message || e)}</span>`;
-  }
-}
-
-async function payCrypto(){
-  $("payStatus").textContent = "Создаю инвойс USDT…";
-  try{
-    const j = await apiPost("/pay/crypto/create", {
-      user_key: userKey,
-      days: selectedDays,
-      devices: selectedDevices
-    });
-    const orderId = j.order_id;
-    currentOrderId = orderId;
-
-    $("payStatus").innerHTML = `Инвойс создан. Открой оплату → затем ждём подтверждение…<br/><span class="muted mono">order: ${orderId}</span>`;
-    saveOrderToHistory({ id: orderId, provider:"cryptopay", plan_days:selectedDays, devices:selectedDevices, status:"pending" });
-
-    const url = j.invoice_url || j.invoice_link || j.pay_url;
-    if (url) window.open(url, "_blank");
-    pollOrder(orderId);
-
-  }catch(e){
-    $("payStatus").innerHTML = `Ошибка создания инвойса ❌<br/><span class="muted mono">${String(e.message || e)}</span>`;
-  }
-}
-
-$("payStarsBtn").addEventListener("click", ()=>{ haptic("medium"); payStars(); });
-$("payCryptoBtn").addEventListener("click", ()=>{ haptic("medium"); payCrypto(); });
-
-$("copyConfigBtn").addEventListener("click", async ()=>{
-  const txt = $("configText").textContent.trim();
-  if(!txt) return;
-  try{
-    await navigator.clipboard.writeText(txt);
-    haptic("light");
-    toast("Скопировано");
-  }catch(e){
-    toast("Не удалось скопировать");
-  }
-});
-
-/** ============================
- *  QUICK CHECK
- *  ============================ */
-$("btnQuickCheck").addEventListener("click", async ()=>{
-  haptic("light");
-  // просто дернем последний заказ, если он есть
-  const last = orderHistory.length ? orderHistory[orderHistory.length-1] : null;
-  if(!last){
-    toast("Нет заказов");
-    return;
-  }
-  try{
-    const j = await apiGet(`/pay/order/${last.id}`);
-    if (j.active_until) {
-      lastActiveUntil = j.active_until;
-      store.set("zeus_active_until", lastActiveUntil);
+    function setActiveChip(container, val){
+      [...container.querySelectorAll(".chip")].forEach(ch=>{
+        ch.classList.toggle("active", String(ch.textContent)===String(val));
+      });
     }
-    toast(j.status === "paid" ? "Оплачено" : "Ожидает оплаты");
-    renderHome();
-    renderProfile();
-  }catch(e){
-    toast("Не удалось проверить");
-  }
-});
 
-/** ============================
- *  INIT
- *  ============================ */
-renderHome();
-renderProfile();
-checkApi();
-setInterval(checkApi, 12000);
-</script>
+    function updateSelectionCard(){
+      const card = $("selcard");
+      if(selectedDevices && selectedDays){
+        card.style.display = "block";
+        $("selTitle").textContent = `${selectedDays} дней • ${selectedDevices} устройство(а)`;
+        $("selDev").textContent = selectedDevices;
+        $("selDays").textContent = selectedDays;
+
+        const tag = $("selTag");
+        tag.style.display = "inline-flex";
+        if(selectedDays === 30) tag.textContent = "Популярно";
+        else if(selectedDays === 180) tag.textContent = "Выгоднее";
+        else tag.textContent = "Оптимально";
+
+        const price = PRICE_MAP[selectedDays] ?? "—";
+        $("priceText").textContent = (price==="—") ? "—" : `${price} XTR`;
+        $("btnPayStars").disabled = false;
+      } else {
+        card.style.display = "none";
+        $("priceText").textContent = "—";
+        $("btnPayStars").disabled = true;
+      }
+    }
+
+    // === API ===
+    async function createStarsOrder(){
+      const api = getApiBase();
+      const body = { user_key: getUserKey(), days: selectedDays, devices: selectedDevices };
+      const res = await fetch(`${api}/pay/stars/create`,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+      if(!res.ok){
+        const t = await res.text().catch(()=> "");
+        throw new Error("create failed: " + res.status + " " + t);
+      }
+      return await res.json();
+    }
+
+    function openInvoice(invoiceLink){
+      const tg = window.Telegram?.WebApp;
+      if(tg?.openInvoice){
+        tg.openInvoice(invoiceLink, ()=>{});
+      } else {
+        window.open(invoiceLink, "_blank", "noopener,noreferrer");
+      }
+    }
+
+    async function fetchOrder(orderId){
+      const api = getApiBase();
+      const res = await fetch(`${api}/pay/order/${encodeURIComponent(orderId)}`,{ method:"GET" });
+      if(!res.ok) throw new Error("order fetch failed");
+      return await res.json();
+    }
+
+    async function pollOrder(orderId){
+      $("payState").style.display = "block";
+      stopPolling();
+
+      pollTimer = setInterval(async ()=>{
+        try{
+          const ord = await fetchOrder(orderId);
+          const st = ord.status || "pending";
+          $("orderStatus").innerHTML = `<b>${st}</b>`;
+
+          // показать active_until в UI
+          const until = ord.active_until || null;
+          if(until){
+            $("activeUntil").textContent = formatUntil(until);
+            $("profileUntil").textContent = formatUntil(until);
+          }
+
+          if(st === "paid" || st === "success"){
+            stopPolling();
+            haptic("success");
+
+            // сохраняем last order id — чтобы при входе понимать "подписка есть"
+            localStorage.setItem("zeusvpn_last_order_id", orderId);
+
+            // если backend вернул config_link — показать
+            if(ord.config_link){
+              $("configText").textContent = ord.config_link;
+              $("configBox").style.display = "block";
+              refreshMainCta(); // обновим надпись "Продлить"
+              return;
+            }
+
+            // fallback: если вдруг нет config_link — можно выдать конфиг тут (по желанию)
+            // (если хочешь жёстко только через config_link — скажи, уберу)
+          }
+        }catch(e){
+          // временные ошибки игнорим
+        }
+      }, 1500);
+    }
+
+    // === Subscription-aware CTA ===
+    async function refreshMainCta(){
+      // 1) берём last_order_id
+      const last = localStorage.getItem("zeusvpn_last_order_id");
+      if(!last){
+        $("btnOpen").textContent = "Приобрести подписку";
+        $("subHint").textContent = "подписка не активна";
+        return;
+      }
+
+      // 2) пробуем спросить backend
+      try{
+        const ord = await fetchOrder(last);
+        const until = ord.active_until || null;
+
+        if(until){
+          $("activeUntil").textContent = formatUntil(until);
+          $("profileUntil").textContent = formatUntil(until);
+        }
+
+        if((ord.status === "paid" || ord.status === "success") && isActiveUntilFuture(until)){
+          $("btnOpen").textContent = "Продлить";
+          $("subHint").textContent = "подписка активна";
+        } else {
+          $("btnOpen").textContent = "Приобрести подписку";
+          $("subHint").textContent = "подписка не активна";
+        }
+      }catch(e){
+        // если API временно не отвечает — не ломаем UI
+        $("btnOpen").textContent = "Приобрести подписку";
+        $("subHint").textContent = "проверка статуса…";
+      }
+    }
+
+    // === copy ===
+    async function copyText(txt){
+      try{
+        await navigator.clipboard.writeText(txt);
+        toast("Скопировано");
+      }catch(e){
+        const ta = document.createElement("textarea");
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        toast("Скопировано");
+      }
+    }
+
+    // === boot ===
+    (function init(){
+      // logo
+      $("logoImg").src = LOGO_SRC;
+      $("wmLogo").src = LOGO_SRC;
+
+      // user
+      const id = getUserKey();
+      $("userId").textContent = id;
+      $("profileId").textContent = id;
+
+      // tabs
+      $("tabHome").onclick = ()=>{ setScreen("home"); haptic("light"); };
+      $("tabHelp").onclick = ()=>{ setScreen("help"); haptic("light"); };
+      $("tabProfile").onclick = ()=>{ setScreen("profile"); haptic("light"); };
+
+      // modal
+      $("btnOpen").onclick = openModal;
+      $("btnClose").onclick = closeModal;
+      $("btnClose2").onclick = closeModal;
+      $("backdrop").addEventListener("click",(e)=>{ if(e.target === $("backdrop")) closeModal(); });
+
+      // id reset
+      const resetHandler = ()=>{
+        const nid = resetUserKey();
+        $("userId").textContent = nid;
+        $("profileId").textContent = nid;
+        $("activeUntil").textContent = "—";
+        $("profileUntil").textContent = "—";
+        $("profilePlan").textContent = "—";
+        toast("Новый ID");
+        haptic("light");
+        refreshMainCta();
+      };
+      $("btnRefresh").onclick = resetHandler;
+      $("btnResetId").onclick = resetHandler;
+
+      // chips
+      renderChips($("chipsDevices"), [1,3,5,10], (v)=>{
+        selectedDevices = v;
+        setActiveChip($("chipsDevices"), v);
+        updateSelectionCard();
+        haptic("light");
+      });
+
+      renderChips($("chipsDays"), [30,90,180], (v)=>{
+        selectedDays = v;
+        setActiveChip($("chipsDays"), v);
+        updateSelectionCard();
+        haptic("light");
+      });
+
+      updateSelectionCard();
+
+      // pay stars
+      $("btnPayStars").onclick = async ()=>{
+        try{
+          $("btnPayStars").disabled = true;
+          $("btnPayStars").textContent = "Создаём счёт…";
+          haptic("light");
+
+          const data = await createStarsOrder();
+          currentOrderId = data.order_id;
+
+          $("profilePlan").textContent = `${selectedDays} дней • ${selectedDevices} устр.`;
+
+          $("btnPayStars").textContent = "Открыть invoice";
+          $("btnPayStars").disabled = false;
+
+          if(data.invoice_link) openInvoice(data.invoice_link);
+
+          await pollOrder(currentOrderId);
+        }catch(err){
+          $("btnPayStars").disabled = false;
+          $("btnPayStars").textContent = "Оплатить Stars";
+          alert("Ошибка оплаты: " + (err?.message || err));
+        }
+      };
+
+      // copy
+      $("btnCopy").onclick = ()=>{
+        const t = $("configText").textContent.trim();
+        if(t && t !== "—") copyText(t);
+      };
+
+      // Telegram expand
+      try{
+        const tg = window.Telegram?.WebApp;
+        if(tg){
+          tg.ready?.();
+          tg.expand?.();
+        }
+      }catch(e){}
+
+      // subscription-aware CTA on load
+      refreshMainCta();
+    })();
+  </script>
 </body>
 </html>
