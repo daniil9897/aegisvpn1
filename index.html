@@ -5,181 +5,168 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ZEUSVPN</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- QR generator -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
   <style>
     :root{
-      --bg0:#050812;        /* deep space */
-      --bg1:#07132D;        /* navy */
-      --bg2:#0A1E46;        /* royal */
-      --ink:#EAF0FF;
-      --ink2:rgba(234,240,255,.78);
-      --muted:rgba(234,240,255,.62);
+      /* premium deep navy */
+      --bg0:#050714;
+      --bg1:#07152F;
+      --bg2:#0A1F45;
+
+      --text:#ECF2FF;
+      --text2:rgba(236,242,255,.80);
+      --muted:rgba(236,242,255,.62);
+
       --line:rgba(255,255,255,.10);
+      --line2:rgba(255,255,255,.14);
 
       --blue:#2E6BFF;
-      --blue2:#0F3AAE;
+      --blue2:#1243B7;
 
       --gold:#D7B46A;
-      --gold2:#F1D18C;
+      --gold2:#F2D697;
 
-      --glass: rgba(255,255,255,.06);
-      --glass2: rgba(255,255,255,.08);
-
-      --shadow: 0 18px 60px rgba(0,0,0,.45);
-      --shadow2: 0 10px 28px rgba(0,0,0,.35);
-
-      --ok:#23E6A8;
+      --ok:#25E6A8;
       --warn:#FFC14A;
       --bad:#FF5B6B;
 
-      --r16:16px;
-      --r20:20px;
+      --glass: rgba(255,255,255,.06);
+      --glass2: rgba(255,255,255,.09);
+
+      --shadow: 0 24px 72px rgba(0,0,0,.55);
+      --shadow2: 0 14px 34px rgba(0,0,0,.38);
+
+      --r14:14px;
+      --r18:18px;
+      --r22:22px;
       --r26:26px;
       --r32:32px;
+
+      --pad:14px;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      color:var(--ink);
-      background: radial-gradient(1200px 900px at 20% -10%, rgba(46,107,255,.22), transparent 60%),
-                  radial-gradient(900px 800px at 90% 10%, rgba(215,180,106,.12), transparent 62%),
-                  radial-gradient(900px 700px at 10% 90%, rgba(255,255,255,.06), transparent 65%),
-                  linear-gradient(180deg, var(--bg0), var(--bg1) 45%, var(--bg0));
+      font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display","SF Pro Text", Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 900px at 20% -10%, rgba(46,107,255,.20), transparent 60%),
+        radial-gradient(900px 700px at 92% 8%, rgba(215,180,106,.12), transparent 62%),
+        radial-gradient(900px 700px at 10% 88%, rgba(255,255,255,.06), transparent 65%),
+        linear-gradient(180deg, var(--bg0), var(--bg1) 45%, var(--bg0));
       overflow-x:hidden;
     }
 
-    /* fine grain */
-    body:before{
+    /* subtle grain like premium matte */
+    body::before{
       content:"";
       position:fixed; inset:0;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
-      opacity:.10;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.14'/%3E%3C/svg%3E");
+      opacity:.08;
       pointer-events:none;
       mix-blend-mode: overlay;
     }
 
-    /* lightning flashes */
+    /* lightning flashes – very subtle */
     .flash{
       position:fixed; inset:-40px;
       pointer-events:none;
       background:
-        radial-gradient(900px 480px at 60% 18%, rgba(255,255,255,.22), transparent 65%),
-        radial-gradient(700px 400px at 18% 28%, rgba(46,107,255,.24), transparent 70%);
+        radial-gradient(900px 480px at 60% 18%, rgba(255,255,255,.18), transparent 65%),
+        radial-gradient(700px 420px at 18% 28%, rgba(46,107,255,.22), transparent 72%);
       opacity:0;
-      animation: flash 8.5s infinite;
+      animation: flash 9.5s infinite;
       mix-blend-mode: screen;
       filter: blur(2px);
     }
     @keyframes flash{
-      0%, 56%, 100% { opacity:0; }
-      57% { opacity:.10; }
-      58% { opacity:0; }
-      63% { opacity:.14; }
-      64% { opacity:0; }
-      66% { opacity:.18; }
+      0%, 58%, 100% { opacity:0; }
+      59% { opacity:.08; }
+      60% { opacity:0; }
+      66% { opacity:.12; }
       67% { opacity:0; }
     }
 
     .app{
       max-width:520px;
       margin:0 auto;
-      padding: 14px 14px 92px;
+      padding: 12px var(--pad) 104px;
       position:relative;
       z-index:1;
     }
 
-    /* TOP HERO */
-    .hero{
-      border-radius: var(--r32);
+    /* Top bar (Apple-like) */
+    .topbar{
+      position:sticky;
+      top: 0;
+      z-index:20;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      background: linear-gradient(180deg, rgba(5,7,20,.85), rgba(5,7,20,.40), rgba(5,7,20,0));
+      backdrop-filter: blur(12px);
+    }
+    .topbarInner{
+      border-radius: var(--r26);
       border:1px solid rgba(255,255,255,.10);
-      background:
-        radial-gradient(900px 420px at 18% -10%, rgba(46,107,255,.30), transparent 60%),
-        radial-gradient(700px 420px at 100% 0%, rgba(215,180,106,.16), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      padding: 16px;
-      backdrop-filter: blur(10px);
-      position:relative;
-    }
-
-    .hero:after{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        linear-gradient(90deg, transparent 0%, rgba(255,255,255,.08) 40%, transparent 70%);
-      opacity:.22;
-      transform: translateX(-40%);
-      animation: sheen 7s infinite;
-      pointer-events:none;
-    }
-    @keyframes sheen{
-      0%{ transform: translateX(-55%); opacity:.0; }
-      10%{ opacity:.18; }
-      35%{ opacity:.12; }
-      60%{ transform: translateX(55%); opacity:0; }
-      100%{ opacity:0; }
-    }
-
-    .topRow{
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 12px 28px rgba(0,0,0,.30);
+      padding: 12px 12px;
       display:flex;
-      align-items:flex-start;
+      align-items:center;
       justify-content:space-between;
-      gap:12px;
-      position:relative;
-      z-index:2;
+      gap: 10px;
+      backdrop-filter: blur(12px);
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:12px;
+      gap:10px;
       min-width:0;
     }
-
     .mark{
-      width:48px; height:48px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
+      width:42px; height:42px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.07);
       box-shadow: 0 18px 45px rgba(0,0,0,.35);
       display:flex;
       align-items:center;
       justify-content:center;
-      position:relative;
       overflow:hidden;
+      position:relative;
     }
-    .mark:before{
+    .mark::before{
       content:"";
       position:absolute; inset:-40%;
       background: conic-gradient(from 180deg,
         rgba(46,107,255,.0),
-        rgba(46,107,255,.35),
-        rgba(215,180,106,.18),
+        rgba(46,107,255,.28),
+        rgba(215,180,106,.14),
         rgba(46,107,255,.0));
-      animation: spin 6.8s linear infinite;
+      animation: spin 7.2s linear infinite;
       opacity:.55;
-      filter: blur(4px);
+      filter: blur(5px);
     }
     @keyframes spin{ to{ transform: rotate(360deg); } }
-
     .mark svg{ position:relative; z-index:2; }
 
-    .brandText{min-width:0}
+    .brandText{ min-width:0; }
     .name{
       margin:0;
       font-weight: 900;
-      letter-spacing: .8px;
-      font-size: 16px;
+      letter-spacing:.9px;
+      font-size: 14px;
       line-height: 1.05;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
     .tag{
-      margin:7px 0 0;
-      font-size: 12.4px;
+      margin:6px 0 0;
+      font-size: 12px;
       color: var(--muted);
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
@@ -188,14 +175,14 @@
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding: 9px 11px;
+      padding: 8px 10px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.18);
-      color: rgba(255,255,255,.88);
+      color: rgba(255,255,255,.86);
       font-size: 12px;
       white-space:nowrap;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
     }
     .dot{
       width:8px; height:8px;
@@ -204,39 +191,68 @@
       box-shadow: 0 0 14px rgba(46,107,255,.35);
     }
 
-    .heroMain{
+    /* Hero */
+    .hero{
+      margin-top: 10px;
+      border-radius: var(--r32);
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(900px 420px at 18% -10%, rgba(46,107,255,.26), transparent 60%),
+        radial-gradient(700px 420px at 100% 0%, rgba(215,180,106,.14), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+      padding: 16px;
+      overflow:hidden;
+      backdrop-filter: blur(12px);
       position:relative;
-      z-index:2;
-      margin-top: 14px;
-      display:grid;
-      gap:10px;
+    }
+    .hero::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.07) 45%, transparent 70%);
+      opacity:.18;
+      transform: translateX(-55%);
+      animation: sheen 8s infinite;
+      pointer-events:none;
+    }
+    @keyframes sheen{
+      0%{ transform: translateX(-55%); opacity:0; }
+      12%{ opacity:.16; }
+      55%{ transform: translateX(55%); opacity:0; }
+      100%{ opacity:0; }
     }
     .heroTitle{
       margin:0;
-      font-size: 18px;
-      font-weight: 900;
+      font-size: 20px;
+      font-weight: 950;
       letter-spacing:.2px;
-      line-height:1.18;
+      line-height:1.14;
+      position:relative;
+      z-index:2;
     }
     .heroSub{
-      margin:0;
-      font-size: 12.8px;
+      margin:10px 0 0;
+      font-size: 13px;
       line-height:1.55;
       color: var(--muted);
-      max-width: 52ch;
+      max-width: 56ch;
+      position:relative;
+      z-index:2;
     }
 
-    .stats{
+    .miniStats{
+      position:relative;
+      z-index:2;
+      margin-top: 14px;
       display:flex;
       gap:10px;
-      margin-top: 10px;
     }
     .stat{
       flex:1;
       border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
-      padding: 10px 10px;
+      padding: 10px;
       min-width:0;
     }
     .stat b{
@@ -260,7 +276,7 @@
       background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
       box-shadow: var(--shadow2);
       overflow:hidden;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
     }
     .head{
       padding: 14px 14px 10px;
@@ -274,7 +290,7 @@
       font-size: 12px;
       letter-spacing:.38px;
       text-transform:uppercase;
-      font-weight: 900;
+      font-weight: 950;
       color: rgba(255,255,255,.92);
     }
     .head small{
@@ -283,12 +299,53 @@
     }
     .divider{
       height:1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent);
       margin: 0 14px;
     }
-    .body{
-      padding: 12px 14px 14px;
+    .body{ padding: 12px 14px 14px; }
+
+    .muted{ color: rgba(255,255,255,.62); font-size: 12px; line-height:1.5; }
+    .hidden{ display:none !important; }
+
+    /* Buttons */
+    .btn{
+      width:100%;
+      padding: 14px 14px;
+      border-radius: 20px;
+      border: 0;
+      cursor:pointer;
+      font-weight: 950;
+      letter-spacing:.25px;
+      transition: transform .06s ease, filter .14s ease, box-shadow .14s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
+    .btn:active{ transform: translateY(1px); }
+    .btn[disabled]{ opacity:.52; cursor:not-allowed; }
+
+    .btnPrimary{
+      color:#fff;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0) 32%),
+        linear-gradient(180deg, var(--blue), var(--blue2));
+      box-shadow: 0 18px 40px rgba(46,107,255,.20);
+    }
+    .btnGold{
+      color:#1A1406;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 35%),
+        linear-gradient(180deg, var(--gold2), var(--gold));
+      box-shadow: 0 18px 40px rgba(215,180,106,.16);
+    }
+    .btnGhost{
+      color: rgba(255,255,255,.86);
+      background: rgba(0,0,0,.16);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow: 0 10px 22px rgba(0,0,0,.26);
+    }
+
+    .row{ display:flex; gap:10px; margin-top: 10px; }
+    .row .btn{ flex:1; }
 
     .field{ display:grid; gap:8px; margin-bottom: 10px; }
     .label{ font-size: 12px; color: rgba(255,255,255,.62); }
@@ -298,69 +355,13 @@
       padding: 13px 12px;
       border-radius: 18px;
       border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
+      background: rgba(0,0,0,.20);
       color: rgba(255,255,255,.92);
       outline:none;
       font-size: 14px;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
     }
     .input::placeholder{ color: rgba(255,255,255,.42); }
-
-    .btn{
-      width:100%;
-      padding: 14px 14px;
-      border-radius: 20px;
-      border: 0;
-      cursor:pointer;
-      font-weight: 900;
-      letter-spacing:.25px;
-      transition: transform .06s ease, filter .14s ease, box-shadow .14s ease;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn:active{ transform: translateY(1px); }
-    .btn[disabled]{opacity:.55; cursor:not-allowed;}
-
-    .btnPrimary{
-      color:#fff;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0) 32%),
-        linear-gradient(180deg, var(--blue), var(--blue2));
-      box-shadow: 0 18px 40px rgba(46,107,255,.22);
-    }
-    .btnPrimary:hover{ filter: brightness(1.04); }
-
-    .btnGold{
-      color:#1A1406;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 35%),
-        linear-gradient(180deg, var(--gold2), var(--gold));
-      box-shadow: 0 18px 40px rgba(215,180,106,.18);
-    }
-    .btnOutline{
-      color: rgba(255,255,255,.86);
-      background: rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: 0 10px 22px rgba(0,0,0,.28);
-    }
-
-    .row{ display:flex; gap:10px; margin-top: 10px; }
-    .row .btn{ flex:1; }
-
-    .notice{
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 20px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-    }
-    .noticeTop{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 10px;
-    }
 
     .badge{
       display:inline-flex;
@@ -369,67 +370,184 @@
       padding: 6px 10px;
       border-radius:999px;
       font-size: 12px;
-      font-weight: 900;
+      font-weight: 950;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
       color: rgba(255,255,255,.84);
       white-space:nowrap;
     }
-    .badge.ok{ border-color: rgba(35,230,168,.28); color: var(--ok); }
+    .badge.ok{ border-color: rgba(37,230,168,.28); color: var(--ok); }
     .badge.warn{ border-color: rgba(255,193,74,.28); color: var(--warn); }
     .badge.bad{ border-color: rgba(255,91,107,.30); color: var(--bad); }
 
-    .mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 12px;
-      line-height:1.35;
-      word-break:break-all;
-      color: rgba(255,255,255,.90);
-    }
-    .muted{ color: rgba(255,255,255,.62); font-size: 12px; line-height:1.45; }
-    .hidden{ display:none !important; }
-
-    /* Instructions carousel */
-    .carousel{
-      display:flex;
-      gap:12px;
-      overflow:auto;
-      scroll-snap-type:x mandatory;
-      -webkit-overflow-scrolling:touch;
-      padding: 12px 14px 14px;
-    }
-    .carousel::-webkit-scrollbar{display:none}
-    .slide{
-      min-width: 86%;
-      scroll-snap-align:start;
-      border-radius: 22px;
+    /* Premium config card */
+    .configCard{
+      margin-top: 12px;
+      border-radius: 24px;
       border:1px solid rgba(255,255,255,.12);
       background:
-        radial-gradient(520px 260px at 20% 0%, rgba(46,107,255,.18), transparent 60%),
+        radial-gradient(520px 260px at 20% 0%, rgba(46,107,255,.16), transparent 60%),
         linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      padding: 14px;
-      box-shadow: 0 12px 28px rgba(0,0,0,.32);
+      padding: 12px;
+      box-shadow: 0 14px 34px rgba(0,0,0,.32);
     }
-    .slideTop{
+    .configTop{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
       margin-bottom: 10px;
     }
-    .chip{
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      color: rgba(255,255,255,.72);
-      white-space:nowrap;
+      line-height:1.35;
+      word-break:break-all;
+      color: rgba(255,255,255,.92);
     }
-    .steps{
-      font-size: 13px;
-      color: rgba(255,255,255,.74);
-      line-height: 1.6;
+    .qrWrap{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      margin-top: 12px;
+    }
+    .qrBox{
+      width:120px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.14);
+      padding: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    canvas{ border-radius: 12px; }
+    .qrText{
+      flex:1;
+      min-width:0;
+    }
+
+    /* Pricing / plans */
+    .segRow{
+      display:flex;
+      gap:10px;
+      margin-top: 8px;
+    }
+    .seg{
+      flex:1;
+      padding: 12px 10px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.72);
+      font-weight: 950;
+      cursor:pointer;
+      box-shadow: 0 10px 22px rgba(0,0,0,.22);
+      text-align:center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .seg.active{
+      color:#fff;
+      border-color: rgba(46,107,255,.35);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 32%),
+        linear-gradient(180deg, var(--blue), var(--blue2));
+      box-shadow: 0 16px 34px rgba(46,107,255,.18);
+    }
+
+    .planGrid{
+      display:grid;
+      gap:10px;
+      margin-top: 12px;
+    }
+    .plan{
+      border-radius: 24px;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(520px 260px at 20% 0%, rgba(215,180,106,.10), transparent 62%),
+        radial-gradient(520px 260px at 90% 20%, rgba(46,107,255,.14), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      padding: 14px;
+      box-shadow: 0 14px 34px rgba(0,0,0,.28);
+      position:relative;
+      overflow:hidden;
+    }
+    .plan::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
+      opacity:.15;
+      transform: translateX(-60%);
+      animation: sheen 9s infinite;
+      pointer-events:none;
+    }
+    .planTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      position:relative;
+      z-index:2;
+    }
+    .planName{
+      margin:0;
+      font-weight: 950;
+      letter-spacing:.2px;
+      font-size: 14px;
+    }
+    .planMeta{
+      margin:8px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.45;
+    }
+    .price{
+      text-align:right;
+      position:relative;
+      z-index:2;
+    }
+    .priceBig{
+      font-weight: 950;
+      font-size: 20px;
+      letter-spacing:.2px;
+    }
+    .priceSmall{
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(255,255,255,.62);
+    }
+    .planActions{
+      display:flex;
+      gap:10px;
+      margin-top: 12px;
+      position:relative;
+      z-index:2;
+    }
+    .planActions button{ flex:1; }
+
+    /* Toast (Apple-ish) */
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 92px;
+      background: rgba(0,0,0,.38);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(12px);
+      color: rgba(255,255,255,.88);
+      padding: 10px 12px;
+      border-radius: 999px;
+      box-shadow: 0 14px 34px rgba(0,0,0,.32);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+      z-index:50;
+      font-weight: 900;
+      font-size: 12px;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-6px);
     }
 
     /* Bottom nav */
@@ -437,10 +555,10 @@
       position:fixed;
       left:0; right:0; bottom:0;
       padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(5,8,18,.65);
+      background: rgba(5,7,20,.62);
       border-top: 1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(12px);
-      z-index:10;
+      backdrop-filter: blur(14px);
+      z-index:30;
     }
     .navInner{
       max-width:520px;
@@ -455,38 +573,83 @@
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
       color: rgba(255,255,255,.70);
-      font-weight: 900;
+      font-weight: 950;
       letter-spacing:.15px;
       cursor:pointer;
       box-shadow: 0 10px 22px rgba(0,0,0,.22);
+      -webkit-tap-highlight-color: transparent;
     }
     .tab.active{
-      color: #fff;
+      color:#fff;
       border-color: rgba(46,107,255,.35);
       background:
         linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 32%),
         linear-gradient(180deg, var(--blue), var(--blue2));
-      box-shadow: 0 16px 34px rgba(46,107,255,.20);
+      box-shadow: 0 16px 34px rgba(46,107,255,.18);
+    }
+
+    /* Guide carousel */
+    .carousel{
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      padding: 12px 14px 14px;
+    }
+    .carousel::-webkit-scrollbar{display:none}
+    .slide{
+      min-width: 86%;
+      scroll-snap-align:start;
+      border-radius: 24px;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(520px 260px at 20% 0%, rgba(46,107,255,.16), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      padding: 14px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.30);
+    }
+    .slideTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .chip{
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.14);
+      color: rgba(255,255,255,.72);
+      white-space:nowrap;
+    }
+    .steps{
+      font-size: 13px;
+      color: rgba(255,255,255,.74);
+      line-height: 1.65;
     }
   </style>
 </head>
 
 <body>
   <div class="flash" aria-hidden="true"></div>
+  <div class="toast" id="toast">Скопировано</div>
 
   <div class="app">
-    <div class="hero">
-      <div class="topRow">
+    <!-- Sticky top bar -->
+    <div class="topbar">
+      <div class="topbarInner">
         <div class="brand">
           <div class="mark" aria-hidden="true">
-            <!-- Zeus lightning -->
-            <svg width="22" height="28" viewBox="0 0 22 28" fill="none">
+            <svg width="20" height="26" viewBox="0 0 22 28" fill="none">
               <path d="M12.9 2H21L12 14.4H18.9L7.3 26L9.8 15.1H3L12.9 2Z" fill="rgba(255,255,255,.92)"/>
             </svg>
           </div>
           <div class="brandText">
             <p class="name">ZEUSVPN</p>
-            <p class="tag">Thunder-class • Premium VLESS</p>
+            <p class="tag" id="topSubtitle">Thunder-class • Premium VLESS</p>
           </div>
         </div>
 
@@ -495,31 +658,30 @@
           <span id="apiText">API: checking…</span>
         </div>
       </div>
+    </div>
 
-      <div class="heroMain">
-        <p class="heroTitle">Конфиг за 1 тап. Как молния.</p>
-        <p class="heroSub">
-          Stars / USDT → автоматическая проверка оплаты → выдаём личный VLESS конфиг и показываем “Активна до…”.
-        </p>
+    <!-- Hero -->
+    <div class="hero">
+      <p class="heroTitle">Скорость. Тишина. Контроль.</p>
+      <p class="heroSub">Apple-style интерфейс, но по-взрослому: оплатил → проверили → выдали личный конфиг → показали “Активна до…”.</p>
 
-        <div class="stats">
-          <div class="stat">
-            <b>Подписка</b>
-            <span id="heroSubStat">не оплачено</span>
-          </div>
-          <div class="stat">
-            <b>Устройства</b>
-            <span>1 / 5 / 10 (UI)</span>
-          </div>
-          <div class="stat">
-            <b>API</b>
-            <span id="heroApi">—</span>
-          </div>
+      <div class="miniStats">
+        <div class="stat">
+          <b>Подписка</b>
+          <span id="heroSubStat">не оплачено</span>
+        </div>
+        <div class="stat">
+          <b>Устройства</b>
+          <span id="heroDevicesStat">—</span>
+        </div>
+        <div class="stat">
+          <b>API</b>
+          <span id="heroApi">—</span>
         </div>
       </div>
     </div>
 
-    <!-- HOME -->
+    <!-- Screens -->
     <div class="screen" id="screenHome">
       <div class="card">
         <div class="head">
@@ -530,27 +692,49 @@
 
         <div class="body">
           <div class="field">
-            <div class="label">ID пользователя (можно пусто)</div>
+            <div class="label">ID пользователя (позже будет Telegram ID)</div>
             <input class="input" id="userKey" placeholder="например: zeus-1234" />
-            <div class="muted">Позже заменим на Telegram ID автоматически.</div>
+            <div class="muted">Можно оставить пустым — мы сделаем красивый ID автоматически.</div>
           </div>
 
-          <button class="btn btnPrimary" id="btnGetConfig">Получить конфиг</button>
+          <div class="row">
+            <button class="btn btnPrimary" id="btnGetConfig">Получить конфиг</button>
+            <button class="btn btnGhost" id="btnGoPlans" style="max-width: 160px;">Тарифы</button>
+          </div>
 
-          <div class="notice hidden" id="configBox">
-            <div class="noticeTop">
+          <div class="card" id="errBox" style="display:none; margin-top:12px; border-color: rgba(255,91,107,.26);">
+            <div class="head">
+              <h2 style="color: var(--bad);">Ошибка</h2>
+              <small id="errText" style="text-align:right"></small>
+            </div>
+          </div>
+
+          <!-- Premium config block -->
+          <div class="configCard hidden" id="configBox">
+            <div class="configTop">
               <span class="badge ok">VLESS</span>
-              <button class="btn btnOutline" id="btnCopy" style="width:auto; padding:10px 12px; border-radius:16px;">Скопировать</button>
+              <div style="display:flex; gap:10px;">
+                <button class="btn btnGhost" id="btnCopy" style="width:auto; padding:10px 12px; border-radius:16px;">Copy</button>
+                <button class="btn btnGhost" id="btnOpenApp" style="width:auto; padding:10px 12px; border-radius:16px;" disabled>Open</button>
+              </div>
             </div>
             <div class="mono" id="configText"></div>
-          </div>
 
-          <div class="notice hidden" id="errBox" style="border-color: rgba(255,91,107,.30);">
-            <div class="noticeTop">
-              <span class="badge bad">Ошибка</span>
-              <span class="muted" id="errText" style="text-align:right"></span>
+            <div class="qrWrap">
+              <div class="qrBox">
+                <canvas id="qrCanvas" width="96" height="96"></canvas>
+              </div>
+              <div class="qrText">
+                <div class="muted" style="margin-bottom:6px;">
+                  QR для импорта в приложение (удобно на другом телефоне).
+                </div>
+                <div class="muted">
+                  Если QR не нужен — просто нажми <b>Copy</b>.
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -562,26 +746,59 @@
         <div class="divider"></div>
 
         <div class="body">
-          <div class="row">
-            <button class="btn btnGold" id="btnPayStars">Оплатить Stars</button>
-            <button class="btn btnOutline" id="btnPayUsdt">Оплатить USDT</button>
+          <div class="muted" style="margin-bottom:10px;">
+            Лучший UX: выбираешь тариф → оплатил → автоматом выдаём конфиг.
           </div>
+          <button class="btn btnGold" id="btnQuickPayStars">Оплатить Stars (быстро)</button>
 
-          <div class="notice hidden" id="payBox" style="margin-top:12px;">
-            <div class="noticeTop">
-              <span class="muted">Статус заказа</span>
-              <span class="badge warn" id="payStatus">pending</span>
+          <div class="card hidden" id="payBox" style="margin-top:12px;">
+            <div class="head">
+              <h2>Статус заказа</h2>
+              <small><span class="badge warn" id="payStatus">pending</span></small>
             </div>
-            <div class="muted" id="payMeta"></div>
-            <div class="muted" style="margin-top:10px;">
-              Авто-проверка каждые ~1.2 сек. Когда станет <b>paid</b> — покажем конфиг и активность.
+            <div class="divider"></div>
+            <div class="body">
+              <div class="muted" id="payMeta"></div>
+              <div class="muted" style="margin-top:10px;">Авто-проверка каждые ~1.2 сек. Когда станет <b>paid</b> — покажем конфиг и “Активна до…”.</div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- GUIDE -->
+    <!-- Plans screen -->
+    <div class="screen hidden" id="screenPlans">
+      <div class="card">
+        <div class="head">
+          <h2>Тарифы</h2>
+          <small>премиум-карточки</small>
+        </div>
+        <div class="divider"></div>
+
+        <div class="body">
+          <div class="muted">Выбери длительность и устройства — кнопки оплаты станут “как продукт”.</div>
+
+          <div style="margin-top:12px;">
+            <div class="label">Длительность</div>
+            <div class="segRow">
+              <div class="seg active" data-days="30" id="seg30">30 дней</div>
+              <div class="seg" data-days="90" id="seg90">90 дней</div>
+              <div class="seg" data-days="180" id="seg180">180 дней</div>
+            </div>
+          </div>
+
+          <div class="planGrid" id="planGrid">
+            <!-- injected by JS -->
+          </div>
+
+          <div class="muted" style="margin-top:10px;">
+            * Сейчас логика устройств — визуально. Потом привяжем к limit_ip/лимитам на бэке.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guide -->
     <div class="screen hidden" id="screenGuide">
       <div class="card">
         <div class="head">
@@ -597,8 +814,8 @@
               <span class="chip">V2Box / Shadowrocket</span>
             </div>
             <div class="steps">
-              1) Нажми “Получить конфиг”<br/>
-              2) Скопируй VLESS ссылку<br/>
+              1) Получи конфиг<br/>
+              2) Нажми Copy<br/>
               3) Import → From Clipboard<br/>
               4) Connect
             </div>
@@ -611,7 +828,7 @@
             </div>
             <div class="steps">
               1) Получи конфиг<br/>
-              2) Скопируй ссылку<br/>
+              2) Copy<br/>
               3) “+” → Import from Clipboard<br/>
               4) Connect
             </div>
@@ -623,7 +840,7 @@
               <span class="chip">Nekoray / v2rayN</span>
             </div>
             <div class="steps">
-              1) Скопируй конфиг<br/>
+              1) Copy конфиг<br/>
               2) Импорт по ссылке/буферу<br/>
               3) Подключись
             </div>
@@ -631,12 +848,12 @@
         </div>
 
         <div class="body" style="padding-top:0">
-          <div class="muted">Свайпай карточки влево/вправо.</div>
+          <div class="muted">Свайпай карточки. Всё сделано под телефон.</div>
         </div>
       </div>
     </div>
 
-    <!-- PROFILE -->
+    <!-- Profile -->
     <div class="screen hidden" id="screenProfile">
       <div class="card">
         <div class="head">
@@ -646,41 +863,56 @@
         <div class="divider"></div>
 
         <div class="body">
-          <div class="notice" style="margin-top:0">
-            <div class="noticeTop">
-              <span class="muted">ID</span>
-              <span class="badge" id="profileId">—</span>
+          <div class="card" style="margin-top:0;">
+            <div class="head">
+              <h2>ID</h2>
+              <small><span class="badge" id="profileId">—</span></small>
             </div>
+            <div class="divider"></div>
+            <div class="body">
+              <div class="row" style="margin-top:0;">
+                <button class="btn btnGhost" id="btnResetId">Новый ID</button>
+                <button class="btn btnGhost" id="btnHistory" disabled>История (скоро)</button>
+              </div>
 
-            <div class="noticeTop" style="margin:0">
-              <span class="muted">Подписка</span>
-              <span class="badge warn" id="subStatus">Не оплачено</span>
-            </div>
-            <div class="muted" id="activeUntil" style="margin-top:8px;">Активна до: —</div>
-
-            <div class="row" style="margin-top:12px;">
-              <button class="btn btnOutline" id="btnResetId">Новый ID</button>
-              <button class="btn btnOutline" id="btnHistory" disabled>История (скоро)</button>
+              <div style="margin-top:12px;">
+                <div class="label">Статус подписки</div>
+                <div class="row" style="margin-top:8px;">
+                  <div class="btn btnGhost" style="cursor:default; padding:12px; border-radius:18px; text-align:left;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                      <span class="muted">Состояние</span>
+                      <span class="badge warn" id="subStatus">Не оплачено</span>
+                    </div>
+                    <div class="muted" id="activeUntil" style="margin-top:8px;">Активна до: —</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="notice">
-            <div class="noticeTop">
-              <span class="muted"><b>Рефералка</b>: +7 дней (UI)</span>
-              <span class="badge">ZEUS</span>
+          <div class="card">
+            <div class="head">
+              <h2>Рефералка</h2>
+              <small>+7 дней (UI)</small>
             </div>
-            <button class="btn btnOutline" id="btnRefCreate">Создать реф-код</button>
-            <div class="muted" id="refOut" style="margin-top:10px;"></div>
+            <div class="divider"></div>
+            <div class="body">
+              <button class="btn btnGhost" id="btnRefCreate">Создать реф-код</button>
+              <div class="muted" id="refOut" style="margin-top:10px;"></div>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
+
   </div>
 
-  <!-- Bottom navigation -->
+  <!-- Bottom nav -->
   <div class="nav">
     <div class="navInner">
       <button class="tab active" id="tabHome">Главная</button>
+      <button class="tab" id="tabPlans">Тарифы</button>
       <button class="tab" id="tabGuide">Инструкции</button>
       <button class="tab" id="tabProfile">Профиль</button>
     </div>
@@ -690,28 +922,60 @@
   // ===== CONFIG =====
   const API_BASE = "https://api.45.133.251.210.nip.io:8443";
 
+  // UI prices (we can later load from backend)
+  const PRICES = {
+    30:  { stars: 199, usdt: 3.0 },
+    90:  { stars: 399, usdt: 7.0 },
+    180: { stars: 599, usdt: 12.0 }
+  };
+
   const tg = window.Telegram?.WebApp;
-  if (tg) { try { tg.ready(); tg.expand(); } catch(e){} }
+  if (tg) {
+    try { tg.ready(); tg.expand(); } catch(e){}
+  }
 
   const $ = (id)=>document.getElementById(id);
   const show = (el)=>el.classList.remove("hidden");
   const hide = (el)=>el.classList.add("hidden");
 
+  function toast(msg){
+    const t = $("toast");
+    t.textContent = msg || "Готово";
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 900);
+  }
+
   function clearError(){
-    hide($("errBox"));
+    $("errBox").style.display = "none";
     $("errText").textContent = "";
   }
   function setError(msg){
     $("errText").textContent = msg || "Неизвестная ошибка";
-    show($("errBox"));
+    $("errBox").style.display = "block";
   }
+
   function genUserKey(){
     const n = Math.floor(Math.random()*9000)+1000;
     return "zeus-" + n;
   }
-  function setProfileId(id){
-    $("profileId").textContent = id || "—";
-    localStorage.setItem("zeus_user_key", id || "");
+  function getUserKey(){
+    return ($("userKey").value || "").trim();
+  }
+  function setUserKey(v){
+    $("userKey").value = v || "";
+    $("profileId").textContent = v || "—";
+    localStorage.setItem("zeus_user_key", v || "");
+  }
+
+  async function ensureUserKey(){
+    let u = getUserKey();
+    if(!u){
+      u = genUserKey();
+      setUserKey(u);
+    } else {
+      setUserKey(u);
+    }
+    return u;
   }
 
   async function pingApi(){
@@ -719,9 +983,8 @@
       const r = await fetch(API_BASE + "/health", { method:"GET" });
       if(!r.ok) throw new Error("health not ok");
       await r.json();
-
       $("apiText").textContent = "API: online";
-      $("apiDot").style.background = "#23E6A8";
+      $("apiDot").style.background = "#25E6A8";
       $("heroApi").textContent = "online";
       return true;
     }catch(e){
@@ -734,16 +997,30 @@
 
   // ===== CONFIG ISSUE =====
   let lastConfig = "";
-  $("btnGetConfig").addEventListener("click", async ()=>{
+
+  async function renderQR(text){
+    try{
+      const canvas = $("qrCanvas");
+      const opts = {
+        errorCorrectionLevel: "M",
+        margin: 1,
+        width: 96,
+        color: {
+          dark: "#ECF2FF",
+          light: "#00000000"
+        }
+      };
+      await QRCode.toCanvas(canvas, text, opts);
+    }catch(e){
+      // ignore
+    }
+  }
+
+  async function issueConfig(){
     clearError();
     hide($("configBox"));
 
-    let user_key = $("userKey").value.trim();
-    if(!user_key){
-      user_key = genUserKey();
-      $("userKey").value = user_key;
-    }
-    setProfileId(user_key);
+    const user_key = await ensureUserKey();
 
     $("btnGetConfig").disabled = true;
     $("btnGetConfig").textContent = "Генерирую…";
@@ -770,21 +1047,26 @@
       if(!lastConfig) throw new Error("Ответ без link");
 
       $("configText").textContent = lastConfig;
+      await renderQR(lastConfig);
       show($("configBox"));
+
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
     }catch(e){
       setError(e?.message || String(e));
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
     }finally{
       $("btnGetConfig").disabled = false;
       $("btnGetConfig").textContent = "Получить конфиг";
     }
-  });
+  }
+
+  $("btnGetConfig").addEventListener("click", issueConfig);
 
   $("btnCopy").addEventListener("click", async ()=>{
     try{
       await navigator.clipboard.writeText(lastConfig);
-      const old = $("btnCopy").textContent;
-      $("btnCopy").textContent = "Скопировано";
-      setTimeout(()=> $("btnCopy").textContent = old, 900);
+      toast("Скопировано");
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
     }catch(e){
       alert("Скопируй вручную:\n\n" + lastConfig);
     }
@@ -792,15 +1074,28 @@
 
   // ===== PAYMENTS + POLLING =====
   let pollTimer = null;
+  let selectedDays = 30;
+  let selectedDevices = 1;
 
-  async function ensureUserKey(){
-    let user_key = $("userKey").value.trim();
-    if(!user_key){
-      user_key = genUserKey();
-      $("userKey").value = user_key;
+  function setSubscriptionUI({status, active_until, devices}){
+    if(status === "paid" || status === "active"){
+      $("subStatus").textContent = "Активна";
+      $("subStatus").className = "badge ok";
+      $("heroSubStat").textContent = "активна";
+    } else {
+      $("subStatus").textContent = "Не оплачено";
+      $("subStatus").className = "badge warn";
+      $("heroSubStat").textContent = "не оплачено";
     }
-    setProfileId(user_key);
-    return user_key;
+
+    $("heroDevicesStat").textContent = devices ? (devices + " устройств") : "—";
+
+    if(active_until){
+      const dt = new Date(active_until);
+      $("activeUntil").textContent = "Активна до: " + dt.toLocaleString();
+    } else {
+      $("activeUntil").textContent = "Активна до: —";
+    }
   }
 
   async function pollOrder(orderId){
@@ -821,25 +1116,25 @@
           clearInterval(pollTimer);
           pollTimer = null;
 
-          $("subStatus").textContent = "Активна";
-          $("subStatus").className = "badge ok";
-          $("heroSubStat").textContent = "активна";
-
-          if(j.active_until){
-            $("activeUntil").textContent = "Активна до: " + new Date(j.active_until).toLocaleString();
-          }
+          setSubscriptionUI({ status: "paid", active_until: j.active_until, devices: j.devices });
 
           if(j.config_link){
             lastConfig = j.config_link;
             $("configText").textContent = lastConfig;
+            await renderQR(lastConfig);
             show($("configBox"));
+          } else {
+            // если конфиг не пришёл — можно руками нажать "получить"
           }
+
+          toast("Оплата успешна");
+          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
         }
       }catch(e){}
     }, 1200);
   }
 
-  $("btnPayStars").addEventListener("click", async ()=>{
+  async function payStars(days, devices){
     clearError();
     show($("payBox"));
     $("payStatus").textContent = "creating…";
@@ -852,7 +1147,7 @@
       const r = await fetch(API_BASE + "/pay/stars/create", {
         method:"POST",
         headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ user_key, days:30, devices:1 })
+        body: JSON.stringify({ user_key, days, devices })
       });
       const j = await r.json();
       if(!r.ok) throw new Error(j?.detail || "Stars create error");
@@ -867,14 +1162,16 @@
       }
 
       pollOrder(j.order_id);
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
     }catch(e){
       setError(e?.message || String(e));
       $("payStatus").textContent = "error";
       $("payStatus").className = "badge bad";
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
     }
-  });
+  }
 
-  $("btnPayUsdt").addEventListener("click", async ()=>{
+  async function payUsdt(days, devices){
     clearError();
     show($("payBox"));
     $("payStatus").textContent = "creating…";
@@ -887,7 +1184,7 @@
       const r = await fetch(API_BASE + "/pay/crypto/create", {
         method:"POST",
         headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ user_key, days:30, devices:1 })
+        body: JSON.stringify({ user_key, days, devices })
       });
       const j = await r.json();
       if(!r.ok) throw new Error(j?.detail || "Crypto create error");
@@ -897,21 +1194,26 @@
 
       if(j.invoice_url){
         window.open(j.invoice_url, "_blank");
+      } else {
+        toast("Invoice создан");
       }
 
       pollOrder(j.order_id);
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
     }catch(e){
       setError(e?.message || String(e));
       $("payStatus").textContent = "error";
       $("payStatus").className = "badge bad";
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
     }
-  });
+  }
+
+  $("btnQuickPayStars").addEventListener("click", ()=>payStars(30, 1));
 
   // ===== REF =====
   $("btnRefCreate").addEventListener("click", async ()=>{
     clearError();
     $("refOut").textContent = "создаю…";
-
     const user_key = await ensureUserKey();
 
     try{
@@ -924,22 +1226,26 @@
       if(!r.ok) throw new Error(j?.detail || "ref create error");
 
       $("refOut").textContent = "Твой код: " + j.code;
+      toast("Реф-код готов");
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
     }catch(e){
       $("refOut").textContent = "";
       setError(e?.message || String(e));
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
     }
   });
 
   $("btnResetId").addEventListener("click", ()=>{
     const id = genUserKey();
-    $("userKey").value = id;
-    setProfileId(id);
+    setUserKey(id);
+    toast("Новый ID");
   });
 
-  // ===== Tabs =====
+  // ===== Tabs / Screens =====
   function setTab(tab){
     const map = [
       ["tabHome","screenHome"],
+      ["tabPlans","screenPlans"],
       ["tabGuide","screenGuide"],
       ["tabProfile","screenProfile"]
     ];
@@ -949,24 +1255,96 @@
     });
   }
   $("tabHome").onclick = ()=>setTab("tabHome");
+  $("tabPlans").onclick = ()=>setTab("tabPlans");
   $("tabGuide").onclick = ()=>setTab("tabGuide");
   $("tabProfile").onclick = ()=>setTab("tabProfile");
+  $("btnGoPlans").onclick = ()=>setTab("tabPlans");
+
+  // ===== Plans UI =====
+  function segSet(days){
+    selectedDays = days;
+
+    ["seg30","seg90","seg180"].forEach(id=>{
+      $(id).classList.toggle("active", Number($(id).dataset.days) === days);
+    });
+
+    renderPlans();
+  }
+  $("seg30").onclick = ()=>segSet(30);
+  $("seg90").onclick = ()=>segSet(90);
+  $("seg180").onclick = ()=>segSet(180);
+
+  function planCard(devices){
+    const priceStars = PRICES[selectedDays]?.stars ?? 199;
+    const priceUsdt  = PRICES[selectedDays]?.usdt  ?? 3.0;
+
+    const title = (devices === 1) ? "Solo" : (devices === 5 ? "Family" : "Squad");
+    const meta  = (devices === 1)
+      ? "1 устройство • максимум приватности"
+      : (devices === 5 ? "5 устройств • идеально для семьи" : "10 устройств • команда/друзья");
+
+    return `
+      <div class="plan">
+        <div class="planTop">
+          <div>
+            <p class="planName">${title} • ${devices} устройств</p>
+            <p class="planMeta">${selectedDays} дней • ${meta}</p>
+          </div>
+          <div class="price">
+            <div class="priceBig">${priceStars} <span style="font-size:12px; color: rgba(255,255,255,.65);">XTR</span></div>
+            <div class="priceSmall">или ~${priceUsdt} USDT</div>
+          </div>
+        </div>
+        <div class="planActions">
+          <button class="btn btnGold" data-pay="stars" data-dev="${devices}">Stars</button>
+          <button class="btn btnGhost" data-pay="usdt" data-dev="${devices}">USDT</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderPlans(){
+    const grid = $("planGrid");
+    grid.innerHTML = planCard(1) + planCard(5) + planCard(10);
+
+    grid.querySelectorAll("button[data-pay]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const dev = Number(btn.dataset.dev);
+        selectedDevices = dev;
+
+        // go back home for status box
+        setTab("tabHome");
+
+        if(btn.dataset.pay === "stars"){
+          await payStars(selectedDays, dev);
+        } else {
+          await payUsdt(selectedDays, dev);
+        }
+      });
+    });
+
+    // preview in hero
+    $("heroDevicesStat").textContent = selectedDevices ? (selectedDevices + " устройств") : "—";
+  }
 
   // ===== Init =====
   (async ()=>{
     const saved = localStorage.getItem("zeus_user_key") || "";
-    if(saved){
-      $("userKey").value = saved;
-      $("profileId").textContent = saved;
-    }
+    if(saved) setUserKey(saved);
+
     $("userKey").addEventListener("change", ()=>{
-      const v = $("userKey").value.trim();
-      localStorage.setItem("zeus_user_key", v);
-      $("profileId").textContent = v || "—";
+      const v = getUserKey();
+      setUserKey(v);
     });
+
+    renderPlans();
+    segSet(30);
 
     await pingApi();
     setInterval(pingApi, 12000);
+
+    // default subscription UI
+    setSubscriptionUI({ status: "none", active_until: null, devices: selectedDevices });
   })();
 </script>
 </body>
