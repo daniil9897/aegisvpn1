@@ -4,39 +4,40 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ZEUSVPN</title>
+
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- QR generator -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
   <style>
     :root{
-      /* premium deep navy */
-      --bg0:#050714;
-      --bg1:#07152F;
-      --bg2:#0A1F45;
+      /* Premium "Zeus" palette: deep navy + electric blue + subtle gold */
+      --bg0:#030615;
+      --bg1:#050A20;
+      --bg2:#071637;
 
-      --text:#ECF2FF;
-      --text2:rgba(236,242,255,.80);
-      --muted:rgba(236,242,255,.62);
+      --text:#EDF3FF;
+      --text2:rgba(237,243,255,.78);
+      --muted:rgba(237,243,255,.58);
 
       --line:rgba(255,255,255,.10);
       --line2:rgba(255,255,255,.14);
 
-      --blue:#2E6BFF;
-      --blue2:#1243B7;
+      --blue:#2F6BFF;
+      --blue2:#0F3DB1;
+      --ice:#A9C7FF;
 
       --gold:#D7B46A;
-      --gold2:#F2D697;
+      --gold2:#F3DEAB;
 
-      --ok:#25E6A8;
-      --warn:#FFC14A;
+      --ok:#22E6AE;
+      --warn:#FFC24F;
       --bad:#FF5B6B;
 
       --glass: rgba(255,255,255,.06);
       --glass2: rgba(255,255,255,.09);
 
-      --shadow: 0 24px 72px rgba(0,0,0,.55);
-      --shadow2: 0 14px 34px rgba(0,0,0,.38);
+      --shadow: 0 26px 80px rgba(0,0,0,.62);
+      --shadow2: 0 16px 44px rgba(0,0,0,.42);
 
       --r14:14px;
       --r18:18px;
@@ -45,6 +46,7 @@
       --r32:32px;
 
       --pad:14px;
+      --ease: cubic-bezier(.22,.9,.22,1);
     }
 
     *{ box-sizing:border-box; }
@@ -54,41 +56,41 @@
       font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display","SF Pro Text", Segoe UI, Roboto, Arial;
       color:var(--text);
       background:
-        radial-gradient(1200px 900px at 20% -10%, rgba(46,107,255,.20), transparent 60%),
-        radial-gradient(900px 700px at 92% 8%, rgba(215,180,106,.12), transparent 62%),
-        radial-gradient(900px 700px at 10% 88%, rgba(255,255,255,.06), transparent 65%),
-        linear-gradient(180deg, var(--bg0), var(--bg1) 45%, var(--bg0));
+        radial-gradient(1200px 900px at 20% -10%, rgba(47,107,255,.20), transparent 60%),
+        radial-gradient(900px 720px at 92% 10%, rgba(215,180,106,.10), transparent 62%),
+        radial-gradient(900px 700px at 10% 88%, rgba(255,255,255,.05), transparent 65%),
+        linear-gradient(180deg, var(--bg0), var(--bg2) 50%, var(--bg0));
       overflow-x:hidden;
     }
 
-    /* subtle grain like premium matte */
+    /* Premium micro-grain (very subtle) */
     body::before{
       content:"";
       position:fixed; inset:0;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.14'/%3E%3C/svg%3E");
-      opacity:.08;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+      opacity:.06;
       pointer-events:none;
       mix-blend-mode: overlay;
     }
 
-    /* lightning flashes – very subtle */
+    /* Subtle lightning flash (rare, not annoying) */
     .flash{
       position:fixed; inset:-40px;
       pointer-events:none;
       background:
-        radial-gradient(900px 480px at 60% 18%, rgba(255,255,255,.18), transparent 65%),
-        radial-gradient(700px 420px at 18% 28%, rgba(46,107,255,.22), transparent 72%);
+        radial-gradient(900px 520px at 60% 12%, rgba(255,255,255,.20), transparent 66%),
+        radial-gradient(800px 520px at 18% 28%, rgba(47,107,255,.22), transparent 72%);
       opacity:0;
-      animation: flash 9.5s infinite;
+      animation: flash 13s infinite;
       mix-blend-mode: screen;
-      filter: blur(2px);
+      filter: blur(3px);
     }
     @keyframes flash{
-      0%, 58%, 100% { opacity:0; }
-      59% { opacity:.08; }
-      60% { opacity:0; }
-      66% { opacity:.12; }
-      67% { opacity:0; }
+      0%, 63%, 100% { opacity:0; }
+      64% { opacity:.09; }
+      65% { opacity:0; }
+      74% { opacity:.11; }
+      75% { opacity:0; }
     }
 
     .app{
@@ -99,27 +101,27 @@
       z-index:1;
     }
 
-    /* Top bar (Apple-like) */
+    /* Top bar */
     .topbar{
       position:sticky;
       top: 0;
       z-index:20;
       padding-top: 10px;
       padding-bottom: 10px;
-      background: linear-gradient(180deg, rgba(5,7,20,.85), rgba(5,7,20,.40), rgba(5,7,20,0));
+      background: linear-gradient(180deg, rgba(3,6,21,.88), rgba(3,6,21,.45), rgba(3,6,21,0));
       backdrop-filter: blur(12px);
     }
     .topbarInner{
       border-radius: var(--r26);
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.06);
-      box-shadow: 0 12px 28px rgba(0,0,0,.30);
+      box-shadow: 0 12px 28px rgba(0,0,0,.32);
       padding: 12px 12px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap: 10px;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
     }
 
     .brand{
@@ -128,12 +130,17 @@
       gap:10px;
       min-width:0;
     }
+
+    /* Zeus emblem (premium, not childish) */
     .mark{
       width:42px; height:42px;
       border-radius:16px;
       border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.07);
-      box-shadow: 0 18px 45px rgba(0,0,0,.35);
+      background:
+        radial-gradient(20px 20px at 30% 30%, rgba(47,107,255,.30), transparent 60%),
+        radial-gradient(26px 26px at 70% 20%, rgba(215,180,106,.16), transparent 65%),
+        rgba(255,255,255,.05);
+      box-shadow: 0 18px 52px rgba(0,0,0,.38);
       display:flex;
       align-items:center;
       justify-content:center;
@@ -142,15 +149,16 @@
     }
     .mark::before{
       content:"";
-      position:absolute; inset:-40%;
+      position:absolute; inset:-45%;
       background: conic-gradient(from 180deg,
-        rgba(46,107,255,.0),
-        rgba(46,107,255,.28),
+        rgba(47,107,255,0),
+        rgba(47,107,255,.26),
+        rgba(255,255,255,.10),
         rgba(215,180,106,.14),
-        rgba(46,107,255,.0));
-      animation: spin 7.2s linear infinite;
-      opacity:.55;
-      filter: blur(5px);
+        rgba(47,107,255,0));
+      opacity:.50;
+      filter: blur(6px);
+      animation: spin 9s linear infinite;
     }
     @keyframes spin{ to{ transform: rotate(360deg); } }
     .mark svg{ position:relative; z-index:2; }
@@ -158,8 +166,8 @@
     .brandText{ min-width:0; }
     .name{
       margin:0;
-      font-weight: 900;
-      letter-spacing:.9px;
+      font-weight: 950;
+      letter-spacing:.8px;
       font-size: 14px;
       line-height: 1.05;
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
@@ -188,7 +196,7 @@
       width:8px; height:8px;
       border-radius:50%;
       background: rgba(255,255,255,.55);
-      box-shadow: 0 0 14px rgba(46,107,255,.35);
+      box-shadow: 0 0 16px rgba(47,107,255,.42);
     }
 
     /* Hero */
@@ -197,28 +205,28 @@
       border-radius: var(--r32);
       border:1px solid rgba(255,255,255,.10);
       background:
-        radial-gradient(900px 420px at 18% -10%, rgba(46,107,255,.26), transparent 60%),
-        radial-gradient(700px 420px at 100% 0%, rgba(215,180,106,.14), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+        radial-gradient(920px 420px at 18% -10%, rgba(47,107,255,.22), transparent 62%),
+        radial-gradient(700px 420px at 100% 0%, rgba(215,180,106,.10), transparent 58%),
+        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
       box-shadow: var(--shadow);
       padding: 16px;
       overflow:hidden;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
       position:relative;
     }
     .hero::after{
       content:"";
       position:absolute; inset:0;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.07) 45%, transparent 70%);
-      opacity:.18;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.06) 45%, transparent 70%);
+      opacity:.14;
       transform: translateX(-55%);
-      animation: sheen 8s infinite;
+      animation: sheen 10s infinite;
       pointer-events:none;
     }
     @keyframes sheen{
       0%{ transform: translateX(-55%); opacity:0; }
-      12%{ opacity:.16; }
-      55%{ transform: translateX(55%); opacity:0; }
+      14%{ opacity:.14; }
+      54%{ transform: translateX(55%); opacity:0; }
       100%{ opacity:0; }
     }
     .heroTitle{
@@ -226,7 +234,7 @@
       font-size: 20px;
       font-weight: 950;
       letter-spacing:.2px;
-      line-height:1.14;
+      line-height:1.16;
       position:relative;
       z-index:2;
     }
@@ -235,11 +243,10 @@
       font-size: 13px;
       line-height:1.55;
       color: var(--muted);
-      max-width: 56ch;
+      max-width: 60ch;
       position:relative;
       z-index:2;
     }
-
     .miniStats{
       position:relative;
       z-index:2;
@@ -268,15 +275,29 @@
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
 
+    /* Accent "stop line" separator */
+    .stopline{
+      height:1px;
+      background:
+        linear-gradient(90deg,
+          transparent,
+          rgba(47,107,255,.35),
+          rgba(255,255,255,.10),
+          rgba(215,180,106,.20),
+          transparent);
+      margin: 14px 0 8px;
+      opacity:.9;
+    }
+
     /* Cards */
     .card{
       margin-top: 12px;
       border-radius: var(--r32);
       border:1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      background: linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.035));
       box-shadow: var(--shadow2);
       overflow:hidden;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
     }
     .head{
       padding: 14px 14px 10px;
@@ -296,6 +317,7 @@
     .head small{
       color: rgba(255,255,255,.55);
       font-size: 12px;
+      text-align:right;
     }
     .divider{
       height:1px;
@@ -303,8 +325,7 @@
       margin: 0 14px;
     }
     .body{ padding: 12px 14px 14px; }
-
-    .muted{ color: rgba(255,255,255,.62); font-size: 12px; line-height:1.5; }
+    .muted{ color: rgba(255,255,255,.60); font-size: 12px; line-height:1.5; }
     .hidden{ display:none !important; }
 
     /* Buttons */
@@ -316,32 +337,32 @@
       cursor:pointer;
       font-weight: 950;
       letter-spacing:.25px;
-      transition: transform .06s ease, filter .14s ease, box-shadow .14s ease;
+      transition: transform .10s var(--ease), filter .16s var(--ease), box-shadow .16s var(--ease);
       user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
-    .btn:active{ transform: translateY(1px); }
+    .btn:active{ transform: translateY(1px) scale(.995); }
     .btn[disabled]{ opacity:.52; cursor:not-allowed; }
 
     .btnPrimary{
       color:#fff;
       background:
-        linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0) 32%),
+        linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0) 34%),
         linear-gradient(180deg, var(--blue), var(--blue2));
-      box-shadow: 0 18px 40px rgba(46,107,255,.20);
+      box-shadow: 0 18px 44px rgba(47,107,255,.22);
     }
     .btnGold{
       color:#1A1406;
       background:
         linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 35%),
         linear-gradient(180deg, var(--gold2), var(--gold));
-      box-shadow: 0 18px 40px rgba(215,180,106,.16);
+      box-shadow: 0 18px 44px rgba(215,180,106,.14);
     }
     .btnGhost{
-      color: rgba(255,255,255,.86);
-      background: rgba(0,0,0,.16);
+      color: rgba(255,255,255,.88);
+      background: rgba(0,0,0,.18);
       border:1px solid rgba(255,255,255,.12);
-      box-shadow: 0 10px 22px rgba(0,0,0,.26);
+      box-shadow: 0 12px 26px rgba(0,0,0,.26);
     }
 
     .row{ display:flex; gap:10px; margin-top: 10px; }
@@ -355,7 +376,7 @@
       padding: 13px 12px;
       border-radius: 18px;
       border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.20);
+      background: rgba(0,0,0,.22);
       color: rgba(255,255,255,.92);
       outline:none;
       font-size: 14px;
@@ -376,20 +397,22 @@
       color: rgba(255,255,255,.84);
       white-space:nowrap;
     }
-    .badge.ok{ border-color: rgba(37,230,168,.28); color: var(--ok); }
-    .badge.warn{ border-color: rgba(255,193,74,.28); color: var(--warn); }
+    .badge.ok{ border-color: rgba(34,230,174,.28); color: var(--ok); }
+    .badge.warn{ border-color: rgba(255,194,79,.28); color: var(--warn); }
     .badge.bad{ border-color: rgba(255,91,107,.30); color: var(--bad); }
+    .badge.blue{ border-color: rgba(47,107,255,.30); color: rgba(169,199,255,.95); }
 
     /* Premium config card */
     .configCard{
       margin-top: 12px;
-      border-radius: 24px;
+      border-radius: 26px;
       border:1px solid rgba(255,255,255,.12);
       background:
-        radial-gradient(520px 260px at 20% 0%, rgba(46,107,255,.16), transparent 60%),
+        radial-gradient(520px 260px at 22% 0%, rgba(47,107,255,.14), transparent 62%),
+        radial-gradient(520px 260px at 95% 20%, rgba(215,180,106,.08), transparent 64%),
         linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
       padding: 12px;
-      box-shadow: 0 14px 34px rgba(0,0,0,.32);
+      box-shadow: 0 16px 42px rgba(0,0,0,.34);
     }
     .configTop{
       display:flex;
@@ -415,19 +438,16 @@
       width:120px;
       border-radius: 18px;
       border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.14);
+      background: rgba(0,0,0,.16);
       padding: 10px;
       display:flex;
       align-items:center;
       justify-content:center;
     }
     canvas{ border-radius: 12px; }
-    .qrText{
-      flex:1;
-      min-width:0;
-    }
+    .qrText{ flex:1; min-width:0; }
 
-    /* Pricing / plans */
+    /* Plans (now on HOME) */
     .segRow{
       display:flex;
       gap:10px;
@@ -442,17 +462,19 @@
       color: rgba(255,255,255,.72);
       font-weight: 950;
       cursor:pointer;
-      box-shadow: 0 10px 22px rgba(0,0,0,.22);
+      box-shadow: 0 12px 26px rgba(0,0,0,.22);
       text-align:center;
       -webkit-tap-highlight-color: transparent;
+      transition: transform .12s var(--ease);
     }
+    .seg:active{ transform: scale(.99); }
     .seg.active{
       color:#fff;
-      border-color: rgba(46,107,255,.35);
+      border-color: rgba(47,107,255,.35);
       background:
-        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 32%),
+        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 34%),
         linear-gradient(180deg, var(--blue), var(--blue2));
-      box-shadow: 0 16px 34px rgba(46,107,255,.18);
+      box-shadow: 0 18px 42px rgba(47,107,255,.18);
     }
 
     .planGrid{
@@ -461,26 +483,46 @@
       margin-top: 12px;
     }
     .plan{
-      border-radius: 24px;
+      border-radius: 26px;
       border:1px solid rgba(255,255,255,.12);
       background:
-        radial-gradient(520px 260px at 20% 0%, rgba(215,180,106,.10), transparent 62%),
-        radial-gradient(520px 260px at 90% 20%, rgba(46,107,255,.14), transparent 60%),
+        radial-gradient(520px 260px at 20% 0%, rgba(47,107,255,.13), transparent 64%),
+        radial-gradient(520px 260px at 96% 24%, rgba(215,180,106,.08), transparent 66%),
         linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
       padding: 14px;
-      box-shadow: 0 14px 34px rgba(0,0,0,.28);
+      box-shadow: 0 16px 44px rgba(0,0,0,.30);
       position:relative;
       overflow:hidden;
+      transition: transform .16s var(--ease), box-shadow .16s var(--ease);
     }
+    .plan:active{ transform: scale(.995); }
     .plan::after{
       content:"";
       position:absolute; inset:0;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
-      opacity:.15;
+      opacity:.12;
       transform: translateX(-60%);
-      animation: sheen 9s infinite;
+      animation: sheen 11s infinite;
       pointer-events:none;
     }
+    .ribbon{
+      position:absolute;
+      top: 12px;
+      right: 12px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing:.15px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      backdrop-filter: blur(10px);
+      color: rgba(255,255,255,.86);
+      box-shadow: 0 10px 22px rgba(0,0,0,.22);
+    }
+    .ribbon.pop{ border-color: rgba(47,107,255,.30); color: rgba(169,199,255,.95); }
+    .ribbon.best{ border-color: rgba(215,180,106,.26); color: rgba(243,222,171,.95); }
+
     .planTop{
       display:flex;
       align-items:flex-start;
@@ -525,24 +567,24 @@
     }
     .planActions button{ flex:1; }
 
-    /* Toast (Apple-ish) */
+    /* Toast */
     .toast{
       position: fixed;
       left: 50%;
       transform: translateX(-50%);
       bottom: 92px;
-      background: rgba(0,0,0,.38);
+      background: rgba(0,0,0,.40);
       border:1px solid rgba(255,255,255,.12);
       backdrop-filter: blur(12px);
-      color: rgba(255,255,255,.88);
+      color: rgba(255,255,255,.90);
       padding: 10px 12px;
       border-radius: 999px;
-      box-shadow: 0 14px 34px rgba(0,0,0,.32);
+      box-shadow: 0 16px 44px rgba(0,0,0,.38);
       opacity:0;
       pointer-events:none;
-      transition: opacity .18s ease, transform .18s ease;
+      transition: opacity .18s var(--ease), transform .18s var(--ease);
       z-index:50;
-      font-weight: 900;
+      font-weight: 950;
       font-size: 12px;
     }
     .toast.show{
@@ -550,12 +592,40 @@
       transform: translateX(-50%) translateY(-6px);
     }
 
+    /* ===== iOS-like SCREEN TRANSITIONS ===== */
+    .screens{
+      position:relative;
+      min-height: 780px; /* enough for smooth overlay, auto content still works */
+    }
+    .screen{
+      position:absolute;
+      inset:0;
+      opacity:0;
+      transform: translateX(18px);
+      filter: blur(2px);
+      pointer-events:none;
+      transition:
+        opacity .22s var(--ease),
+        transform .22s var(--ease),
+        filter .22s var(--ease);
+      will-change: opacity, transform, filter;
+    }
+    .screen.active{
+      opacity:1;
+      transform: translateX(0);
+      filter: blur(0);
+      pointer-events:auto;
+    }
+    .screen.fromLeft{
+      transform: translateX(-18px);
+    }
+
     /* Bottom nav */
     .nav{
       position:fixed;
       left:0; right:0; bottom:0;
       padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(5,7,20,.62);
+      background: rgba(3,6,21,.68);
       border-top: 1px solid rgba(255,255,255,.10);
       backdrop-filter: blur(14px);
       z-index:30;
@@ -576,16 +646,18 @@
       font-weight: 950;
       letter-spacing:.15px;
       cursor:pointer;
-      box-shadow: 0 10px 22px rgba(0,0,0,.22);
+      box-shadow: 0 12px 26px rgba(0,0,0,.22);
       -webkit-tap-highlight-color: transparent;
+      transition: transform .12s var(--ease);
     }
+    .tab:active{ transform: scale(.99); }
     .tab.active{
       color:#fff;
-      border-color: rgba(46,107,255,.35);
+      border-color: rgba(47,107,255,.35);
       background:
-        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 32%),
+        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 34%),
         linear-gradient(180deg, var(--blue), var(--blue2));
-      box-shadow: 0 16px 34px rgba(46,107,255,.18);
+      box-shadow: 0 18px 42px rgba(47,107,255,.18);
     }
 
     /* Guide carousel */
@@ -601,13 +673,13 @@
     .slide{
       min-width: 86%;
       scroll-snap-align:start;
-      border-radius: 24px;
+      border-radius: 26px;
       border:1px solid rgba(255,255,255,.12);
       background:
-        radial-gradient(520px 260px at 20% 0%, rgba(46,107,255,.16), transparent 60%),
+        radial-gradient(520px 260px at 20% 0%, rgba(47,107,255,.14), transparent 64%),
         linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
       padding: 14px;
-      box-shadow: 0 12px 28px rgba(0,0,0,.30);
+      box-shadow: 0 14px 34px rgba(0,0,0,.30);
     }
     .slideTop{
       display:flex;
@@ -638,11 +710,11 @@
   <div class="toast" id="toast">Скопировано</div>
 
   <div class="app">
-    <!-- Sticky top bar -->
     <div class="topbar">
       <div class="topbarInner">
         <div class="brand">
           <div class="mark" aria-hidden="true">
+            <!-- lightning -->
             <svg width="20" height="26" viewBox="0 0 22 28" fill="none">
               <path d="M12.9 2H21L12 14.4H18.9L7.3 26L9.8 15.1H3L12.9 2Z" fill="rgba(255,255,255,.92)"/>
             </svg>
@@ -660,10 +732,9 @@
       </div>
     </div>
 
-    <!-- Hero -->
     <div class="hero">
-      <p class="heroTitle">Скорость. Тишина. Контроль.</p>
-      <p class="heroSub">Apple-style интерфейс, но по-взрослому: оплатил → проверили → выдали личный конфиг → показали “Активна до…”.</p>
+      <p class="heroTitle">Премиум VPN без лишнего шума.</p>
+      <p class="heroSub">Оплатил → проверили → выдали личный конфиг → показали “Активна до…”. Всё под мобилку.</p>
 
       <div class="miniStats">
         <div class="stat">
@@ -681,238 +752,216 @@
       </div>
     </div>
 
-    <!-- Screens -->
-    <div class="screen" id="screenHome">
-      <div class="card">
-        <div class="head">
-          <h2>Конфиг</h2>
-          <small>персонально</small>
-        </div>
-        <div class="divider"></div>
-
-        <div class="body">
-          <div class="field">
-            <div class="label">ID пользователя (позже будет Telegram ID)</div>
-            <input class="input" id="userKey" placeholder="например: zeus-1234" />
-            <div class="muted">Можно оставить пустым — мы сделаем красивый ID автоматически.</div>
+    <div class="screens">
+      <!-- HOME -->
+      <div class="screen active" id="screenHome">
+        <div class="card">
+          <div class="head">
+            <h2>Конфиг</h2>
+            <small>персонально</small>
           </div>
+          <div class="divider"></div>
 
-          <div class="row">
+          <div class="body">
+            <div class="field">
+              <div class="label">ID пользователя (позже будет Telegram ID)</div>
+              <input class="input" id="userKey" placeholder="например: zeus-1234" />
+              <div class="muted">Можно оставить пустым — мы сделаем красивый ID автоматически.</div>
+            </div>
+
             <button class="btn btnPrimary" id="btnGetConfig">Получить конфиг</button>
-            <button class="btn btnGhost" id="btnGoPlans" style="max-width: 160px;">Тарифы</button>
-          </div>
 
-          <div class="card" id="errBox" style="display:none; margin-top:12px; border-color: rgba(255,91,107,.26);">
-            <div class="head">
-              <h2 style="color: var(--bad);">Ошибка</h2>
-              <small id="errText" style="text-align:right"></small>
-            </div>
-          </div>
-
-          <!-- Premium config block -->
-          <div class="configCard hidden" id="configBox">
-            <div class="configTop">
-              <span class="badge ok">VLESS</span>
-              <div style="display:flex; gap:10px;">
-                <button class="btn btnGhost" id="btnCopy" style="width:auto; padding:10px 12px; border-radius:16px;">Copy</button>
-                <button class="btn btnGhost" id="btnOpenApp" style="width:auto; padding:10px 12px; border-radius:16px;" disabled>Open</button>
+            <div class="card" id="errBox" style="display:none; margin-top:12px; border-color: rgba(255,91,107,.26);">
+              <div class="head">
+                <h2 style="color: var(--bad);">Ошибка</h2>
+                <small id="errText" style="text-align:right"></small>
               </div>
             </div>
-            <div class="mono" id="configText"></div>
 
-            <div class="qrWrap">
-              <div class="qrBox">
-                <canvas id="qrCanvas" width="96" height="96"></canvas>
-              </div>
-              <div class="qrText">
-                <div class="muted" style="margin-bottom:6px;">
-                  QR для импорта в приложение (удобно на другом телефоне).
+            <div class="configCard hidden" id="configBox">
+              <div class="configTop">
+                <span class="badge ok">VLESS</span>
+                <div style="display:flex; gap:10px;">
+                  <button class="btn btnGhost" id="btnCopy" style="width:auto; padding:10px 12px; border-radius:16px;">Copy</button>
+                  <button class="btn btnGhost" id="btnOpenApp" style="width:auto; padding:10px 12px; border-radius:16px;" disabled>Open</button>
                 </div>
-                <div class="muted">
-                  Если QR не нужен — просто нажми <b>Copy</b>.
+              </div>
+              <div class="mono" id="configText"></div>
+
+              <div class="qrWrap">
+                <div class="qrBox">
+                  <canvas id="qrCanvas" width="96" height="96"></canvas>
+                </div>
+                <div class="qrText">
+                  <div class="muted" style="margin-bottom:6px;">
+                    QR для импорта (удобно на другом телефоне).
+                  </div>
+                  <div class="muted">
+                    Если QR не нужен — просто нажми <b>Copy</b>.
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="head">
-          <h2>Оплата</h2>
-          <small>Stars / USDT</small>
-        </div>
-        <div class="divider"></div>
-
-        <div class="body">
-          <div class="muted" style="margin-bottom:10px;">
-            Лучший UX: выбираешь тариф → оплатил → автоматом выдаём конфиг.
-          </div>
-          <button class="btn btnGold" id="btnQuickPayStars">Оплатить Stars (быстро)</button>
-
-          <div class="card hidden" id="payBox" style="margin-top:12px;">
-            <div class="head">
-              <h2>Статус заказа</h2>
-              <small><span class="badge warn" id="payStatus">pending</span></small>
-            </div>
-            <div class="divider"></div>
-            <div class="body">
-              <div class="muted" id="payMeta"></div>
-              <div class="muted" style="margin-top:10px;">Авто-проверка каждые ~1.2 сек. Когда станет <b>paid</b> — покажем конфиг и “Активна до…”.</div>
-            </div>
+            <div class="stopline"></div>
+            <div class="muted">Хочешь “по продукту” — оплата ниже, а конфиг появится автоматически после paid.</div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Plans screen -->
-    <div class="screen hidden" id="screenPlans">
-      <div class="card">
-        <div class="head">
-          <h2>Тарифы</h2>
-          <small>премиум-карточки</small>
-        </div>
-        <div class="divider"></div>
+        <!-- PLANS ON HOME (NO button, NO separate screen) -->
+        <div class="card">
+          <div class="head">
+            <h2>Тарифы</h2>
+            <small>Stars / USDT</small>
+          </div>
+          <div class="divider"></div>
 
-        <div class="body">
-          <div class="muted">Выбери длительность и устройства — кнопки оплаты станут “как продукт”.</div>
-
-          <div style="margin-top:12px;">
+          <div class="body">
             <div class="label">Длительность</div>
             <div class="segRow">
               <div class="seg active" data-days="30" id="seg30">30 дней</div>
               <div class="seg" data-days="90" id="seg90">90 дней</div>
               <div class="seg" data-days="180" id="seg180">180 дней</div>
             </div>
-          </div>
 
-          <div class="planGrid" id="planGrid">
-            <!-- injected by JS -->
-          </div>
+            <div class="planGrid" id="planGrid"></div>
 
-          <div class="muted" style="margin-top:10px;">
-            * Сейчас логика устройств — визуально. Потом привяжем к limit_ip/лимитам на бэке.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Guide -->
-    <div class="screen hidden" id="screenGuide">
-      <div class="card">
-        <div class="head">
-          <h2>Инструкции</h2>
-          <small>свайп</small>
-        </div>
-        <div class="divider"></div>
-
-        <div class="carousel">
-          <div class="slide">
-            <div class="slideTop">
-              <b>iOS</b>
-              <span class="chip">V2Box / Shadowrocket</span>
+            <div class="muted" style="margin-top:10px;">
+              * Сейчас “устройства” — UI. Потом привяжем к реальным лимитам.
             </div>
-            <div class="steps">
-              1) Получи конфиг<br/>
-              2) Нажми Copy<br/>
-              3) Import → From Clipboard<br/>
-              4) Connect
-            </div>
-          </div>
 
-          <div class="slide">
-            <div class="slideTop">
-              <b>Android</b>
-              <span class="chip">v2rayNG</span>
-            </div>
-            <div class="steps">
-              1) Получи конфиг<br/>
-              2) Copy<br/>
-              3) “+” → Import from Clipboard<br/>
-              4) Connect
-            </div>
-          </div>
-
-          <div class="slide">
-            <div class="slideTop">
-              <b>Desktop</b>
-              <span class="chip">Nekoray / v2rayN</span>
-            </div>
-            <div class="steps">
-              1) Copy конфиг<br/>
-              2) Импорт по ссылке/буферу<br/>
-              3) Подключись
-            </div>
-          </div>
-        </div>
-
-        <div class="body" style="padding-top:0">
-          <div class="muted">Свайпай карточки. Всё сделано под телефон.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Profile -->
-    <div class="screen hidden" id="screenProfile">
-      <div class="card">
-        <div class="head">
-          <h2>Профиль</h2>
-          <small>Telegram позже</small>
-        </div>
-        <div class="divider"></div>
-
-        <div class="body">
-          <div class="card" style="margin-top:0;">
-            <div class="head">
-              <h2>ID</h2>
-              <small><span class="badge" id="profileId">—</span></small>
-            </div>
-            <div class="divider"></div>
-            <div class="body">
-              <div class="row" style="margin-top:0;">
-                <button class="btn btnGhost" id="btnResetId">Новый ID</button>
-                <button class="btn btnGhost" id="btnHistory" disabled>История (скоро)</button>
+            <div class="card hidden" id="payBox" style="margin-top:12px;">
+              <div class="head">
+                <h2>Статус заказа</h2>
+                <small><span class="badge warn" id="payStatus">pending</span></small>
               </div>
-
-              <div style="margin-top:12px;">
-                <div class="label">Статус подписки</div>
-                <div class="row" style="margin-top:8px;">
-                  <div class="btn btnGhost" style="cursor:default; padding:12px; border-radius:18px; text-align:left;">
-                    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-                      <span class="muted">Состояние</span>
-                      <span class="badge warn" id="subStatus">Не оплачено</span>
-                    </div>
-                    <div class="muted" id="activeUntil" style="margin-top:8px;">Активна до: —</div>
-                  </div>
+              <div class="divider"></div>
+              <div class="body">
+                <div class="muted" id="payMeta"></div>
+                <div class="muted" style="margin-top:10px;">
+                  Авто-проверка каждые ~1.2 сек. Когда станет <b>paid</b> — покажем конфиг и “Активна до…”.
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div class="card">
-            <div class="head">
-              <h2>Рефералка</h2>
-              <small>+7 дней (UI)</small>
+      <!-- GUIDE -->
+      <div class="screen" id="screenGuide">
+        <div class="card">
+          <div class="head">
+            <h2>Инструкции</h2>
+            <small>свайп</small>
+          </div>
+          <div class="divider"></div>
+
+          <div class="carousel">
+            <div class="slide">
+              <div class="slideTop">
+                <b>iOS</b>
+                <span class="chip">V2Box / Shadowrocket</span>
+              </div>
+              <div class="steps">
+                1) Получи конфиг<br/>
+                2) Нажми Copy<br/>
+                3) Import → From Clipboard<br/>
+                4) Connect
+              </div>
             </div>
-            <div class="divider"></div>
-            <div class="body">
-              <button class="btn btnGhost" id="btnRefCreate">Создать реф-код</button>
-              <div class="muted" id="refOut" style="margin-top:10px;"></div>
+
+            <div class="slide">
+              <div class="slideTop">
+                <b>Android</b>
+                <span class="chip">v2rayNG</span>
+              </div>
+              <div class="steps">
+                1) Получи конфиг<br/>
+                2) Copy<br/>
+                3) “+” → Import from Clipboard<br/>
+                4) Connect
+              </div>
+            </div>
+
+            <div class="slide">
+              <div class="slideTop">
+                <b>Desktop</b>
+                <span class="chip">Nekoray / v2rayN</span>
+              </div>
+              <div class="steps">
+                1) Copy конфиг<br/>
+                2) Импорт по ссылке/буферу<br/>
+                3) Подключись
+              </div>
             </div>
           </div>
 
+          <div class="body" style="padding-top:0">
+            <div class="muted">Свайпай карточки. Всё сделано под телефон.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="screen" id="screenProfile">
+        <div class="card">
+          <div class="head">
+            <h2>Профиль</h2>
+            <small>Telegram позже</small>
+          </div>
+          <div class="divider"></div>
+
+          <div class="body">
+            <div class="card" style="margin-top:0;">
+              <div class="head">
+                <h2>ID</h2>
+                <small><span class="badge blue" id="profileId">—</span></small>
+              </div>
+              <div class="divider"></div>
+              <div class="body">
+                <div class="row" style="margin-top:0;">
+                  <button class="btn btnGhost" id="btnResetId">Новый ID</button>
+                  <button class="btn btnGhost" id="btnHistory" disabled>История (скоро)</button>
+                </div>
+
+                <div style="margin-top:12px;">
+                  <div class="label">Статус подписки</div>
+                  <div class="row" style="margin-top:8px;">
+                    <div class="btn btnGhost" style="cursor:default; padding:12px; border-radius:18px; text-align:left;">
+                      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                        <span class="muted">Состояние</span>
+                        <span class="badge warn" id="subStatus">Не оплачено</span>
+                      </div>
+                      <div class="muted" id="activeUntil" style="margin-top:8px;">Активна до: —</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="head">
+                <h2>Рефералка</h2>
+                <small>+7 дней (UI)</small>
+              </div>
+              <div class="divider"></div>
+              <div class="body">
+                <button class="btn btnGhost" id="btnRefCreate">Создать реф-код</button>
+                <div class="muted" id="refOut" style="margin-top:10px;"></div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
 
   </div>
 
-  <!-- Bottom nav -->
+  <!-- Bottom nav (NO plans tab) -->
   <div class="nav">
     <div class="navInner">
       <button class="tab active" id="tabHome">Главная</button>
-      <button class="tab" id="tabPlans">Тарифы</button>
       <button class="tab" id="tabGuide">Инструкции</button>
       <button class="tab" id="tabProfile">Профиль</button>
     </div>
@@ -922,7 +971,7 @@
   // ===== CONFIG =====
   const API_BASE = "https://api.45.133.251.210.nip.io:8443";
 
-  // UI prices (we can later load from backend)
+  // UI prices (можно потом подтягивать с бэка)
   const PRICES = {
     30:  { stars: 199, usdt: 3.0 },
     90:  { stars: 399, usdt: 7.0 },
@@ -984,7 +1033,7 @@
       if(!r.ok) throw new Error("health not ok");
       await r.json();
       $("apiText").textContent = "API: online";
-      $("apiDot").style.background = "#25E6A8";
+      $("apiDot").style.background = "#22E6AE";
       $("heroApi").textContent = "online";
       return true;
     }catch(e){
@@ -994,6 +1043,50 @@
       return false;
     }
   }
+
+  // ===== iOS-like screen transitions =====
+  const screens = {
+    home: $("screenHome"),
+    guide: $("screenGuide"),
+    profile: $("screenProfile")
+  };
+  let current = "home";
+
+  function setScreen(name){
+    if(name === current) return;
+
+    const next = name;
+    const dirLeft = (next === "home" && current !== "home"); // simple heuristic
+    Object.entries(screens).forEach(([key, el])=>{
+      el.classList.remove("active","fromLeft");
+      if(key !== next) el.style.pointerEvents = "none";
+    });
+
+    // Mark direction (optional)
+    if(dirLeft) screens[next].classList.add("fromLeft");
+
+    // Activate
+    screens[next].classList.add("active");
+    screens[next].style.pointerEvents = "auto";
+
+    // Set previous as fromLeft when leaving
+    if(!dirLeft) screens[current].classList.add("fromLeft");
+
+    current = next;
+
+    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+  }
+
+  function setTab(tab){
+    $("tabHome").classList.toggle("active", tab==="home");
+    $("tabGuide").classList.toggle("active", tab==="guide");
+    $("tabProfile").classList.toggle("active", tab==="profile");
+    setScreen(tab);
+  }
+
+  $("tabHome").onclick = ()=>setTab("home");
+  $("tabGuide").onclick = ()=>setTab("guide");
+  $("tabProfile").onclick = ()=>setTab("profile");
 
   // ===== CONFIG ISSUE =====
   let lastConfig = "";
@@ -1005,15 +1098,10 @@
         errorCorrectionLevel: "M",
         margin: 1,
         width: 96,
-        color: {
-          dark: "#ECF2FF",
-          light: "#00000000"
-        }
+        color: { dark: "#EDF3FF", light: "#00000000" }
       };
       await QRCode.toCanvas(canvas, text, opts);
-    }catch(e){
-      // ignore
-    }
+    }catch(e){}
   }
 
   async function issueConfig(){
@@ -1075,7 +1163,6 @@
   // ===== PAYMENTS + POLLING =====
   let pollTimer = null;
   let selectedDays = 30;
-  let selectedDevices = 1;
 
   function setSubscriptionUI({status, active_until, devices}){
     if(status === "paid" || status === "active"){
@@ -1101,6 +1188,10 @@
   async function pollOrder(orderId){
     if(pollTimer) clearInterval(pollTimer);
 
+    show($("payBox"));
+    $("payStatus").textContent = "pending";
+    $("payStatus").className = "badge warn";
+
     pollTimer = setInterval(async ()=>{
       try{
         const r = await fetch(API_BASE + "/pay/order/" + orderId, { method:"GET" });
@@ -1123,8 +1214,6 @@
             $("configText").textContent = lastConfig;
             await renderQR(lastConfig);
             show($("configBox"));
-          } else {
-            // если конфиг не пришёл — можно руками нажать "получить"
           }
 
           toast("Оплата успешна");
@@ -1136,6 +1225,7 @@
 
   async function payStars(days, devices){
     clearError();
+
     show($("payBox"));
     $("payStatus").textContent = "creating…";
     $("payStatus").className = "badge warn";
@@ -1152,9 +1242,7 @@
       const j = await r.json();
       if(!r.ok) throw new Error(j?.detail || "Stars create error");
 
-      $("payStatus").textContent = "pending";
       $("payMeta").textContent = `order: ${j.order_id}`;
-
       if(tg && tg.openInvoice){
         tg.openInvoice(j.invoice_link, ()=>{});
       } else {
@@ -1173,6 +1261,7 @@
 
   async function payUsdt(days, devices){
     clearError();
+
     show($("payBox"));
     $("payStatus").textContent = "creating…";
     $("payStatus").className = "badge warn";
@@ -1189,9 +1278,7 @@
       const j = await r.json();
       if(!r.ok) throw new Error(j?.detail || "Crypto create error");
 
-      $("payStatus").textContent = "pending";
       $("payMeta").textContent = `order: ${j.order_id}`;
-
       if(j.invoice_url){
         window.open(j.invoice_url, "_blank");
       } else {
@@ -1207,8 +1294,6 @@
       if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
     }
   }
-
-  $("btnQuickPayStars").addEventListener("click", ()=>payStars(30, 1));
 
   // ===== REF =====
   $("btnRefCreate").addEventListener("click", async ()=>{
@@ -1241,33 +1326,12 @@
     toast("Новый ID");
   });
 
-  // ===== Tabs / Screens =====
-  function setTab(tab){
-    const map = [
-      ["tabHome","screenHome"],
-      ["tabPlans","screenPlans"],
-      ["tabGuide","screenGuide"],
-      ["tabProfile","screenProfile"]
-    ];
-    map.forEach(([t,s])=>{
-      $(t).classList.toggle("active", t === tab);
-      $(s).classList.toggle("hidden", t !== tab);
-    });
-  }
-  $("tabHome").onclick = ()=>setTab("tabHome");
-  $("tabPlans").onclick = ()=>setTab("tabPlans");
-  $("tabGuide").onclick = ()=>setTab("tabGuide");
-  $("tabProfile").onclick = ()=>setTab("tabProfile");
-  $("btnGoPlans").onclick = ()=>setTab("tabPlans");
-
-  // ===== Plans UI =====
+  // ===== Plans (HOME) with hints =====
   function segSet(days){
     selectedDays = days;
-
     ["seg30","seg90","seg180"].forEach(id=>{
       $(id).classList.toggle("active", Number($(id).dataset.days) === days);
     });
-
     renderPlans();
   }
   $("seg30").onclick = ()=>segSet(30);
@@ -1281,10 +1345,18 @@
     const title = (devices === 1) ? "Solo" : (devices === 5 ? "Family" : "Squad");
     const meta  = (devices === 1)
       ? "1 устройство • максимум приватности"
-      : (devices === 5 ? "5 устройств • идеально для семьи" : "10 устройств • команда/друзья");
+      : (devices === 5 ? "5 устройств • удобно для семьи" : "10 устройств • для команды");
+
+    // hints
+    let ribbon = "";
+    // "Популярно" -> 90 days + 5 devices (example)
+    if (selectedDays === 90 && devices === 5) ribbon = `<div class="ribbon pop">Популярно</div>`;
+    // "Выгоднее" -> 180 days + 10 devices (example)
+    if (selectedDays === 180 && devices === 10) ribbon = `<div class="ribbon best">Выгоднее</div>`;
 
     return `
       <div class="plan">
+        ${ribbon}
         <div class="planTop">
           <div>
             <p class="planName">${title} • ${devices} устройств</p>
@@ -1310,21 +1382,18 @@
     grid.querySelectorAll("button[data-pay]").forEach(btn=>{
       btn.addEventListener("click", async ()=>{
         const dev = Number(btn.dataset.dev);
-        selectedDevices = dev;
 
-        // go back home for status box
-        setTab("tabHome");
-
+        // keep user on home (plans are here)
         if(btn.dataset.pay === "stars"){
           await payStars(selectedDays, dev);
         } else {
           await payUsdt(selectedDays, dev);
         }
+
+        // update hero devices display
+        $("heroDevicesStat").textContent = dev + " устройств";
       });
     });
-
-    // preview in hero
-    $("heroDevicesStat").textContent = selectedDevices ? (selectedDevices + " устройств") : "—";
   }
 
   // ===== Init =====
@@ -1343,8 +1412,7 @@
     await pingApi();
     setInterval(pingApi, 12000);
 
-    // default subscription UI
-    setSubscriptionUI({ status: "none", active_until: null, devices: selectedDevices });
+    setSubscriptionUI({ status: "none", active_until: null, devices: null });
   })();
 </script>
 </body>
