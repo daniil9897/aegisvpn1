@@ -10,96 +10,59 @@
 
   <style>
     :root{
-      /* Darker, more premium */
-      --bg0:#01030B;
-      --bg1:#020617;
-      --bg2:#050B20;
+      --bg:#070A10;
+      --panel:#0C101A;
+      --panel2:#0A0E17;
+      --line:rgba(255,255,255,.09);
 
-      --text:#EEF3FF;
-      --text2:rgba(238,243,255,.78);
-      --muted:rgba(238,243,255,.55);
+      --text:#F4F6FF;
+      --muted:rgba(244,246,255,.62);
 
-      --line:rgba(255,255,255,.10);
-      --line2:rgba(255,255,255,.14);
+      --blue:#2F6BFF;
+      --blue2:#1D4ED8;
 
-      --blue:#2D6BFF;
-      --blue2:#0D2F87;
+      --ok:#22C55E;
+      --warn:#F59E0B;
+      --bad:#EF4444;
 
-      --gold:#D7B46A;
-      --gold2:#F4E0AE;
+      --r12:12px;
+      --r16:16px;
+      --r20:20px;
 
-      --ok:#20E6B2;
-      --warn:#FFC457;
-      --bad:#FF5B6B;
-
-      --glass: rgba(255,255,255,.05);
-      --glass2: rgba(255,255,255,.08);
-
-      --shadow: 0 22px 70px rgba(0,0,0,.68);
-      --shadow2: 0 14px 42px rgba(0,0,0,.48);
-
-      --r14:14px;
-      --r18:18px;
-      --r22:22px;
-      --r26:26px;
-
-      --pad:14px;
-      --ease: cubic-bezier(.22,.9,.22,1);
+      --shadow: 0 10px 30px rgba(0,0,0,.42);
+      --ease: cubic-bezier(.2,.8,.2,1);
     }
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display","SF Pro Text", Segoe UI, Roboto, Arial;
-      color:var(--text);
-      background:
-        radial-gradient(980px 700px at 15% -10%, rgba(45,107,255,.22), transparent 60%),
-        radial-gradient(820px 600px at 92% 6%, rgba(215,180,106,.10), transparent 62%),
-        radial-gradient(800px 650px at 18% 95%, rgba(255,255,255,.05), transparent 70%),
-        linear-gradient(180deg, var(--bg0), var(--bg2) 52%, var(--bg0));
-      overflow-x:hidden;
-    }
-
-    /* micro grain (very subtle) */
-    body::before{
-      content:"";
-      position:fixed; inset:0;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.14'/%3E%3C/svg%3E");
-      opacity:.06;
-      pointer-events:none;
-      mix-blend-mode: overlay;
+      font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Text","SF Pro Display", Segoe UI, Roboto, Arial;
+      background: radial-gradient(900px 500px at 50% -20%, rgba(47,107,255,.08), transparent 60%), var(--bg);
+      color: var(--text);
+      -webkit-tap-highlight-color: transparent;
     }
 
     .app{
       max-width:520px;
       margin:0 auto;
-      padding: 10px var(--pad) 118px;
-      position:relative;
-      z-index:1;
+      padding: 12px 14px 104px;
     }
 
-    /* topbar more compact */
-    .topbar{
-      position:sticky;
-      top: 0;
-      z-index:30;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      background: linear-gradient(180deg, rgba(1,3,11,.92), rgba(1,3,11,.55), rgba(1,3,11,0));
-      backdrop-filter: blur(14px);
+    /* top */
+    .top{
+      position: sticky;
+      top:0;
+      padding: 10px 0;
+      background: linear-gradient(180deg, rgba(7,10,16,.96), rgba(7,10,16,.72), rgba(7,10,16,0));
+      backdrop-filter: blur(10px);
+      z-index:20;
     }
-    .topbarInner{
-      border-radius: var(--r26);
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      box-shadow: 0 12px 28px rgba(0,0,0,.34);
-      padding: 10px 10px;
+    .topRow{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap: 10px;
-      backdrop-filter: blur(14px);
+      gap:10px;
     }
     .brand{
       display:flex;
@@ -107,497 +70,258 @@
       gap:10px;
       min-width:0;
     }
-    .mark{
-      width:38px; height:38px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(18px 18px at 28% 30%, rgba(45,107,255,.32), transparent 60%),
-        radial-gradient(24px 24px at 72% 22%, rgba(215,180,106,.14), transparent 65%),
-        rgba(255,255,255,.04);
-      box-shadow: 0 16px 46px rgba(0,0,0,.40);
+    .logo{
+      width:34px; height:34px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.05);
+      border:1px solid var(--line);
       display:flex;
       align-items:center;
       justify-content:center;
-      overflow:hidden;
-      position:relative;
     }
-    .mark::before{
-      content:"";
-      position:absolute; inset:-50%;
-      background: conic-gradient(from 180deg,
-        rgba(45,107,255,0),
-        rgba(45,107,255,.26),
-        rgba(255,255,255,.10),
-        rgba(215,180,106,.12),
-        rgba(45,107,255,0));
-      opacity:.45;
-      filter: blur(7px);
-      animation: spin 10s linear infinite;
-    }
-    @keyframes spin{ to{ transform: rotate(360deg); } }
-    .mark svg{ position:relative; z-index:2; }
-
-    .brandText{ min-width:0; }
-    .name{
-      margin:0;
-      font-weight: 950;
-      letter-spacing:.9px;
+    .brand b{
       font-size: 13px;
-      line-height: 1.05;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      letter-spacing:.4px;
+      display:block;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
-    .tag{
-      margin:6px 0 0;
+    .brand span{
+      display:block;
+      margin-top:4px;
       font-size: 12px;
       color: var(--muted);
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
-
     .pill{
-      display:inline-flex;
+      display:flex;
       align-items:center;
       gap:8px;
-      padding: 7px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      color: rgba(255,255,255,.86);
+      padding: 8px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
       font-size: 12px;
-      white-space:nowrap;
-      backdrop-filter: blur(12px);
-    }
-    .dot{
-      width:8px; height:8px;
-      border-radius:50%;
-      background: rgba(255,255,255,.55);
-      box-shadow: 0 0 16px rgba(45,107,255,.42);
-    }
-
-    /* hero more compact (less empty) */
-    .hero{
-      margin-top: 8px;
-      border-radius: var(--r26);
-      border:1px solid rgba(255,255,255,.10);
-      background:
-        radial-gradient(860px 360px at 16% -10%, rgba(45,107,255,.18), transparent 62%),
-        radial-gradient(700px 360px at 100% 0%, rgba(215,180,106,.08), transparent 58%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
-      box-shadow: var(--shadow2);
-      padding: 14px;
-      backdrop-filter: blur(14px);
-    }
-    .heroTitle{
-      margin:0;
-      font-size: 17px;
-      font-weight: 950;
-      letter-spacing:.2px;
-      line-height:1.18;
-    }
-    .heroSub{
-      margin:8px 0 0;
-      font-size: 12.5px;
-      line-height:1.55;
       color: var(--muted);
+      white-space:nowrap;
     }
+    .dot{ width:8px; height:8px; border-radius:999px; background: rgba(255,255,255,.3); }
 
-    .miniStats{
-      margin-top: 10px;
-      display:flex;
-      gap:10px;
-    }
-    .stat{
-      flex:1;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      padding: 10px;
-      min-width:0;
-    }
-    .stat b{
-      display:block;
-      font-size: 12px;
-      letter-spacing:.2px;
-      margin-bottom: 6px;
-      color: rgba(255,255,255,.92);
-    }
-    .stat span{
-      font-size: 12px;
-      color: rgba(255,255,255,.66);
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-
+    /* cards */
     .card{
-      margin-top: 10px;
-      border-radius: var(--r26);
-      border:1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.028));
-      box-shadow: var(--shadow2);
+      background: rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      border-radius: var(--r20);
+      box-shadow: var(--shadow);
       overflow:hidden;
-      backdrop-filter: blur(14px);
     }
-    .head{
+    .cardHead{
       padding: 12px 14px 10px;
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
       gap:10px;
     }
-    .head h2{
+    .cardHead h2{
       margin:0;
       font-size: 12px;
-      letter-spacing:.38px;
+      letter-spacing:.32px;
       text-transform:uppercase;
-      font-weight: 950;
-      color: rgba(255,255,255,.90);
+      color: rgba(244,246,255,.86);
     }
-    .head small{
-      color: rgba(255,255,255,.55);
-      font-size: 12px;
+    .cardHead small{
+      font-size:12px;
+      color: var(--muted);
       text-align:right;
     }
-    .divider{
+    .hr{
       height:1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent);
+      background: var(--line);
       margin: 0 14px;
     }
-    .body{ padding: 12px 14px 14px; }
-    .muted{ color: rgba(255,255,255,.60); font-size: 12px; line-height:1.5; }
-    .hidden{ display:none !important; }
+    .cardBody{ padding: 12px 14px 14px; }
+
+    .hero{
+      margin-top: 10px;
+      padding: 14px;
+    }
+    .heroTitle{
+      margin:0;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing:.1px;
+    }
+    .heroSub{
+      margin: 8px 0 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    .row3{
+      margin-top: 12px;
+      display:flex;
+      gap:10px;
+    }
+    .mini{
+      flex:1;
+      border-radius: var(--r16);
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.12);
+      padding: 10px;
+      min-width:0;
+    }
+    .mini b{
+      display:block;
+      font-size: 12px;
+      color: rgba(244,246,255,.9);
+      margin-bottom: 6px;
+    }
+    .mini span{
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    /* form */
+    .label{ font-size:12px; color: var(--muted); margin-bottom:8px; }
+    .input{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: var(--r16);
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.16);
+      color: var(--text);
+      outline:none;
+      font-size: 14px;
+    }
+    .input::placeholder{ color: rgba(244,246,255,.35); }
 
     /* buttons */
     .btn{
       width:100%;
-      padding: 14px 14px;
-      border-radius: 18px;
-      border: 0;
+      border:0;
+      border-radius: var(--r16);
+      padding: 13px 14px;
+      font-weight: 800;
+      letter-spacing:.2px;
       cursor:pointer;
-      font-weight: 950;
-      letter-spacing:.25px;
-      transition: transform .10s var(--ease), filter .16s var(--ease), box-shadow .16s var(--ease);
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s var(--ease), opacity .12s var(--ease);
     }
-    .btn:active{ transform: translateY(1px) scale(.995); }
+    .btn:active{ transform: translateY(1px); }
     .btn[disabled]{ opacity:.55; cursor:not-allowed; }
-
     .btnPrimary{
+      background: linear-gradient(180deg, var(--blue), var(--blue2));
       color:#fff;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 34%),
-        linear-gradient(180deg, var(--blue), var(--blue2));
-      box-shadow: 0 18px 44px rgba(45,107,255,.20);
-    }
-    .btnGold{
-      color:#1A1406;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,0) 35%),
-        linear-gradient(180deg, var(--gold2), var(--gold));
-      box-shadow: 0 18px 44px rgba(215,180,106,.12);
     }
     .btnGhost{
-      color: rgba(255,255,255,.86);
-      background: rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: 0 12px 26px rgba(0,0,0,.24);
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      color: rgba(244,246,255,.88);
     }
 
-    .field{ display:grid; gap:8px; margin-bottom: 10px; }
-    .label{ font-size: 12px; color: rgba(255,255,255,.62); }
-
-    .input{
-      width:100%;
-      padding: 13px 12px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
-      color: rgba(255,255,255,.92);
-      outline:none;
-      font-size: 14px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
-    }
-    .input::placeholder{ color: rgba(255,255,255,.40); }
-
+    /* badges */
     .badge{
       display:inline-flex;
       align-items:center;
-      gap:8px;
-      padding: 6px 10px;
-      border-radius:999px;
+      padding: 5px 9px;
+      border-radius: 999px;
       font-size: 12px;
-      font-weight: 950;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.84);
-      white-space:nowrap;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.14);
+      color: rgba(244,246,255,.78);
+      font-weight: 800;
     }
-    .badge.ok{ border-color: rgba(32,230,178,.28); color: var(--ok); }
-    .badge.warn{ border-color: rgba(255,196,87,.28); color: var(--warn); }
-    .badge.bad{ border-color: rgba(255,91,107,.30); color: var(--bad); }
-    .badge.blue{ border-color: rgba(45,107,255,.30); color: rgba(169,199,255,.95); }
+    .bOk{ color: var(--ok); border-color: rgba(34,197,94,.25); }
+    .bWarn{ color: var(--warn); border-color: rgba(245,158,11,.25); }
+    .bBad{ color: var(--bad); border-color: rgba(239,68,68,.25); }
 
-    /* compact config box */
-    .configCard{
-      margin-top: 10px;
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(520px 220px at 22% 0%, rgba(45,107,255,.12), transparent 64%),
-        radial-gradient(520px 220px at 96% 20%, rgba(215,180,106,.07), transparent 66%),
-        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+    /* config */
+    .config{
+      margin-top: 12px;
+      border-radius: var(--r20);
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.14);
       padding: 12px;
-      box-shadow: 0 14px 36px rgba(0,0,0,.34);
     }
     .configTop{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .miniBtn{
-      width:auto;
-      padding: 10px 12px;
-      border-radius: 14px;
-      font-weight: 950;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      color: rgba(255,255,255,.88);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: rgba(244,246,255,.9);
+      border-radius: 12px;
+      padding: 9px 10px;
+      font-weight: 800;
       cursor:pointer;
     }
     .mono{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 12px;
-      line-height:1.35;
-      word-break:break-all;
-      color: rgba(255,255,255,.92);
+      line-height: 1.35;
+      color: rgba(244,246,255,.92);
+      word-break: break-all;
     }
-    .qrWrap{
+    .qrRow{
+      margin-top: 12px;
       display:flex;
       gap:12px;
       align-items:flex-start;
-      margin-top: 10px;
     }
     .qrBox{
       width:110px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.16);
+      border-radius: var(--r16);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
       padding: 10px;
       display:flex;
       align-items:center;
       justify-content:center;
     }
-    canvas{ border-radius: 12px; }
-
-    /* ===== COMPACT TARIFFS WITH ONE PAY BUTTON ===== */
-    .segRow{
-      display:flex;
-      gap:10px;
-      margin-top: 6px;
-    }
-    .seg{
-      flex:1;
-      padding: 10px 10px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      color: rgba(255,255,255,.70);
-      font-weight: 950;
-      cursor:pointer;
-      text-align:center;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .12s var(--ease);
-    }
-    .seg:active{ transform: scale(.99); }
-    .seg.active{
-      color:#fff;
-      border-color: rgba(45,107,255,.35);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,0) 34%),
-        linear-gradient(180deg, var(--blue), var(--blue2));
-      box-shadow: 0 16px 34px rgba(45,107,255,.14);
-    }
-
-    /* tariff list */
-    .planList{ display:grid; gap:10px; margin-top: 10px; }
-    .planRow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding: 12px 12px;
-      border-radius: 20px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .12s var(--ease), border-color .12s var(--ease), background .12s var(--ease);
-      position:relative;
-      overflow:hidden;
-    }
-    .planRow:active{ transform: scale(.995); }
-    .planRow.selected{
-      border-color: rgba(45,107,255,.36);
-      background:
-        radial-gradient(520px 240px at 20% 0%, rgba(45,107,255,.14), transparent 64%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      box-shadow: 0 16px 38px rgba(0,0,0,.28);
-    }
-    .planLeft{ min-width:0; }
-    .planTitle{
-      margin:0;
-      font-weight: 950;
-      font-size: 13px;
-      letter-spacing:.2px;
-      color: rgba(255,255,255,.92);
-    }
-    .planDesc{
-      margin:6px 0 0;
-      font-size: 12px;
-      color: rgba(255,255,255,.60);
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .planRight{
-      text-align:right;
-      white-space:nowrap;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      align-items:flex-end;
-    }
-    .pPrice{
-      font-weight: 950;
-      font-size: 14px;
-      color: rgba(255,255,255,.95);
-    }
-    .hint{
-      font-size: 11px;
-      padding: 5px 8px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.14);
-      color: rgba(255,255,255,.70);
-    }
-    .hint.pop{ border-color: rgba(45,107,255,.26); color: rgba(169,199,255,.95); }
-    .hint.best{ border-color: rgba(215,180,106,.22); color: rgba(244,224,174,.95); }
-
-    /* pay bar inside card (one button) */
-    .payBar{
-      margin-top: 12px;
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      padding: 12px;
-      box-shadow: 0 14px 36px rgba(0,0,0,.26);
-    }
-    .payTop{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 10px;
-    }
-    .payInfo{
-      min-width:0;
-    }
-    .payInfo b{
-      display:block;
-      font-size: 13px;
-      letter-spacing:.15px;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .payInfo span{
-      display:block;
-      margin-top: 6px;
-      font-size: 12px;
-      color: rgba(255,255,255,.60);
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-
-    .paySwitch{
-      display:flex;
-      gap:8px;
-      padding: 6px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-    }
-    .payPill{
-      padding: 8px 10px;
-      border-radius: 999px;
-      border:1px solid transparent;
-      background: transparent;
-      color: rgba(255,255,255,.72);
-      font-weight: 950;
-      cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .payPill.active{
-      border-color: rgba(255,255,255,.12);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,0) 40%),
-        rgba(0,0,0,.22);
-      color: rgba(255,255,255,.92);
-    }
+    canvas{ border-radius: 10px; }
 
     /* toast */
     .toast{
-      position: fixed;
-      left: 50%;
+      position:fixed;
+      left:50%;
       transform: translateX(-50%);
-      bottom: 96px;
-      background: rgba(0,0,0,.42);
-      border:1px solid rgba(255,255,255,.12);
-      backdrop-filter: blur(12px);
-      color: rgba(255,255,255,.92);
+      bottom: 90px;
       padding: 10px 12px;
       border-radius: 999px;
-      box-shadow: 0 16px 44px rgba(0,0,0,.38);
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      color: rgba(244,246,255,.92);
+      font-size: 12px;
+      font-weight: 800;
       opacity:0;
       pointer-events:none;
       transition: opacity .18s var(--ease), transform .18s var(--ease);
       z-index:60;
-      font-weight: 950;
-      font-size: 12px;
     }
     .toast.show{
       opacity:1;
       transform: translateX(-50%) translateY(-6px);
     }
 
-    /* iOS-like screen transitions */
-    .screens{
-      position:relative;
-      min-height: 780px;
-    }
-    .screen{
-      position:absolute;
-      inset:0;
-      opacity:0;
-      transform: translateX(16px);
-      filter: blur(2px);
-      pointer-events:none;
-      transition: opacity .22s var(--ease), transform .22s var(--ease), filter .22s var(--ease);
-      will-change: opacity, transform, filter;
-    }
-    .screen.active{
-      opacity:1;
-      transform: translateX(0);
-      filter: blur(0);
-      pointer-events:auto;
-    }
-    .screen.fromLeft{ transform: translateX(-16px); }
-
-    /* bottom nav */
+    /* nav */
     .nav{
       position:fixed;
       left:0; right:0; bottom:0;
       padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(1,3,11,.72);
-      border-top: 1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(14px);
-      z-index:40;
+      border-top:1px solid var(--line);
+      background: rgba(7,10,16,.84);
+      backdrop-filter: blur(10px);
+      z-index:30;
     }
     .navInner{
       max-width:520px;
@@ -608,30 +332,201 @@
     .tab{
       flex:1;
       padding: 12px 10px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      color: rgba(255,255,255,.68);
-      font-weight: 950;
-      letter-spacing:.15px;
+      border-radius: var(--r16);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: rgba(244,246,255,.70);
+      font-weight: 800;
       cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .12s var(--ease);
     }
-    .tab:active{ transform: scale(.99); }
     .tab.active{
-      color:#fff;
-      border-color: rgba(45,107,255,.35);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,0) 34%),
-        linear-gradient(180deg, var(--blue), var(--blue2));
-      box-shadow: 0 16px 36px rgba(45,107,255,.14);
+      background: rgba(47,107,255,.12);
+      border-color: rgba(47,107,255,.30);
+      color: rgba(244,246,255,.92);
     }
 
-    /* guide carousel */
+    /* screens */
+    .screens{ position:relative; min-height: 760px; margin-top: 10px; }
+    .screen{
+      position:absolute; inset:0;
+      opacity:0;
+      transform: translateX(12px);
+      pointer-events:none;
+      transition: opacity .20s var(--ease), transform .20s var(--ease);
+    }
+    .screen.active{
+      opacity:1;
+      transform: translateX(0);
+      pointer-events:auto;
+    }
+    .screen.fromLeft{ transform: translateX(-12px); }
+
+    /* modal */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s var(--ease);
+      z-index:50;
+      padding: 16px 14px calc(16px + env(safe-area-inset-bottom));
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+    }
+    .overlay.show{ opacity:1; pointer-events:auto; }
+    .sheet{
+      width:min(520px, 100%);
+      border-radius: var(--r20);
+      border:1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      transform: translateY(14px);
+      opacity:0;
+      transition: transform .20s var(--ease), opacity .20s var(--ease);
+      overflow:hidden;
+    }
+    .overlay.show .sheet{ transform: translateY(0); opacity:1; }
+    .sheetTop{
+      padding: 12px 14px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      background: rgba(255,255,255,.02);
+    }
+    .sheetTitle b{ display:block; font-size: 13px; font-weight: 900; }
+    .sheetTitle span{ display:block; margin-top:6px; font-size: 12px; color: var(--muted); }
+    .xbtn{
+      width:40px; height:40px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: rgba(244,246,255,.9);
+      cursor:pointer;
+      font-weight: 900;
+    }
+    .sheetBody{ padding: 12px 14px 14px; }
+
+    .planGrid{ display:grid; gap:10px; }
+    .plan{
+      border-radius: var(--r16);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      padding: 12px;
+      cursor:pointer;
+      transition: border-color .12s var(--ease), background .12s var(--ease);
+    }
+    .plan.selected{
+      border-color: rgba(47,107,255,.38);
+      background: rgba(47,107,255,.08);
+    }
+    .planTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .planName{
+      margin:0;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing:.1px;
+    }
+    .planSub{
+      margin:6px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .price{
+      font-size: 13px;
+      font-weight: 900;
+      white-space:nowrap;
+      color: rgba(244,246,255,.92);
+    }
+    .tag{
+      margin-top: 8px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .chip{
+      font-size: 11px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.14);
+      color: rgba(244,246,255,.72);
+      font-weight: 800;
+    }
+    .chip.pop{ border-color: rgba(47,107,255,.30); color: rgba(180,205,255,.95); }
+    .chip.best{ border-color: rgba(245,158,11,.22); color: rgba(255,220,160,.95); }
+
+    .paySwitch{
+      margin-top: 12px;
+      display:flex;
+      gap:8px;
+      padding: 6px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.02);
+    }
+    .payPill{
+      flex:1;
+      border-radius: 999px;
+      border:1px solid transparent;
+      background: transparent;
+      padding: 9px 10px;
+      color: rgba(244,246,255,.72);
+      font-weight: 900;
+      cursor:pointer;
+    }
+    .payPill.active{
+      border-color: var(--line);
+      background: rgba(255,255,255,.03);
+      color: rgba(244,246,255,.92);
+    }
+
+    .sheetFooter{
+      border-top:1px solid var(--line);
+      background: rgba(0,0,0,.14);
+      padding: 12px 14px 14px;
+    }
+    .footRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .footRow b{
+      font-size: 12px;
+      color: rgba(244,246,255,.90);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .footRow span{
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    .err{
+      display:none;
+      margin-top: 10px;
+      border-radius: var(--r16);
+      border:1px solid rgba(239,68,68,.26);
+      background: rgba(239,68,68,.06);
+      padding: 10px 12px;
+      font-size: 12px;
+      color: rgba(244,246,255,.82);
+    }
+
+    /* guide carousel minimal */
     .carousel{
       display:flex;
-      gap:12px;
+      gap:10px;
       overflow:auto;
       scroll-snap-type:x mandatory;
       -webkit-overflow-scrolling:touch;
@@ -641,13 +536,10 @@
     .slide{
       min-width: 86%;
       scroll-snap-align:start;
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(520px 240px at 18% 0%, rgba(45,107,255,.14), transparent 64%),
-        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      padding: 14px;
-      box-shadow: 0 14px 34px rgba(0,0,0,.30);
+      border-radius: var(--r16);
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.12);
+      padding: 12px;
     }
     .slideTop{
       display:flex;
@@ -656,74 +548,98 @@
       gap:10px;
       margin-bottom: 10px;
     }
-    .chip{
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.14);
-      color: rgba(255,255,255,.70);
-      white-space:nowrap;
-    }
     .steps{
       font-size: 13px;
-      color: rgba(255,255,255,.74);
-      line-height: 1.65;
+      color: rgba(244,246,255,.72);
+      line-height: 1.6;
     }
-
-    /* error box */
-    .errCard{
-      display:none;
-      margin-top: 10px;
-      border-radius: var(--r22);
-      border:1px solid rgba(255,91,107,.26);
-      background: rgba(255,91,107,.06);
-      padding: 12px;
-    }
-    .errCard b{ color: var(--bad); }
-    .errCard span{ display:block; margin-top:6px; color: rgba(255,255,255,.74); font-size: 12px; }
   </style>
 </head>
 
 <body>
   <div class="toast" id="toast">Скопировано</div>
 
-  <div class="app">
-    <div class="topbar">
-      <div class="topbarInner">
-        <div class="brand">
-          <div class="mark" aria-hidden="true">
-            <svg width="18" height="24" viewBox="0 0 22 28" fill="none">
-              <path d="M12.9 2H21L12 14.4H18.9L7.3 26L9.8 15.1H3L12.9 2Z" fill="rgba(255,255,255,.92)"/>
-            </svg>
+  <!-- MODAL -->
+  <div class="overlay" id="overlay">
+    <div class="sheet" role="dialog" aria-modal="true">
+      <div class="sheetTop">
+        <div class="sheetTitle">
+          <b>Тариф</b>
+          <span>Выбери — затем одна кнопка оплаты</span>
+        </div>
+        <button class="xbtn" id="modalClose">✕</button>
+      </div>
+
+      <div class="sheetBody">
+        <div class="planGrid" id="planGrid"></div>
+
+        <div class="paySwitch">
+          <button class="payPill active" id="payStars">Stars</button>
+          <button class="payPill" id="payUsdt">USDT</button>
+        </div>
+
+        <div class="err" id="errModal"></div>
+      </div>
+
+      <div class="sheetFooter">
+        <div class="footRow">
+          <b id="selTitle">—</b>
+          <span id="selPrice">—</span>
+        </div>
+        <button class="btn btnPrimary" id="btnPayModal">Оплатить</button>
+
+        <div class="card" id="orderBox" style="display:none; margin-top:12px;">
+          <div class="cardHead">
+            <h2>Заказ</h2>
+            <small><span class="badge bWarn" id="orderStatus">pending</span></small>
           </div>
-          <div class="brandText">
-            <p class="name">ZEUSVPN</p>
-            <p class="tag">Thunder-class • Premium VLESS</p>
+          <div class="hr"></div>
+          <div class="cardBody">
+            <div class="label" style="margin:0;">Статус проверяется каждые ~1.2 сек</div>
+            <div class="label" id="orderMeta" style="margin-top:8px;">—</div>
           </div>
         </div>
 
-        <div class="pill" id="apiPill">
+      </div>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="top">
+      <div class="topRow">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">
+            <svg width="16" height="20" viewBox="0 0 22 28" fill="none">
+              <path d="M12.9 2H21L12 14.4H18.9L7.3 26L9.8 15.1H3L12.9 2Z" fill="rgba(244,246,255,.9)"/>
+            </svg>
+          </div>
+          <div style="min-width:0;">
+            <b>ZEUSVPN</b>
+            <span>Minimal • Dark • Fast</span>
+          </div>
+        </div>
+
+        <div class="pill">
           <span class="dot" id="apiDot"></span>
-          <span id="apiText">API: checking…</span>
+          <span id="apiText">API…</span>
         </div>
       </div>
     </div>
 
-    <div class="hero">
-      <p class="heroTitle">Премиум VPN. Темнее. Чище. Дороже.</p>
-      <p class="heroSub">Выбираешь тариф → нажимаешь “Оплатить” → после paid показываем конфиг + “Активна до…”.</p>
+    <div class="card hero">
+      <h1 class="heroTitle">Премиум без лишнего.</h1>
+      <p class="heroSub">Нажми “Получить конфиг” → выбери тариф → оплата → конфиг + Copy.</p>
 
-      <div class="miniStats">
-        <div class="stat">
+      <div class="row3">
+        <div class="mini">
           <b>Подписка</b>
-          <span id="heroSubStat">не оплачено</span>
+          <span id="heroSubStat">—</span>
         </div>
-        <div class="stat">
+        <div class="mini">
           <b>Устройства</b>
-          <span id="heroDevicesStat">—</span>
+          <span id="heroDevices">—</span>
         </div>
-        <div class="stat">
+        <div class="mini">
           <b>API</b>
           <span id="heroApi">—</span>
         </div>
@@ -733,105 +649,39 @@
     <div class="screens">
       <!-- HOME -->
       <div class="screen active" id="screenHome">
-
         <div class="card">
-          <div class="head">
+          <div class="cardHead">
             <h2>Конфиг</h2>
-            <small>личный</small>
+            <small>после оплаты</small>
           </div>
-          <div class="divider"></div>
+          <div class="hr"></div>
+          <div class="cardBody">
+            <div class="label">ID пользователя (позже Telegram ID)</div>
+            <input class="input" id="userKey" placeholder="например: zeus-1234" />
+            <div class="label" style="margin-top:10px;">Если пусто — создадим автоматически.</div>
 
-          <div class="body">
-            <div class="field">
-              <div class="label">ID пользователя (позже будет Telegram ID)</div>
-              <input class="input" id="userKey" placeholder="например: zeus-1234" />
-              <div class="muted">Можно пусто — сделаем ID автоматически.</div>
-            </div>
+            <div style="height:10px;"></div>
+            <button class="btn btnPrimary" id="btnOpenPlans">Получить конфиг</button>
 
-            <button class="btn btnPrimary" id="btnGetConfig">Получить конфиг</button>
-
-            <div class="errCard" id="errBox">
-              <b>Ошибка</b>
-              <span id="errText"></span>
-            </div>
-
-            <div class="configCard hidden" id="configBox">
+            <div class="config" id="configBox" style="display:none;">
               <div class="configTop">
-                <span class="badge ok">VLESS</span>
-                <div style="display:flex; gap:10px;">
-                  <button class="miniBtn" id="btnCopy">Copy</button>
-                  <button class="miniBtn" id="btnOpenApp" disabled>Open</button>
-                </div>
+                <span class="badge bOk">VLESS</span>
+                <button class="miniBtn" id="btnCopy">Copy</button>
               </div>
               <div class="mono" id="configText"></div>
 
-              <div class="qrWrap">
+              <div class="qrRow">
                 <div class="qrBox">
                   <canvas id="qrCanvas" width="96" height="96"></canvas>
                 </div>
-                <div style="flex:1; min-width:0;">
-                  <div class="muted" style="margin-bottom:6px;">QR для импорта (удобно на другом устройстве).</div>
-                  <div class="muted">Если QR не нужен — просто Copy.</div>
+                <div style="min-width:0;">
+                  <div class="label" style="margin:0;">QR для импорта (по желанию)</div>
+                  <div class="label" style="margin-top:8px;">Если не нужен — просто Copy.</div>
                 </div>
               </div>
             </div>
 
-          </div>
-        </div>
-
-        <!-- TARIFFS COMPACT + ONE PAY BUTTON -->
-        <div class="card">
-          <div class="head">
-            <h2>Тариф</h2>
-            <small>выбор → оплата</small>
-          </div>
-          <div class="divider"></div>
-
-          <div class="body">
-            <div class="label">Срок</div>
-            <div class="segRow">
-              <div class="seg active" data-days="30" id="seg30">30</div>
-              <div class="seg" data-days="90" id="seg90">90</div>
-              <div class="seg" data-days="180" id="seg180">180</div>
-            </div>
-
-            <div class="label" style="margin-top:12px;">Устройства</div>
-            <div class="planList" id="planList"></div>
-
-            <div class="payBar" id="payBar">
-              <div class="payTop">
-                <div class="payInfo">
-                  <b id="payTitle">—</b>
-                  <span id="paySub">—</span>
-                </div>
-
-                <div class="paySwitch">
-                  <button class="payPill active" id="payStars">Stars</button>
-                  <button class="payPill" id="payUsdt">USDT</button>
-                </div>
-              </div>
-
-              <button class="btn btnGold" id="btnPay">Оплатить</button>
-
-              <div class="card hidden" id="orderBox" style="margin-top:12px;">
-                <div class="head">
-                  <h2>Заказ</h2>
-                  <small><span class="badge warn" id="orderStatus">pending</span></small>
-                </div>
-                <div class="divider"></div>
-                <div class="body">
-                  <div class="muted" id="orderMeta"></div>
-                  <div class="muted" style="margin-top:10px;">
-                    Авто-проверка каждые ~1.2 сек. Когда <b>paid</b> — покажем “Активна до…” и конфиг (если бэк отдаст).
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="muted" style="margin-top:10px;">
-              * Сейчас “устройства” — UI. Потом подключим реальные лимиты.
-            </div>
+            <div class="err" id="errHome"></div>
           </div>
         </div>
       </div>
@@ -839,22 +689,22 @@
       <!-- GUIDE -->
       <div class="screen" id="screenGuide">
         <div class="card">
-          <div class="head">
+          <div class="cardHead">
             <h2>Инструкции</h2>
             <small>свайп</small>
           </div>
-          <div class="divider"></div>
+          <div class="hr"></div>
 
           <div class="carousel">
             <div class="slide">
               <div class="slideTop">
                 <b>iOS</b>
-                <span class="chip">V2Box / Shadowrocket</span>
+                <span class="pill" style="padding:6px 10px;">V2Box</span>
               </div>
               <div class="steps">
-                1) Получи конфиг<br/>
-                2) Copy<br/>
-                3) Import → From Clipboard<br/>
+                1) Оплати тариф<br/>
+                2) Copy конфиг<br/>
+                3) Import from Clipboard<br/>
                 4) Connect
               </div>
             </div>
@@ -862,12 +712,12 @@
             <div class="slide">
               <div class="slideTop">
                 <b>Android</b>
-                <span class="chip">v2rayNG</span>
+                <span class="pill" style="padding:6px 10px;">v2rayNG</span>
               </div>
               <div class="steps">
-                1) Получи конфиг<br/>
-                2) Copy<br/>
-                3) “+” → Import from Clipboard<br/>
+                1) Оплати тариф<br/>
+                2) Copy конфиг<br/>
+                3) Import from Clipboard<br/>
                 4) Connect
               </div>
             </div>
@@ -875,18 +725,18 @@
             <div class="slide">
               <div class="slideTop">
                 <b>Desktop</b>
-                <span class="chip">Nekoray / v2rayN</span>
+                <span class="pill" style="padding:6px 10px;">v2rayN</span>
               </div>
               <div class="steps">
                 1) Copy конфиг<br/>
-                2) Импорт по ссылке/буферу<br/>
-                3) Подключись
+                2) Import<br/>
+                3) Connect
               </div>
             </div>
           </div>
 
-          <div class="body" style="padding-top:0">
-            <div class="muted">Всё сделано под телефон. Свайпай карточки.</div>
+          <div class="cardBody" style="padding-top:0;">
+            <div class="label" style="margin:0;">Сделано под мобилки: свайп карточек.</div>
           </div>
         </div>
       </div>
@@ -894,55 +744,37 @@
       <!-- PROFILE -->
       <div class="screen" id="screenProfile">
         <div class="card">
-          <div class="head">
+          <div class="cardHead">
             <h2>Профиль</h2>
-            <small>Telegram позже</small>
+            <small>минимально</small>
           </div>
-          <div class="divider"></div>
-
-          <div class="body">
-            <div class="card" style="margin-top:0;">
-              <div class="head">
-                <h2>ID</h2>
-                <small><span class="badge blue" id="profileId">—</span></small>
-              </div>
-              <div class="divider"></div>
-              <div class="body">
-                <div style="display:flex; gap:10px;">
-                  <button class="btn btnGhost" id="btnResetId">Новый ID</button>
-                  <button class="btn btnGhost" id="btnHistory" disabled>История</button>
-                </div>
-
-                <div style="margin-top:12px;">
-                  <div class="label">Статус подписки</div>
-                  <div style="margin-top:8px; border-radius:18px; border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.16); padding:12px;">
-                    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-                      <span class="muted">Состояние</span>
-                      <span class="badge warn" id="subStatus">Не оплачено</span>
-                    </div>
-                    <div class="muted" id="activeUntil" style="margin-top:10px;">Активна до: —</div>
-                  </div>
-                </div>
-              </div>
+          <div class="hr"></div>
+          <div class="cardBody">
+            <div class="label">Твой ID</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <div class="badge" id="profileId">—</div>
+              <button class="miniBtn" id="btnNewId">Новый</button>
             </div>
 
-            <div class="card">
-              <div class="head">
-                <h2>Рефералка</h2>
-                <small>+7 дней (UI)</small>
-              </div>
-              <div class="divider"></div>
-              <div class="body">
-                <button class="btn btnGhost" id="btnRefCreate">Создать реф-код</button>
-                <div class="muted" id="refOut" style="margin-top:10px;"></div>
-              </div>
+            <div style="height:12px;"></div>
+
+            <div class="label">Подписка</div>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px; border:1px solid var(--line); border-radius: var(--r16); background: rgba(0,0,0,.12);">
+              <span class="label" style="margin:0;">Статус</span>
+              <span class="badge bWarn" id="subStatus">Не оплачено</span>
             </div>
+            <div class="label" id="activeUntil" style="margin-top:10px;">Активна до: —</div>
+
+            <div style="height:14px;"></div>
+
+            <div class="label">Рефералка (UI)</div>
+            <button class="btn btnGhost" id="btnRefCreate">Создать реф-код</button>
+            <div class="label" id="refOut" style="margin-top:10px;"></div>
 
           </div>
         </div>
       </div>
     </div>
-
   </div>
 
   <div class="nav">
@@ -955,38 +787,48 @@
 
 <script>
   // ===== CONFIG =====
-  const API_BASE = "https://api.45.133.251.210.nip.io:8443";
+  const API_BASE = "https://api.45.133.251.210.nip.io:8443"; // твой nginx 8443
 
-  // UI prices (подстрой под свои)
-  const PRICES = {
-    30:  { stars: 199, usdt: 3.0 },
-    90:  { stars: 399, usdt: 7.0 },
-    180: { stars: 599, usdt: 12.0 }
-  };
+  // тарифы (цены UI) — подстрой как хочешь
+  const PLANS = [
+    { id:"p30_1",  days:30,  devices:1,  title:"1 устройство",  sub:"30 дней",  stars:199, usdt:3.0, tag:"" },
+    { id:"p30_5",  days:30,  devices:5,  title:"5 устройств",  sub:"30 дней",  stars:199, usdt:3.0, tag:"pop" },
+    { id:"p30_10", days:30,  devices:10, title:"10 устройств", sub:"30 дней",  stars:199, usdt:3.0, tag:"best" },
+
+    { id:"p90_1",  days:90,  devices:1,  title:"1 устройство",  sub:"90 дней",  stars:399, usdt:7.0, tag:"" },
+    { id:"p90_5",  days:90,  devices:5,  title:"5 устройств",  sub:"90 дней",  stars:399, usdt:7.0, tag:"pop" },
+    { id:"p90_10", days:90,  devices:10, title:"10 устройств", sub:"90 дней",  stars:399, usdt:7.0, tag:"best" },
+
+    { id:"p180_1",  days:180, devices:1,  title:"1 устройство",  sub:"180 дней", stars:599, usdt:12.0, tag:"" },
+    { id:"p180_5",  days:180, devices:5,  title:"5 устройств",  sub:"180 дней", stars:599, usdt:12.0, tag:"pop" },
+    { id:"p180_10", days:180, devices:10, title:"10 устройств", sub:"180 дней", stars:599, usdt:12.0, tag:"best" }
+  ];
 
   const tg = window.Telegram?.WebApp;
   if (tg) { try { tg.ready(); tg.expand(); } catch(e){} }
 
   const $ = (id)=>document.getElementById(id);
-  const show = (el)=>el.classList.remove("hidden");
-  const hide = (el)=>el.classList.add("hidden");
 
+  // toast
   function toast(msg){
     const t = $("toast");
-    t.textContent = msg || "Готово";
+    t.textContent = msg || "OK";
     t.classList.add("show");
     setTimeout(()=>t.classList.remove("show"), 900);
   }
 
-  function clearError(){
-    $("errBox").style.display = "none";
-    $("errText").textContent = "";
+  function setErr(where, msg){
+    const el = $(where);
+    el.textContent = msg || "Ошибка";
+    el.style.display = "block";
   }
-  function setError(msg){
-    $("errText").textContent = msg || "Неизвестная ошибка";
-    $("errBox").style.display = "block";
+  function clearErr(where){
+    const el = $(where);
+    el.textContent = "";
+    el.style.display = "none";
   }
 
+  // user_key
   function genUserKey(){
     const n = Math.floor(Math.random()*9000)+1000;
     return "zeus-" + n;
@@ -1010,24 +852,25 @@
     return u;
   }
 
+  // api ping
   async function pingApi(){
     try{
       const r = await fetch(API_BASE + "/health", { method:"GET" });
-      if(!r.ok) throw new Error("health not ok");
+      if(!r.ok) throw new Error("health");
       await r.json();
-      $("apiText").textContent = "API: online";
-      $("apiDot").style.background = "#20E6B2";
+      $("apiDot").style.background = "rgba(34,197,94,.9)";
+      $("apiText").textContent = "online";
       $("heroApi").textContent = "online";
       return true;
     }catch(e){
-      $("apiText").textContent = "API: offline";
-      $("apiDot").style.background = "#FF5B6B";
+      $("apiDot").style.background = "rgba(239,68,68,.9)";
+      $("apiText").textContent = "offline";
       $("heroApi").textContent = "offline";
       return false;
     }
   }
 
-  // ===== iOS-like screen transitions =====
+  // screens
   const screens = {
     home: $("screenHome"),
     guide: $("screenGuide"),
@@ -1038,18 +881,17 @@
   function setScreen(name){
     if(name === current) return;
 
-    const next = name;
-    const dirLeft = (next === "home" && current !== "home");
-    Object.entries(screens).forEach(([key, el])=>{
+    const dirLeft = (name === "home" && current !== "home");
+    Object.entries(screens).forEach(([k, el])=>{
       el.classList.remove("active","fromLeft");
-      if(key !== next) el.style.pointerEvents = "none";
+      el.style.pointerEvents = "none";
     });
-    if(dirLeft) screens[next].classList.add("fromLeft");
-    screens[next].classList.add("active");
-    screens[next].style.pointerEvents = "auto";
-    if(!dirLeft) screens[current].classList.add("fromLeft");
-    current = next;
 
+    if(dirLeft) screens[name].classList.add("fromLeft");
+    screens[name].classList.add("active");
+    screens[name].style.pointerEvents = "auto";
+
+    current = name;
     if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
   }
 
@@ -1063,80 +905,18 @@
   $("tabGuide").onclick = ()=>setTab("guide");
   $("tabProfile").onclick = ()=>setTab("profile");
 
-  // ===== CONFIG ISSUE =====
-  let lastConfig = "";
-  async function renderQR(text){
-    try{
-      const canvas = $("qrCanvas");
-      const opts = { errorCorrectionLevel:"M", margin:1, width:96,
-        color:{ dark:"#EEF3FF", light:"#00000000" }
-      };
-      await QRCode.toCanvas(canvas, text, opts);
-    }catch(e){}
-  }
-
-  async function issueConfig(){
-    clearError();
-    hide($("configBox"));
-
-    const user_key = await ensureUserKey();
-
-    $("btnGetConfig").disabled = true;
-    $("btnGetConfig").textContent = "Генерирую…";
-
-    try{
-      const r = await fetch(API_BASE + "/issue-config", {
-        method:"POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ inbound_id: 1, user_key, days: 30, limit_ip: 0 })
-      });
-
-      const txt = await r.text();
-      let data;
-      try { data = JSON.parse(txt); } catch(e){ data = { raw: txt }; }
-
-      if(!r.ok) throw new Error(data?.detail || ("HTTP " + r.status));
-      lastConfig = data.link || "";
-      if(!lastConfig) throw new Error("Ответ без link");
-
-      $("configText").textContent = lastConfig;
-      await renderQR(lastConfig);
-      show($("configBox"));
-
-      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
-    }catch(e){
-      setError(e?.message || String(e));
-      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
-    }finally{
-      $("btnGetConfig").disabled = false;
-      $("btnGetConfig").textContent = "Получить конфиг";
-    }
-  }
-
-  $("btnGetConfig").addEventListener("click", issueConfig);
-
-  $("btnCopy").addEventListener("click", async ()=>{
-    try{
-      await navigator.clipboard.writeText(lastConfig);
-      toast("Скопировано");
-      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
-    }catch(e){
-      alert("Скопируй вручную:\n\n" + lastConfig);
-    }
-  });
-
-  // ===== SUBS UI =====
+  // subscription ui
   function setSubscriptionUI({status, active_until, devices}){
     if(status === "paid" || status === "active"){
       $("subStatus").textContent = "Активна";
-      $("subStatus").className = "badge ok";
+      $("subStatus").className = "badge bOk";
       $("heroSubStat").textContent = "активна";
     } else {
       $("subStatus").textContent = "Не оплачено";
-      $("subStatus").className = "badge warn";
+      $("subStatus").className = "badge bWarn";
       $("heroSubStat").textContent = "не оплачено";
     }
-    $("heroDevicesStat").textContent = devices ? (devices + " устройств") : "—";
+    $("heroDevices").textContent = devices ? `${devices}` : "—";
 
     if(active_until){
       const dt = new Date(active_until);
@@ -1146,220 +926,269 @@
     }
   }
 
-  // ===== PAYMENTS (ONE BUTTON) =====
-  let selectedDays = 30;
-  let selectedDevices = 5;  // default more logical
-  let payProvider = "stars"; // "stars" or "usdt"
+  // QR
+  let lastConfig = "";
+  async function renderQR(text){
+    try{
+      const canvas = $("qrCanvas");
+      await QRCode.toCanvas(canvas, text, {
+        errorCorrectionLevel:"M",
+        margin:1,
+        width:96,
+        color:{ dark:"#F4F6FF", light:"#00000000" }
+      });
+    }catch(e){}
+  }
+
+  // ===== MODAL =====
+  let payProvider = "stars";
+  let selectedPlanId = "p30_5";
   let pollTimer = null;
 
-  function formatPlanTitle(){
-    const d = selectedDays;
-    const dev = selectedDevices;
-    const name = (dev === 1) ? "Solo" : (dev === 5 ? "Family" : "Squad");
-    return `${name} • ${dev} устройств • ${d} дней`;
+  function openModal(){
+    clearErr("errModal");
+    $("overlay").classList.add("show");
+    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
   }
-
-  function currentPrice(){
-    const p = PRICES[selectedDays] || PRICES[30];
-    return payProvider === "stars"
-      ? { value: p.stars, unit: "XTR" }
-      : { value: p.usdt, unit: "USDT" };
+  function closeModal(){
+    $("overlay").classList.remove("show");
   }
-
-  function updatePayBar(){
-    const price = currentPrice();
-    $("payTitle").textContent = formatPlanTitle();
-    $("paySub").textContent = `К оплате: ${price.value} ${price.unit}`;
-    $("btnPay").textContent = payProvider === "stars"
-      ? `Оплатить Stars • ${price.value} ${price.unit}`
-      : `Оплатить USDT • ${price.value} ${price.unit}`;
-  }
+  $("modalClose").onclick = closeModal;
+  $("overlay").addEventListener("click", (e)=>{
+    if(e.target === $("overlay")) closeModal();
+  });
 
   function setProvider(p){
     payProvider = p;
     $("payStars").classList.toggle("active", p==="stars");
     $("payUsdt").classList.toggle("active", p==="usdt");
-    updatePayBar();
-    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+    updateFooter();
   }
-
   $("payStars").onclick = ()=>setProvider("stars");
   $("payUsdt").onclick = ()=>setProvider("usdt");
 
-  function segSet(days){
-    selectedDays = days;
-    ["seg30","seg90","seg180"].forEach(id=>{
-      $(id).classList.toggle("active", Number($(id).dataset.days) === days);
-    });
-    renderPlans();
-    updatePayBar();
+  function getPlan(id){
+    return PLANS.find(x=>x.id===id) || PLANS[0];
   }
-  $("seg30").onclick = ()=>segSet(30);
-  $("seg90").onclick = ()=>segSet(90);
-  $("seg180").onclick = ()=>segSet(180);
+
+  function planTag(tag){
+    if(tag==="pop") return `<span class="chip pop">Популярно</span>`;
+    if(tag==="best") return `<span class="chip best">Выгоднее</span>`;
+    return ``;
+  }
 
   function renderPlans(){
-    const list = $("planList");
-    const p = PRICES[selectedDays] || PRICES[30];
-
-    // compact rows
-    const rows = [
-      { dev: 1,  title:"Solo",   desc:"1 устройство • максимум приватности", hint:"" },
-      { dev: 5,  title:"Family", desc:"5 устройств • оптимально", hint:"pop" },
-      { dev: 10, title:"Squad",  desc:"10 устройств • максимальная выгода", hint:"best" }
-    ];
-
-    list.innerHTML = rows.map(r=>{
-      const selected = (r.dev === selectedDevices) ? "selected" : "";
-      const hint =
-        (r.hint==="pop") ? `<span class="hint pop">Популярно</span>` :
-        (r.hint==="best") ? `<span class="hint best">Выгоднее</span>` : `<span class="hint">Выбор</span>`;
-
-      // показываем цену в Stars как "основную", а USDT будет в payBar
+    const g = $("planGrid");
+    g.innerHTML = PLANS.map(p=>{
+      const sel = p.id===selectedPlanId ? "selected" : "";
+      const price = (payProvider==="stars") ? `${p.stars} XTR` : `${p.usdt} USDT`;
       return `
-        <div class="planRow ${selected}" data-dev="${r.dev}">
-          <div class="planLeft">
-            <p class="planTitle">${r.title} • ${r.dev} устройств</p>
-            <p class="planDesc">${r.desc}</p>
+        <div class="plan ${sel}" data-id="${p.id}">
+          <div class="planTop">
+            <div style="min-width:0;">
+              <p class="planName">${p.title} • ${p.devices}</p>
+              <p class="planSub">${p.sub}</p>
+            </div>
+            <div class="price">${price}</div>
           </div>
-          <div class="planRight">
-            <div class="pPrice">${p.stars} XTR</div>
-            ${hint}
+          <div class="tag">
+            ${planTag(p.tag)}
+            <span class="chip">VLESS</span>
+            <span class="chip">Copy + QR</span>
           </div>
         </div>
       `;
     }).join("");
 
-    list.querySelectorAll(".planRow").forEach(el=>{
+    g.querySelectorAll(".plan").forEach(el=>{
       el.onclick = ()=>{
-        selectedDevices = Number(el.dataset.dev);
+        selectedPlanId = el.dataset.id;
         renderPlans();
-        updatePayBar();
-        $("heroDevicesStat").textContent = selectedDevices + " устройств";
+        updateFooter();
+        const p = getPlan(selectedPlanId);
+        $("heroDevices").textContent = `${p.devices}`;
         if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
-      }
+      };
     });
   }
 
-  async function payStars(days, devices){
-    clearError();
-    show($("orderBox"));
-    $("orderStatus").textContent = "creating…";
-    $("orderStatus").className = "badge warn";
-    $("orderMeta").textContent = "";
-
-    const user_key = await ensureUserKey();
-
-    try{
-      const r = await fetch(API_BASE + "/pay/stars/create", {
-        method:"POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ user_key, days, devices })
-      });
-      const j = await r.json();
-      if(!r.ok) throw new Error(j?.detail || "Stars create error");
-
-      $("orderMeta").textContent = `order: ${j.order_id}`;
-
-      if(tg && tg.openInvoice){
-        tg.openInvoice(j.invoice_link, ()=>{});
-      } else {
-        window.open(j.invoice_link, "_blank");
-      }
-
-      pollOrder(j.order_id);
-      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
-    }catch(e){
-      setError(e?.message || String(e));
-      $("orderStatus").textContent = "error";
-      $("orderStatus").className = "badge bad";
-      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
-    }
+  function updateFooter(){
+    const p = getPlan(selectedPlanId);
+    $("selTitle").textContent = `${p.sub} • ${p.devices} устройств`;
+    $("selPrice").textContent = (payProvider==="stars") ? `${p.stars} XTR` : `${p.usdt} USDT`;
+    $("btnPayModal").textContent = (payProvider==="stars")
+      ? `Оплатить Stars • ${p.stars} XTR`
+      : `Оплатить USDT • ${p.usdt} USDT`;
   }
 
-  async function payUsdt(days, devices){
-    clearError();
-    show($("orderBox"));
-    $("orderStatus").textContent = "creating…";
-    $("orderStatus").className = "badge warn";
-    $("orderMeta").textContent = "";
-
+  // ===== API calls =====
+  async function createStarsOrder(plan){
     const user_key = await ensureUserKey();
-
-    try{
-      const r = await fetch(API_BASE + "/pay/crypto/create", {
-        method:"POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ user_key, days, devices })
-      });
-      const j = await r.json();
-      if(!r.ok) throw new Error(j?.detail || "Crypto create error");
-
-      $("orderMeta").textContent = `order: ${j.order_id}`;
-      if(j.invoice_url) window.open(j.invoice_url, "_blank");
-
-      pollOrder(j.order_id);
-      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
-    }catch(e){
-      setError(e?.message || String(e));
-      $("orderStatus").textContent = "error";
-      $("orderStatus").className = "badge bad";
-      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
-    }
+    const r = await fetch(API_BASE + "/pay/stars/create", {
+      method:"POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ user_key, days: plan.days, devices: plan.devices })
+    });
+    const j = await r.json();
+    if(!r.ok) throw new Error(j?.detail || "Stars create error");
+    return j; // {order_id, invoice_link}
   }
 
-  async function pollOrder(orderId){
+  async function createUsdtOrder(plan){
+    const user_key = await ensureUserKey();
+    const r = await fetch(API_BASE + "/pay/crypto/create", {
+      method:"POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ user_key, days: plan.days, devices: plan.devices })
+    });
+    const j = await r.json();
+    if(!r.ok) throw new Error(j?.detail || "Crypto create error");
+    return j; // {order_id, invoice_url}
+  }
+
+  async function getOrder(orderId){
+    const r = await fetch(API_BASE + "/pay/order/" + orderId, { method:"GET" });
+    const j = await r.json();
+    if(!r.ok) throw new Error(j?.detail || "Order read error");
+    return j;
+  }
+
+  async function issueConfig(plan){
+    const user_key = await ensureUserKey();
+    const inbound_id = 1; // если хочешь — потом подтянем с бэка, сейчас фикс
+    const r = await fetch(API_BASE + "/issue-config", {
+      method:"POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ inbound_id, user_key, days: plan.days, limit_ip: 0 })
+    });
+    const j = await r.json();
+    if(!r.ok) throw new Error(j?.detail || "Issue config error");
+    if(!j.link) throw new Error("Ответ без link");
+    return j.link;
+  }
+
+  function stopPoll(){
     if(pollTimer) clearInterval(pollTimer);
+    pollTimer = null;
+  }
 
-    show($("orderBox"));
-    $("orderStatus").textContent = "pending";
-    $("orderStatus").className = "badge warn";
+  function setOrderBox(showBox){
+    $("orderBox").style.display = showBox ? "block" : "none";
+  }
+
+  function setOrderUI(status, meta){
+    setOrderBox(true);
+    $("orderStatus").textContent = status || "pending";
+    $("orderStatus").className = "badge " + (status==="paid" ? "bOk" : (status==="error" ? "bBad" : "bWarn"));
+    $("orderMeta").textContent = meta || "—";
+  }
+
+  async function pollOrder(orderId, plan){
+    stopPoll();
+    setOrderUI("pending", `order: ${orderId}`);
 
     pollTimer = setInterval(async ()=>{
       try{
-        const r = await fetch(API_BASE + "/pay/order/" + orderId, { method:"GET" });
-        const j = await r.json();
+        const o = await getOrder(orderId);
+        const amount = (o.amount != null) ? `${o.amount} ${o.currency || ""}` : "";
+        setOrderUI(o.status || "pending", `order: ${o.id} • ${amount}`);
 
-        $("orderStatus").textContent = j.status || "pending";
-        $("orderStatus").className = "badge " + ((j.status === "paid") ? "ok" : (j.status === "error" ? "bad" : "warn"));
+        if(o.status === "paid"){
+          stopPoll();
 
-        const amount = (j.amount != null) ? `${j.amount} ${j.currency || ""}` : "";
-        $("orderMeta").textContent = `order: ${j.id} • ${amount} • days: ${j.plan_days || ""} • devices: ${j.devices || ""}`;
+          setSubscriptionUI({
+            status: "paid",
+            active_until: o.active_until,
+            devices: o.devices
+          });
 
-        if(j.status === "paid"){
-          clearInterval(pollTimer);
-          pollTimer = null;
+          let link = o.config_link;
+          if(!link) link = await issueConfig(plan);
 
-          setSubscriptionUI({ status: "paid", active_until: j.active_until, devices: j.devices });
-
-          // если бэк отдаст config_link — покажем
-          if(j.config_link){
-            lastConfig = j.config_link;
-            $("configText").textContent = lastConfig;
-            await renderQR(lastConfig);
-            show($("configBox"));
-          }
+          lastConfig = link;
+          $("configText").textContent = lastConfig;
+          await renderQR(lastConfig);
+          $("configBox").style.display = "block";
 
           toast("Оплата успешна");
+          closeModal();
           if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
         }
-      }catch(e){}
+      }catch(e){
+        // тихо, чтобы не спамило
+      }
     }, 1200);
   }
 
-  $("btnPay").onclick = async ()=>{
-    const days = selectedDays;
-    const devices = selectedDevices;
-    if(payProvider === "stars") return payStars(days, devices);
-    return payUsdt(days, devices);
+  async function paySelected(){
+    clearErr("errModal");
+    clearErr("errHome");
+
+    const plan = getPlan(selectedPlanId);
+
+    $("btnPayModal").disabled = true;
+    $("btnPayModal").textContent = "Создаю invoice…";
+
+    try{
+      const created = (payProvider === "stars")
+        ? await createStarsOrder(plan)
+        : await createUsdtOrder(plan);
+
+      setOrderUI("pending", `order: ${created.order_id}`);
+
+      if(payProvider === "stars"){
+        if(tg && tg.openInvoice){
+          tg.openInvoice(created.invoice_link, ()=>{});
+        } else {
+          window.open(created.invoice_link, "_blank");
+        }
+      } else {
+        if(created.invoice_url) window.open(created.invoice_url, "_blank");
+      }
+
+      $("btnPayModal").textContent = "Ожидаю оплату…";
+      $("btnPayModal").disabled = true;
+
+      pollOrder(created.order_id, plan);
+    }catch(e){
+      setErr("errModal", e?.message || String(e));
+      $("btnPayModal").disabled = false;
+      updateFooter();
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
+    }
+  }
+
+  $("btnPayModal").onclick = paySelected;
+
+  // copy
+  $("btnCopy").onclick = async ()=>{
+    try{
+      await navigator.clipboard.writeText(lastConfig);
+      toast("Скопировано");
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+    }catch(e){
+      alert("Скопируй вручную:\n\n" + lastConfig);
+    }
   };
 
-  // ===== REF =====
-  $("btnRefCreate").addEventListener("click", async ()=>{
-    clearError();
+  // open modal
+  $("btnOpenPlans").onclick = async ()=>{
+    await ensureUserKey();
+    openModal();
+  };
+
+  // profile
+  $("btnNewId").onclick = ()=>{
+    const id = genUserKey();
+    setUserKey(id);
+    toast("Новый ID");
+  };
+
+  // referral
+  $("btnRefCreate").onclick = async ()=>{
+    clearErr("errHome");
     $("refOut").textContent = "создаю…";
     const user_key = await ensureUserKey();
-
     try{
       const r = await fetch(API_BASE + "/ref/create", {
         method:"POST",
@@ -1368,42 +1197,32 @@
       });
       const j = await r.json();
       if(!r.ok) throw new Error(j?.detail || "ref create error");
-
       $("refOut").textContent = "Твой код: " + j.code;
-      toast("Реф-код готов");
-      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+      toast("Готово");
     }catch(e){
       $("refOut").textContent = "";
-      setError(e?.message || String(e));
-      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
+      setErr("errHome", e?.message || String(e));
     }
-  });
+  };
 
-  $("btnResetId").addEventListener("click", ()=>{
-    const id = genUserKey();
-    setUserKey(id);
-    toast("Новый ID");
-  });
-
-  // ===== Init =====
+  // init
   (async ()=>{
     const saved = localStorage.getItem("zeus_user_key") || "";
     if(saved) setUserKey(saved);
 
     $("userKey").addEventListener("change", ()=>{
-      const v = getUserKey();
-      setUserKey(v);
+      setUserKey(getUserKey());
     });
 
-    renderPlans();
-    updatePayBar();
-    segSet(30);
+    selectedPlanId = "p30_5";
     setProvider("stars");
+    renderPlans();
+    updateFooter();
+
+    setSubscriptionUI({ status:"none", active_until:null, devices:null });
 
     await pingApi();
     setInterval(pingApi, 12000);
-
-    setSubscriptionUI({ status: "none", active_until: null, devices: null });
   })();
 </script>
 </body>
