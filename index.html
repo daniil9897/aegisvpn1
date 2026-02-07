@@ -2,397 +2,419 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ZEUSVPN</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
   <style>
     :root{
-      /* Zeus: royal blue + marble + gold accent */
-      --bg0:#050812;
-      --bg1:#071028;
+      --ink:#0B1221;
+      --ink2:#1B2743;
+      --muted:rgba(11,18,33,.62);
+
       --blue:#0B2A6A;
-      --blue2:#0E3DA0;
-      --cyan:#48D7FF;
-      --text:#F4F7FF;
-      --muted: rgba(244,247,255,.72);
+      --blue2:#1547B6;
 
-      --card: rgba(255,255,255,.06);
-      --stroke: rgba(255,255,255,.12);
+      --gold:#C9A24A;
+      --gold2:#E1C06A;
 
-      --marbleA: rgba(255,255,255,.12);
-      --marbleB: rgba(255,255,255,.06);
+      --marble:#F6F6F7;
+      --card:#FFFFFF;
+      --stroke:rgba(11,18,33,.10);
+      --shadow: 0 18px 55px rgba(11,18,33,.10);
+      --shadow2: 0 10px 28px rgba(11,18,33,.08);
 
-      --gold:#F7D37A;
-      --gold2:#FFB940;
+      --ok:#0FAF76;
+      --warn:#C08A18;
+      --bad:#D84242;
 
-      --ok:#27D89A;
-      --warn:#FFC76A;
-      --bad:#FF5A5A;
-
-      --r16:16px;
-      --r20:20px;
-      --r24:24px;
-
-      --shadow: 0 18px 50px rgba(0,0,0,.45);
-      --shadowSoft: 0 12px 28px rgba(0,0,0,.28);
+      --r14:14px;
+      --r18:18px;
+      --r22:22px;
+      --r28:28px;
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
+
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      color:var(--text);
-      background:
-        radial-gradient(900px 520px at 50% -10%, rgba(72,215,255,.18), transparent 60%),
-        radial-gradient(980px 620px at 100% 20%, rgba(255,185,64,.10), transparent 65%),
-        radial-gradient(900px 520px at 0% 40%, rgba(14,61,160,.16), transparent 65%),
-        linear-gradient(180deg, var(--bg1), var(--bg0));
+      color:var(--ink);
+      background: var(--marble);
       overflow-x:hidden;
     }
 
-    /* premium grain (very subtle) */
+    /* Marble texture */
     body:before{
       content:"";
       position:fixed; inset:0;
       pointer-events:none;
-      opacity:.14;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
-      mix-blend-mode:overlay;
+      background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(11,42,106,.07), transparent 55%),
+        radial-gradient(900px 520px at 90% 12%, rgba(201,162,74,.07), transparent 60%),
+        linear-gradient(135deg,
+          rgba(0,0,0,.03) 0%,
+          rgba(0,0,0,.00) 18%,
+          rgba(0,0,0,.02) 36%,
+          rgba(0,0,0,.00) 54%,
+          rgba(0,0,0,.02) 72%,
+          rgba(0,0,0,.00) 100%),
+        radial-gradient(900px 800px at 10% 70%, rgba(0,0,0,.03), transparent 65%);
+      opacity:1;
     }
 
     .app{
       max-width:520px;
       margin:0 auto;
-      padding: 16px 14px 96px;
+      padding: 14px 14px 92px;
+      position:relative;
+      z-index:1;
     }
 
-    /* Header */
-    .topbar{
+    /* Top hero (temple feel) */
+    .hero{
+      border-radius: var(--r28);
+      background:
+        linear-gradient(180deg, rgba(11,42,106,.92), rgba(11,42,106,.85));
+      color:#fff;
+      box-shadow: 0 28px 70px rgba(11,42,106,.22);
+      padding: 16px 16px 14px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* Greek key lines */
+    .hero:before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(600px 260px at 12% 0%, rgba(255,255,255,.16), transparent 60%),
+        radial-gradient(520px 240px at 92% 30%, rgba(201,162,74,.18), transparent 62%),
+        linear-gradient(90deg, rgba(255,255,255,.10), rgba(255,255,255,0));
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    .topRow{
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:space-between;
       gap:12px;
-      padding: 6px 2px 14px;
+      position:relative;
+      z-index:2;
     }
+
     .brand{
       display:flex;
       align-items:center;
       gap:12px;
       min-width:0;
     }
-    .logo{
-      width:42px; height:42px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.22), transparent 70%),
-        linear-gradient(145deg, rgba(14,61,160,.95), rgba(72,215,255,.70));
-      box-shadow: 0 16px 40px rgba(14,61,160,.18);
-      position:relative;
-      overflow:hidden;
-    }
-    /* clean lightning mark */
-    .logo:after{
-      content:"";
-      position:absolute;
-      left:50%; top:50%;
-      width:16px; height:24px;
-      transform: translate(-50%,-50%);
-      background: rgba(255,255,255,.88);
-      clip-path: polygon(55% 0, 100% 0, 62% 45%, 92% 45%, 35% 100%, 50% 58%, 18% 58%);
-      filter: drop-shadow(0 0 12px rgba(72,215,255,.25));
-      opacity:.92;
-    }
 
-    .brandTitle{
-      min-width:0;
+    .mark{
+      width:44px; height:44px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(10px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: 0 16px 40px rgba(0,0,0,.20);
     }
-    .brandTitle h1{
+    .mark svg{display:block}
+
+    .brandText{min-width:0}
+    .brandText .name{
+      font-weight: 900;
+      letter-spacing: .6px;
       margin:0;
       font-size: 16px;
-      letter-spacing: .9px;
-      font-weight: 900;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      line-height: 1.1;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
-    .brandTitle small{
-      display:block;
-      margin-top:3px;
+    .brandText .tag{
+      margin:6px 0 0;
       font-size: 12px;
-      color: var(--muted);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      color: rgba(255,255,255,.76);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
 
-    .pill{
+    .apiChip{
+      flex:0 0 auto;
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding: 8px 10px;
+      padding: 9px 10px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadowSoft);
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
       font-size: 12px;
-      color: var(--muted);
+      color: rgba(255,255,255,.86);
       white-space:nowrap;
     }
-    .dot{
-      width:8px; height:8px; border-radius:50%;
-      background: var(--warn);
-      box-shadow: 0 0 10px rgba(255,199,106,.35);
+    .apiDot{
+      width:8px; height:8px;
+      border-radius:50%;
+      background: rgba(255,255,255,.70);
     }
 
-    /* Hero */
-    .hero{
-      border-radius: var(--r24);
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(800px 360px at 20% 0%, rgba(14,61,160,.32), transparent 60%),
-        radial-gradient(700px 280px at 80% 10%, rgba(72,215,255,.18), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      box-shadow: var(--shadow);
-      padding: 16px;
+    .heroMain{
       position:relative;
-      overflow:hidden;
-      margin-bottom: 12px;
+      z-index:2;
+      margin-top: 14px;
+      display:grid;
+      gap:10px;
     }
-
-    /* clean greek key line */
-    .greekline{
-      height:2px;
-      border-radius:999px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), rgba(247,211,122,.45), rgba(72,215,255,.35), rgba(255,255,255,.08), transparent);
-      margin: 10px 0 12px;
-    }
-
     .heroTitle{
-      margin: 0;
+      margin:0;
       font-size: 18px;
       font-weight: 900;
-      letter-spacing: .3px;
-      line-height: 1.2;
+      letter-spacing:.2px;
+      line-height:1.2;
     }
     .heroSub{
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.45;
-      max-width: 46ch;
+      margin:0;
+      font-size: 12.6px;
+      color: rgba(255,255,255,.78);
+      line-height:1.45;
+      max-width: 48ch;
     }
 
-    .stats{
+    .heroStats{
       display:flex;
       gap:10px;
-      margin-top: 14px;
+      margin-top: 10px;
     }
-    .stat{
+    .hStat{
       flex:1;
       border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(10,18,40,.28);
-      padding: 10px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.14);
+      padding: 10px 10px;
     }
-    .stat b{
+    .hStat b{
       display:block;
       font-size: 12px;
       letter-spacing:.2px;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
     }
-    .stat span{
-      color: var(--muted);
+    .hStat span{
       font-size: 12px;
+      color: rgba(255,255,255,.76);
     }
 
     /* Cards */
     .card{
-      border-radius: var(--r24);
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(760px 280px at 15% 0%, rgba(255,255,255,.08), transparent 60%),
-        radial-gradient(700px 260px at 85% 10%, rgba(72,215,255,.12), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      margin-top: 12px;
+      background: var(--card);
+      border:1px solid var(--stroke);
+      border-radius: var(--r28);
       box-shadow: var(--shadow);
-      padding: 14px;
-      margin: 12px 0;
-      position:relative;
       overflow:hidden;
     }
-
-    /* marble overlay (clean) */
-    .card:before{
-      content:"";
-      position:absolute; inset:0;
-      pointer-events:none;
-      opacity:.28;
-      background:
-        radial-gradient(420px 220px at 20% 30%, rgba(255,255,255,.10), transparent 65%),
-        radial-gradient(420px 240px at 70% 60%, rgba(255,255,255,.08), transparent 65%),
-        linear-gradient(120deg,
-          transparent 0%,
-          rgba(255,255,255,.05) 10%,
-          transparent 22%,
-          rgba(255,255,255,.04) 35%,
-          transparent 48%,
-          rgba(255,255,255,.03) 63%,
-          transparent 78%,
-          rgba(255,255,255,.02) 100%);
-      mix-blend-mode: overlay;
-    }
-
-    .head{
-      position:relative;
+    .cardHead{
+      padding: 14px 14px 10px;
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
       gap:10px;
-      z-index:1;
     }
-    .head h2{
+    .cardHead h2{
       margin:0;
-      font-size: 13px;
-      letter-spacing:.35px;
+      font-size: 12px;
+      letter-spacing:.32px;
+      text-transform:uppercase;
+      color: var(--ink2);
       font-weight: 900;
-      text-transform: uppercase;
     }
-    .head small{
-      margin:0;
+    .cardHead small{
       color: var(--muted);
       font-size: 12px;
     }
 
+    .divider{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(11,18,33,.12), transparent);
+      margin: 0 14px;
+    }
+
+    .cardBody{
+      padding: 12px 14px 14px;
+    }
+
+    .field{
+      display:grid;
+      gap:8px;
+      margin-bottom: 10px;
+    }
+    .label{
+      font-size: 12px;
+      color: var(--muted);
+    }
     .input{
-      position:relative;
-      z-index:1;
       width:100%;
-      padding: 12px 12px;
+      padding: 13px 12px;
       border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(4,8,18,.35);
-      color: var(--text);
+      border:1px solid rgba(11,18,33,.14);
+      background: #FBFBFC;
       outline:none;
       font-size: 14px;
-    }
-    .hint{
-      position:relative;
-      z-index:1;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
+      color: var(--ink);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
     }
 
-    /* premium buttons */
     .btn{
-      position:relative;
-      z-index:1;
       width:100%;
-      border: none;
-      border-radius: 18px;
       padding: 14px 14px;
-      font-weight: 900;
-      letter-spacing:.25px;
+      border-radius: 18px;
+      border: 0;
       cursor:pointer;
-      box-shadow: var(--shadowSoft);
+      font-weight: 900;
+      letter-spacing:.2px;
       transition: transform .06s ease, filter .12s ease;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
     .btn:active{ transform: translateY(1px); }
-    .btn[disabled]{opacity:.55; cursor:not-allowed; filter:saturate(.75);}
+    .btn[disabled]{opacity:.55; cursor:not-allowed;}
 
-    /* Zeus main: royal blue glossy */
-    .btn.primary{
-      color: #06102a;
+    /* Zeus primary: carved + royal */
+    .btnPrimary{
+      color:#fff;
       background:
-        radial-gradient(220px 60px at 30% 0%, rgba(255,255,255,.36), transparent 60%),
-        linear-gradient(180deg, #4BE0FF, #1D6CFF);
-      box-shadow:
-        0 16px 44px rgba(29,108,255,.22),
-        0 12px 30px rgba(0,0,0,.26);
-    }
-    /* Gold accent: for Stars */
-    .btn.gold{
-      color:#1a1200;
-      background:
-        radial-gradient(220px 60px at 30% 0%, rgba(255,255,255,.36), transparent 60%),
-        linear-gradient(180deg, var(--gold), var(--gold2));
-      box-shadow:
-        0 16px 44px rgba(255,185,64,.18),
-        0 12px 30px rgba(0,0,0,.26);
-    }
-    /* Outline: for USDT */
-    .btn.outline{
-      color: var(--text);
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(72,215,255,.28);
-      box-shadow: none;
-    }
-    .btn.ghost{
-      color: var(--muted);
-      background: transparent;
-      border: 1px dashed rgba(255,255,255,.18);
-      box-shadow:none;
+        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 28%),
+        linear-gradient(180deg, var(--blue2), var(--blue));
+      box-shadow: 0 16px 34px rgba(11,42,106,.22);
     }
 
-    .row{display:flex; gap:10px; position:relative; z-index:1;}
+    /* Gold payment */
+    .btnGold{
+      color:#2a1a00;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 35%),
+        linear-gradient(180deg, var(--gold2), var(--gold));
+      box-shadow: 0 16px 34px rgba(201,162,74,.20);
+    }
+
+    /* Neutral outline */
+    .btnOutline{
+      background:#FBFBFC;
+      color: var(--ink2);
+      border:1px solid rgba(11,18,33,.16);
+      box-shadow: var(--shadow2);
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      margin-top: 10px;
+    }
     .row .btn{flex:1}
 
-    .box{
-      position:relative;
-      z-index:1;
-      margin-top: 12px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(4,8,18,.30);
+    .notice{
+      margin-top: 10px;
       padding: 12px;
+      border-radius: 18px;
+      border:1px solid rgba(11,18,33,.12);
+      background: #FBFBFC;
     }
-    .mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 12px;
-      line-height: 1.35;
-      word-break: break-all;
-      color: rgba(244,247,255,.92);
-    }
-
-    .statusRow{
+    .noticeTop{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
+      margin-bottom: 10px;
     }
-
     .badge{
       display:inline-flex;
       align-items:center;
       gap:8px;
       padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      font-weight: 900;
+      border-radius:999px;
       font-size: 12px;
+      font-weight: 900;
+      border:1px solid rgba(11,18,33,.12);
+      background: #fff;
+      color: var(--ink2);
       white-space:nowrap;
     }
-    .badge.ok{border-color: rgba(39,216,154,.35); background: rgba(39,216,154,.08); color:#c7ffe8;}
-    .badge.warn{border-color: rgba(255,199,106,.35); background: rgba(255,199,106,.08); color:#fff1c9;}
-    .badge.bad{border-color: rgba(255,90,90,.35); background: rgba(255,90,90,.08); color:#ffd1d1;}
+    .badge.ok{border-color: rgba(15,175,118,.25); color: var(--ok);}
+    .badge.warn{border-color: rgba(192,138,24,.25); color: var(--warn);}
+    .badge.bad{border-color: rgba(216,66,66,.25); color: var(--bad);}
+
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      line-height:1.35;
+      word-break:break-all;
+      color: rgba(11,18,33,.92);
+    }
+
+    .muted{
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
 
     .hidden{display:none !important;}
 
-    /* Bottom nav */
+    /* Screens */
+    .screen{ margin-top: 12px; }
+    .screen.hidden{display:none}
+
+    /* Instructions carousel */
+    .carousel{
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      padding: 12px 14px 14px;
+    }
+    .carousel::-webkit-scrollbar{display:none}
+    .slide{
+      min-width: 86%;
+      scroll-snap-align:start;
+      border-radius: 22px;
+      border:1px solid rgba(11,18,33,.12);
+      background:
+        radial-gradient(520px 260px at 20% 0%, rgba(11,42,106,.06), transparent 60%),
+        linear-gradient(180deg, #FFFFFF, #FBFBFC);
+      padding: 14px;
+      box-shadow: var(--shadow2);
+    }
+    .slideTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .chip{
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(11,18,33,.12);
+      background:#fff;
+      color: rgba(11,18,33,.70);
+      white-space:nowrap;
+    }
+    .steps{
+      font-size: 12.8px;
+      color: rgba(11,18,33,.72);
+      line-height: 1.55;
+    }
+
+    /* Bottom nav (stone tabs) */
     .nav{
       position:fixed;
       left:0; right:0; bottom:0;
       padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(5,8,18,.72);
-      border-top: 1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(12px);
-      z-index:5;
+      background: rgba(246,246,247,.92);
+      border-top: 1px solid rgba(11,18,33,.10);
+      backdrop-filter: blur(10px);
+      z-index:10;
     }
     .navInner{
       max-width:520px;
@@ -404,268 +426,231 @@
       flex:1;
       padding: 12px 10px;
       border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      color: rgba(244,247,255,.70);
+      border:1px solid rgba(11,18,33,.12);
+      background: #FFFFFF;
+      color: rgba(11,18,33,.66);
       font-weight: 900;
-      letter-spacing:.2px;
+      letter-spacing:.15px;
       cursor:pointer;
+      box-shadow: var(--shadow2);
     }
     .tab.active{
-      color: var(--text);
-      border-color: rgba(72,215,255,.28);
+      color: #fff;
+      border-color: rgba(11,42,106,.30);
       background:
-        radial-gradient(240px 60px at 50% 0%, rgba(72,215,255,.14), rgba(255,255,255,.04)),
-        linear-gradient(180deg, rgba(14,61,160,.20), rgba(255,255,255,.03));
-      box-shadow: 0 16px 34px rgba(14,61,160,.18);
-    }
-
-    /* Instructions: simple swipe cards */
-    .carousel{
-      display:flex;
-      gap:12px;
-      overflow:auto;
-      scroll-snap-type:x mandatory;
-      -webkit-overflow-scrolling:touch;
-      padding-bottom: 6px;
-      position:relative;
-      z-index:1;
-    }
-    .carousel::-webkit-scrollbar{display:none}
-    .slide{
-      min-width: 86%;
-      scroll-snap-align: start;
-      border-radius: 20px;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(520px 220px at 30% 0%, rgba(72,215,255,.12), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      padding: 14px;
-    }
-    .slideTitle{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 10px;
-    }
-    .slideTitle b{
-      font-size: 14px;
-      letter-spacing:.2px;
-    }
-    .chip{
-      font-size: 12px;
-      color: rgba(244,247,255,.75);
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      padding: 6px 10px;
-      border-radius: 999px;
-      white-space:nowrap;
-    }
-    .steps{
-      color: rgba(244,247,255,.76);
-      font-size: 12.5px;
-      line-height: 1.55;
+        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 28%),
+        linear-gradient(180deg, var(--blue2), var(--blue));
+      box-shadow: 0 16px 34px rgba(11,42,106,.18);
     }
   </style>
 </head>
 
 <body>
   <div class="app">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo"></div>
-        <div class="brandTitle">
-          <h1>ZEUSVPN</h1>
-          <small>Royal Blue • Fast VLESS • Premium feel</small>
-        </div>
-      </div>
-
-      <div class="pill" id="apiPill">
-        <span class="dot" id="apiDot"></span>
-        <span id="apiText">API: проверяю…</span>
-      </div>
-    </div>
-
     <div class="hero">
-      <p class="heroTitle">Сила ZEUS в один тап</p>
-      <p class="heroSub">
-        Получи индивидуальный VLESS-конфиг. Оплата Stars/USDT встроена: после подтверждения — показываем конфиг и “Активна до…”.
-      </p>
-
-      <div class="greekline"></div>
-
-      <div class="stats">
-        <div class="stat">
-          <b>Подписка</b>
-          <span id="heroSub">пока без оплаты</span>
+      <div class="topRow">
+        <div class="brand">
+          <div class="mark" aria-hidden="true">
+            <!-- Clean Zeus lightning -->
+            <svg width="22" height="26" viewBox="0 0 22 26" fill="none">
+              <path d="M12.8 1.5H21L12.2 13.2H18.8L7.6 24.5L9.8 14.1H3L12.8 1.5Z"
+                    fill="rgba(255,255,255,.92)"/>
+            </svg>
+          </div>
+          <div class="brandText">
+            <p class="name">ZEUSVPN</p>
+            <p class="tag">Marble • Royal Blue • VLESS</p>
+          </div>
         </div>
-        <div class="stat">
-          <b>Устройства</b>
-          <span>1 / 5 / 10 (UI)</span>
+
+        <div class="apiChip" id="apiPill">
+          <span class="apiDot" id="apiDot"></span>
+          <span id="apiText">API: checking…</span>
         </div>
-        <div class="stat">
-          <b>API</b>
-          <span id="heroApi">—</span>
+      </div>
+
+      <div class="heroMain">
+        <p class="heroTitle">Премиум-конфиг за 1 тап</p>
+        <p class="heroSub">
+          Оплата Stars / USDT → после подтверждения показываем конфиг и “Активна до…”.
+        </p>
+
+        <div class="heroStats">
+          <div class="hStat">
+            <b>Подписка</b>
+            <span id="heroSubStat">не оплачено</span>
+          </div>
+          <div class="hStat">
+            <b>Устройства</b>
+            <span>1 / 5 / 10 (UI)</span>
+          </div>
+          <div class="hStat">
+            <b>API</b>
+            <span id="heroApi">—</span>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- HOME -->
-    <div id="screenHome">
+    <div class="screen" id="screenHome">
       <div class="card">
-        <div class="head">
+        <div class="cardHead">
           <h2>Конфиг</h2>
-          <small>уникальный для тебя</small>
+          <small>индивидуально</small>
         </div>
-        <div class="greekline"></div>
+        <div class="divider"></div>
 
-        <input class="input" id="userKey" placeholder="ID пользователя (можно пусто)" />
-        <div style="height:8px"></div>
-        <div class="hint">
-          Если пусто — создадим ID автоматически. Позже это станет Telegram ID.
-        </div>
-
-        <div style="height:12px"></div>
-        <button class="btn primary" id="btnGetConfig">Получить конфиг</button>
-
-        <div id="configBox" class="box hidden">
-          <div class="statusRow">
-            <div class="badge ok">VLESS</div>
-            <button class="btn outline" id="btnCopy" style="width:auto; padding:10px 12px; border-radius:14px;">Скопировать</button>
+        <div class="cardBody">
+          <div class="field">
+            <div class="label">ID пользователя (можно пусто)</div>
+            <input class="input" id="userKey" placeholder="например: zeus-1234" />
+            <div class="muted">Позже это станет Telegram ID автоматически.</div>
           </div>
-          <div class="greekline"></div>
-          <div class="mono" id="configText"></div>
-        </div>
 
-        <div id="errBox" class="box hidden" style="border-color: rgba(255,90,90,.35);">
-          <div class="statusRow">
-            <div class="badge bad">Ошибка</div>
-            <div class="hint" id="errText" style="text-align:right"></div>
+          <button class="btn btnPrimary" id="btnGetConfig">Получить конфиг</button>
+
+          <div class="notice hidden" id="configBox">
+            <div class="noticeTop">
+              <span class="badge ok">VLESS</span>
+              <button class="btn btnOutline" id="btnCopy" style="width:auto; padding:10px 12px; border-radius:14px;">Скопировать</button>
+            </div>
+            <div class="mono" id="configText"></div>
+          </div>
+
+          <div class="notice hidden" id="errBox" style="border-color: rgba(216,66,66,.25);">
+            <div class="noticeTop">
+              <span class="badge bad">Ошибка</span>
+              <span class="muted" id="errText" style="text-align:right"></span>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="card">
-        <div class="head">
+        <div class="cardHead">
           <h2>Оплата</h2>
           <small>Stars / USDT</small>
         </div>
-        <div class="greekline"></div>
+        <div class="divider"></div>
 
-        <div class="row">
-          <button class="btn gold" id="btnPayStars">Оплатить Stars</button>
-          <button class="btn outline" id="btnPayUsdt">Оплатить USDT</button>
-        </div>
-
-        <div id="payBox" class="box hidden">
-          <div class="statusRow">
-            <div class="hint">Статус заказа</div>
-            <div class="badge warn" id="payStatus">pending</div>
+        <div class="cardBody">
+          <div class="row">
+            <button class="btn btnGold" id="btnPayStars">Оплатить Stars</button>
+            <button class="btn btnOutline" id="btnPayUsdt">Оплатить USDT</button>
           </div>
-          <div class="hint" id="payMeta" style="margin-top:6px"></div>
-          <div class="greekline"></div>
-          <div class="hint">
-            После оплаты автоматически проверяем заказ каждые ~1.2 сек. Когда станет <b>paid</b> — покажем конфиг и дату активности.
+
+          <div class="notice hidden" id="payBox" style="margin-top:12px;">
+            <div class="noticeTop">
+              <span class="muted">Статус заказа</span>
+              <span class="badge warn" id="payStatus">pending</span>
+            </div>
+            <div class="muted" id="payMeta"></div>
+            <div class="muted" style="margin-top:10px;">
+              Авто-проверка каждые ~1.2 сек. Когда станет <b>paid</b> — покажем конфиг и активность.
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- GUIDE -->
-    <div id="screenGuide" class="hidden">
+    <div class="screen hidden" id="screenGuide">
       <div class="card">
-        <div class="head">
+        <div class="cardHead">
           <h2>Инструкции</h2>
           <small>свайп</small>
         </div>
-        <div class="greekline"></div>
+        <div class="divider"></div>
 
         <div class="carousel">
           <div class="slide">
-            <div class="slideTitle">
+            <div class="slideTop">
               <b>iOS</b>
               <span class="chip">V2Box / Shadowrocket</span>
             </div>
             <div class="steps">
-              1) На главной нажми “Получить конфиг”<br/>
-              2) Скопируй ссылку VLESS<br/>
-              3) В приложении: Import → From Clipboard<br/>
+              1) Нажми “Получить конфиг”<br/>
+              2) Скопируй VLESS ссылку<br/>
+              3) Import → From Clipboard<br/>
               4) Connect
             </div>
           </div>
 
           <div class="slide">
-            <div class="slideTitle">
+            <div class="slideTop">
               <b>Android</b>
               <span class="chip">v2rayNG</span>
             </div>
             <div class="steps">
-              1) Нажми “Получить конфиг”<br/>
-              2) Скопируй VLESS<br/>
-              3) v2rayNG: “+” → Import from Clipboard<br/>
+              1) Получи конфиг<br/>
+              2) Скопируй ссылку<br/>
+              3) “+” → Import from Clipboard<br/>
               4) Connect
             </div>
           </div>
 
           <div class="slide">
-            <div class="slideTitle">
+            <div class="slideTop">
               <b>Desktop</b>
               <span class="chip">Nekoray / v2rayN</span>
             </div>
             <div class="steps">
-              1) Получи конфиг и скопируй<br/>
-              2) Импорт по ссылке / из буфера<br/>
+              1) Скопируй конфиг<br/>
+              2) Импорт по ссылке/буферу<br/>
               3) Подключись
             </div>
           </div>
         </div>
 
-        <div style="height:10px"></div>
-        <div class="hint">Свайпай карточки влево/вправо.</div>
+        <div class="cardBody" style="padding-top:0">
+          <div class="muted">Свайпай карточки влево/вправо.</div>
+        </div>
       </div>
     </div>
 
     <!-- PROFILE -->
-    <div id="screenProfile" class="hidden">
+    <div class="screen hidden" id="screenProfile">
       <div class="card">
-        <div class="head">
+        <div class="cardHead">
           <h2>Профиль</h2>
-          <small>Telegram подключим позже</small>
+          <small>Telegram позже</small>
         </div>
-        <div class="greekline"></div>
+        <div class="divider"></div>
 
-        <div class="statusRow">
-          <div class="hint">ID</div>
-          <div class="badge" id="profileId">—</div>
-        </div>
+        <div class="cardBody">
+          <div class="notice" style="margin-top:0">
+            <div class="noticeTop">
+              <span class="muted">ID</span>
+              <span class="badge" id="profileId">—</span>
+            </div>
 
-        <div style="height:10px"></div>
+            <div class="noticeTop" style="margin:0">
+              <span class="muted">Подписка</span>
+              <span class="badge warn" id="subStatus">Не оплачено</span>
+            </div>
+            <div class="muted" id="activeUntil" style="margin-top:8px;">Активна до: —</div>
 
-        <div class="statusRow">
-          <div class="hint">Подписка</div>
-          <div class="badge warn" id="subStatus">Не оплачено</div>
-        </div>
-        <div class="hint" id="activeUntil" style="margin-top:6px">Активна до: —</div>
+            <div class="row" style="margin-top:12px;">
+              <button class="btn btnOutline" id="btnResetId">Новый ID</button>
+              <button class="btn btnOutline" id="btnHistory" disabled>История (скоро)</button>
+            </div>
+          </div>
 
-        <div class="greekline"></div>
-
-        <div class="row">
-          <button class="btn outline" id="btnResetId">Новый ID</button>
-          <button class="btn ghost" id="btnHistory" disabled>История (скоро)</button>
-        </div>
-
-        <div class="box" style="margin-top:12px">
-          <div class="hint"><b>Рефералка:</b> “Пригласи друга — +7 дней” (UI сейчас)</div>
-          <div style="height:10px"></div>
-          <button class="btn outline" id="btnRefCreate">Создать реф-код</button>
-          <div class="hint" id="refOut" style="margin-top:8px"></div>
+          <div class="notice">
+            <div class="noticeTop">
+              <span class="muted"><b>Рефералка</b>: +7 дней (UI)</span>
+              <span class="badge">ZEUS</span>
+            </div>
+            <button class="btn btnOutline" id="btnRefCreate">Создать реф-код</button>
+            <div class="muted" id="refOut" style="margin-top:10px;"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Bottom nav -->
+  <!-- Bottom navigation -->
   <div class="nav">
     <div class="navInner">
       <button class="tab active" id="tabHome">Главная</button>
@@ -679,10 +664,7 @@
   const API_BASE = "https://api.45.133.251.210.nip.io:8443";
 
   const tg = window.Telegram?.WebApp;
-  if (tg) {
-    try { tg.ready(); } catch(e){}
-    try { tg.expand(); } catch(e){}
-  }
+  if (tg) { try { tg.ready(); tg.expand(); } catch(e){} }
 
   const $ = (id)=>document.getElementById(id);
   const show = (el)=>el.classList.remove("hidden");
@@ -696,7 +678,6 @@
     $("errText").textContent = msg || "Неизвестная ошибка";
     show($("errBox"));
   }
-
   function genUserKey(){
     const n = Math.floor(Math.random()*9000)+1000;
     return "zeus-" + n;
@@ -713,14 +694,12 @@
       await r.json();
 
       $("apiText").textContent = "API: online";
-      $("apiDot").style.background = "var(--ok)";
-      $("apiDot").style.boxShadow = "0 0 10px rgba(39,216,154,.45)";
+      $("apiDot").style.background = "#22D09A";
       $("heroApi").textContent = "online";
       return true;
     }catch(e){
       $("apiText").textContent = "API: offline";
-      $("apiDot").style.background = "var(--bad)";
-      $("apiDot").style.boxShadow = "0 0 10px rgba(255,90,90,.45)";
+      $("apiDot").style.background = "#FF6262";
       $("heroApi").textContent = "offline";
       return false;
     }
@@ -741,11 +720,11 @@
     setProfileId(user_key);
 
     $("btnGetConfig").disabled = true;
-    $("btnGetConfig").textContent = "Получаю…";
+    $("btnGetConfig").textContent = "Генерирую…";
 
     try{
       const r = await fetch(API_BASE + "/issue-config", {
-        method: "POST",
+        method:"POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
           inbound_id: 1,
@@ -762,7 +741,7 @@
       if(!r.ok) throw new Error(data?.detail || ("HTTP " + r.status));
 
       lastConfig = data.link || "";
-      if(!lastConfig) throw new Error("Пустой ответ: нет поля link");
+      if(!lastConfig) throw new Error("Ответ без link");
 
       $("configText").textContent = lastConfig;
       show($("configBox"));
@@ -788,6 +767,16 @@
   // ===== PAYMENTS + POLLING =====
   let pollTimer = null;
 
+  async function ensureUserKey(){
+    let user_key = $("userKey").value.trim();
+    if(!user_key){
+      user_key = genUserKey();
+      $("userKey").value = user_key;
+    }
+    setProfileId(user_key);
+    return user_key;
+  }
+
   async function pollOrder(orderId){
     if(pollTimer) clearInterval(pollTimer);
 
@@ -797,7 +786,7 @@
         const j = await r.json();
 
         $("payStatus").textContent = j.status || "pending";
-        $("payStatus").className = "badge " + ((j.status === "paid") ? "ok" : "warn");
+        $("payStatus").className = "badge " + ((j.status === "paid") ? "ok" : (j.status === "error" ? "bad" : "warn"));
 
         const amount = (j.amount != null) ? `${j.amount} ${j.currency || ""}` : "";
         $("payMeta").textContent = `order: ${j.id} • ${amount} • days: ${j.plan_days || ""} • devices: ${j.devices || ""}`;
@@ -808,7 +797,7 @@
 
           $("subStatus").textContent = "Активна";
           $("subStatus").className = "badge ok";
-          $("heroSub").textContent = "активна";
+          $("heroSubStat").textContent = "активна";
 
           if(j.active_until){
             $("activeUntil").textContent = "Активна до: " + new Date(j.active_until).toLocaleString();
@@ -821,19 +810,9 @@
           }
         }
       }catch(e){
-        // тихо, чтобы UI не дергался
+        // тихо, чтобы не шуметь
       }
     }, 1200);
-  }
-
-  async function ensureUserKey(){
-    let user_key = $("userKey").value.trim();
-    if(!user_key){
-      user_key = genUserKey();
-      $("userKey").value = user_key;
-    }
-    setProfileId(user_key);
-    return user_key;
   }
 
   $("btnPayStars").addEventListener("click", async ()=>{
