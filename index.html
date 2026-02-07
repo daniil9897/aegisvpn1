@@ -4,33 +4,38 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>ZEUSVPN</title>
-
-  <!-- Telegram WebApp (не ломает обычный браузер) -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     :root{
-      --bg0:#06070b;
-      --bg1:#070915;
-      --card: rgba(10,14,26,.70);
-      --card2: rgba(7,10,18,.70);
-      --stroke: rgba(255,255,255,.09);
+      /* Zeus palette */
+      --bg0:#05060a;
+      --bg1:#070a14;
+      --sky:#0b1030;
 
-      --text:#eaf0ff;
-      --muted:#9aa6c0;
+      --text:#f3f6ff;
+      --muted:#aab3d3;
 
-      --gold:#ffd56a;
-      --gold2:#ffb900;
-      --blue:#4db9ff;
-      --blue2:#2c6bff;
-      --cyan:#38f9ff;
+      --gold:#f6d36b;
+      --gold2:#ffbf2f;
+      --gold3:#b48722;
 
-      --ok:#20d67b;
-      --warn:#ffcc00;
-      --bad:#ff3b3b;
+      --bolt:#7cd6ff;
+      --bolt2:#3f7bff;
 
-      --radius: 18px;
-      --shadow: 0 18px 50px rgba(0,0,0,.55);
+      --marbleA: rgba(255,255,255,.10);
+      --marbleB: rgba(255,255,255,.06);
+
+      --card: rgba(10,12,20,.66);
+      --stroke: rgba(255,255,255,.10);
+
+      --ok:#24d38c;
+      --warn:#ffd66a;
+      --bad:#ff4d4d;
+
+      --r16:16px;
+      --r20:20px;
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
     }
 
     *{box-sizing:border-box}
@@ -40,50 +45,74 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--text);
       background:
-        radial-gradient(900px 420px at 50% -10%, rgba(77,185,255,.16), transparent 60%),
-        radial-gradient(720px 400px at 110% 10%, rgba(255,213,106,.12), transparent 60%),
-        radial-gradient(900px 520px at 45% 110%, rgba(44,107,255,.14), transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg0));
+        radial-gradient(900px 520px at 50% -12%, rgba(124,214,255,.16), transparent 60%),
+        radial-gradient(720px 420px at 110% 8%, rgba(246,211,107,.12), transparent 60%),
+        radial-gradient(980px 640px at 35% 120%, rgba(63,123,255,.14), transparent 60%),
+        linear-gradient(180deg, var(--sky), var(--bg0));
       overflow-x:hidden;
     }
 
-    /* Ultra subtle grain */
+    /* film grain */
     body:before{
       content:"";
       position:fixed; inset:0;
       pointer-events:none;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");
+      opacity:.25;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.10'/%3E%3C/svg%3E");
       mix-blend-mode:overlay;
-      opacity:.35;
     }
 
-    /* Lightning streaks */
+    /* Zeus lightning sweeps */
     .storm{
       position:fixed; inset:0;
       pointer-events:none;
-      opacity:.22;
-      filter: blur(.2px);
+      opacity:.9;
+      z-index:0;
+    }
+    .storm:before, .storm:after{
+      content:"";
+      position:absolute; inset:-20%;
       background:
-        radial-gradient(240px 120px at 18% 12%, rgba(56,249,255,.22), transparent 60%),
-        radial-gradient(220px 140px at 82% 16%, rgba(255,213,106,.18), transparent 60%),
-        linear-gradient(115deg, transparent 0 40%, rgba(77,185,255,.10) 44%, transparent 48%),
-        linear-gradient(65deg, transparent 0 58%, rgba(255,213,106,.10) 62%, transparent 66%);
+        linear-gradient(115deg,
+          transparent 0 44%,
+          rgba(124,214,255,.10) 47%,
+          transparent 50%),
+        linear-gradient(70deg,
+          transparent 0 60%,
+          rgba(246,211,107,.08) 63%,
+          transparent 66%),
+        radial-gradient(240px 120px at 20% 18%, rgba(124,214,255,.10), transparent 70%),
+        radial-gradient(260px 140px at 80% 16%, rgba(246,211,107,.08), transparent 70%);
+      filter: blur(.2px);
+      animation: sweep 7.5s linear infinite;
+      opacity:.35;
+    }
+    .storm:after{
+      animation-duration: 10.5s;
+      opacity:.22;
+      transform: rotate(12deg);
+    }
+    @keyframes sweep{
+      0%{ transform: translateX(-6%) translateY(0) }
+      50%{ transform: translateX(6%) translateY(1%) }
+      100%{ transform: translateX(-6%) translateY(0) }
     }
 
     .app{
       max-width:520px;
       margin:0 auto;
-      padding:18px 14px 92px;
+      padding: 16px 14px 96px;
       position:relative;
-      z-index:2;
+      z-index:1;
     }
 
-    .header{
+    /* Header */
+    .topbar{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      padding:6px 4px 10px;
+      padding: 6px 2px 10px;
     }
 
     .brand{
@@ -93,43 +122,57 @@
       min-width:0;
     }
 
-    .logo{
-      width:44px; height:44px;
+    .emblem{
+      width:46px; height:46px;
       border-radius:16px;
-      background:
-        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.22), transparent 70%),
-        linear-gradient(145deg, rgba(255,213,106,.95), rgba(44,107,255,.95));
-      box-shadow:
-        0 14px 30px rgba(44,107,255,.18),
-        0 10px 26px rgba(255,213,106,.12);
       position:relative;
       overflow:hidden;
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:
+        0 18px 40px rgba(0,0,0,.40),
+        0 16px 36px rgba(63,123,255,.12);
+      background:
+        radial-gradient(18px 18px at 32% 28%, rgba(255,255,255,.18), transparent 70%),
+        linear-gradient(145deg, rgba(246,211,107,.95), rgba(63,123,255,.92));
     }
-    .logo:after{
+    .emblem:before{
+      /* tiny lightning mark */
       content:"";
-      position:absolute; inset:-40%;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,.26), transparent);
-      transform:rotate(25deg);
+      position:absolute;
+      left:50%; top:50%;
+      width:16px; height:24px;
+      transform: translate(-50%,-50%) skewX(-10deg);
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.18));
+      clip-path: polygon(55% 0, 100% 0, 62% 45%, 92% 45%, 35% 100%, 50% 58%, 18% 58%);
+      opacity:.85;
+      filter: drop-shadow(0 0 10px rgba(124,214,255,.35));
+    }
+    .emblem:after{
+      /* shine */
+      content:"";
+      position:absolute; inset:-50%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+      transform: rotate(25deg);
       animation: shine 3.2s linear infinite;
+      opacity:.8;
     }
     @keyframes shine{
-      0%{transform:translateX(-60%) rotate(25deg)}
-      100%{transform:translateX(60%) rotate(25deg)}
+      0%{transform:translateX(-55%) rotate(25deg)}
+      100%{transform:translateX(55%) rotate(25deg)}
     }
 
     .brand h1{
       margin:0;
       font-size:18px;
-      letter-spacing:.8px;
+      letter-spacing: 1.1px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
     .brand small{
       display:block;
-      color:var(--muted);
       margin-top:2px;
+      color:var(--muted);
       font-size:12px;
       letter-spacing:.2px;
     }
@@ -139,193 +182,315 @@
       align-items:center;
       gap:8px;
       padding:8px 10px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(10,12,18,.55);
       border-radius:999px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(10,12,20,.45);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 14px 36px rgba(0,0,0,.28);
       font-size:12px;
       color:var(--muted);
+      white-space:nowrap;
     }
     .dot{
       width:8px; height:8px; border-radius:50%;
-      background:var(--ok);
-      box-shadow: 0 0 14px rgba(32,214,123,.6);
+      background: var(--warn);
+      box-shadow: 0 0 14px rgba(255,214,106,.45);
     }
 
-    .card{
-      background:linear-gradient(180deg, var(--card), var(--card2));
-      border:1px solid var(--stroke);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:14px;
-      margin:12px 0;
-      position:relative;
+    /* Hero */
+    .hero{
+      border-radius: var(--r20);
+      border: 1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(600px 240px at 20% 0%, rgba(246,211,107,.10), transparent 60%),
+        radial-gradient(600px 240px at 82% 12%, rgba(124,214,255,.10), transparent 60%),
+        linear-gradient(180deg, rgba(10,14,30,.68), rgba(6,8,14,.68));
+      box-shadow: var(--shadow);
       overflow:hidden;
+      position:relative;
+      padding:16px;
+      margin-bottom: 12px;
     }
-
-    /* Zeus aura */
-    .card:before{
+    .hero:before{
+      /* Greek key border (meander) */
+      content:"";
+      position:absolute;
+      left:0; right:0; top:0;
+      height:34px;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.20), transparent),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='34' viewBox='0 0 72 34'%3E%3Cg fill='none' stroke='%23f6d36b' stroke-opacity='.45' stroke-width='2'%3E%3Cpath d='M2 30V6h22v10H12v14h24V18h10v12h24V6H48V2h22v28'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: repeat-x;
+      background-position: center;
+      opacity:.9;
+    }
+    .hero:after{
+      /* temple columns silhouette */
       content:"";
       position:absolute; inset:0;
+      opacity:.10;
       background:
-        radial-gradient(520px 220px at 14% 0%, rgba(77,185,255,.16), transparent 60%),
-        radial-gradient(520px 240px at 88% 10%, rgba(255,213,106,.12), transparent 60%);
+        radial-gradient(520px 260px at 50% 100%, rgba(255,255,255,.18), transparent 70%),
+        linear-gradient(180deg, transparent 60%, rgba(0,0,0,.32));
+      mask-image:
+        radial-gradient(580px 260px at 50% 100%, #000 50%, transparent 75%);
       pointer-events:none;
     }
 
-    .section-title{
+    .heroTitle{
+      margin: 18px 0 6px;
+      font-size: 20px;
+      letter-spacing: .6px;
+      line-height:1.15;
+    }
+    .heroSub{
+      margin:0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height:1.45;
+      max-width: 36ch;
+    }
+
+    .heroRow{
+      display:flex;
+      gap:10px;
+      margin-top: 14px;
+      align-items:stretch;
+    }
+
+    .miniStat{
+      flex:1;
+      padding:10px 10px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      position:relative;
+      overflow:hidden;
+    }
+    .miniStat:before{
+      content:"";
+      position:absolute; inset:-60%;
+      background: linear-gradient(90deg, transparent, rgba(124,214,255,.14), transparent);
+      transform: rotate(18deg);
+      animation: statshine 4.2s linear infinite;
+      opacity:.7;
+    }
+    @keyframes statshine{
+      0%{transform:translateX(-55%) rotate(18deg)}
+      100%{transform:translateX(55%) rotate(18deg)}
+    }
+    .miniStat b{
+      display:block;
+      font-size: 13px;
+      letter-spacing:.3px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .miniStat span{
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Card (marble) */
+    .card{
+      border-radius: var(--r20);
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(520px 220px at 18% 0%, rgba(124,214,255,.10), transparent 60%),
+        radial-gradient(520px 240px at 88% 10%, rgba(246,211,107,.10), transparent 60%),
+        linear-gradient(180deg, rgba(10,12,20,.70), rgba(6,8,14,.70));
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin: 12px 0;
+      position:relative;
+      overflow:hidden;
+    }
+    .card .marble{
+      position:absolute; inset:0;
+      opacity:.42;
+      pointer-events:none;
+      background:
+        radial-gradient(400px 220px at 20% 30%, rgba(255,255,255,.07), transparent 65%),
+        radial-gradient(400px 220px at 70% 60%, rgba(255,255,255,.05), transparent 65%),
+        linear-gradient(120deg,
+          transparent 0%,
+          rgba(255,255,255,.05) 8%,
+          transparent 16%,
+          rgba(255,255,255,.04) 24%,
+          transparent 34%,
+          rgba(255,255,255,.03) 44%,
+          transparent 58%,
+          rgba(255,255,255,.03) 66%,
+          transparent 80%,
+          rgba(255,255,255,.02) 90%,
+          transparent 100%);
+      mix-blend-mode: overlay;
+    }
+
+    .head{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
       margin-bottom:10px;
+      position:relative;
+      z-index:1;
     }
-    .section-title h2{
+    .head h2{
       margin:0;
-      font-size:14px;
-      letter-spacing:.3px;
+      font-size: 14px;
+      letter-spacing:.4px;
     }
-    .section-title span{
-      color:var(--muted);
+    .head small{
+      color: var(--muted);
       font-size:12px;
     }
 
-    /* “Thunder line” separator */
-    .accent-line{
+    .meanderLine{
       height:2px;
-      background:linear-gradient(90deg, transparent, rgba(255,213,106,.55), rgba(77,185,255,.55), transparent);
       border-radius:999px;
-      margin:10px 0 12px;
-      box-shadow: 0 0 22px rgba(77,185,255,.12);
+      margin: 10px 0 12px;
+      background: linear-gradient(90deg,
+        transparent,
+        rgba(246,211,107,.55),
+        rgba(124,214,255,.55),
+        transparent);
+      box-shadow: 0 0 22px rgba(124,214,255,.10);
+      position:relative;
+      z-index:1;
     }
 
+    /* Inputs */
+    .input{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(5,6,10,.55);
+      color: var(--text);
+      outline:none;
+      font-size:14px;
+      position:relative;
+      z-index:1;
+    }
+    .hint{
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.45;
+      position:relative;
+      z-index:1;
+    }
+
+    /* Buttons */
     .btn{
       width:100%;
-      border:none;
-      border-radius:14px;
-      padding:14px 14px;
-      font-weight:800;
-      letter-spacing:.3px;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 14px;
       cursor:pointer;
-      color:#08101f;
-      background:
-        radial-gradient(140px 50px at 30% 0%, rgba(255,255,255,.35), transparent 55%),
-        linear-gradient(180deg, var(--gold), var(--gold2));
-      box-shadow:
-        0 16px 38px rgba(255,213,106,.14),
-        0 10px 26px rgba(0,0,0,.30);
-      transition:transform .08s ease, filter .2s ease;
+      font-weight: 900;
+      letter-spacing:.35px;
       position:relative;
       overflow:hidden;
+      transform: translateZ(0);
+      z-index:1;
     }
-    .btn:before{
+    .btn.primary{
+      color: #0b0f19;
+      background:
+        radial-gradient(160px 50px at 30% 0%, rgba(255,255,255,.35), transparent 55%),
+        linear-gradient(180deg, var(--gold), var(--gold2));
+      box-shadow:
+        0 18px 48px rgba(246,211,107,.15),
+        0 14px 34px rgba(0,0,0,.32);
+    }
+    .btn.primary:before{
       content:"";
-      position:absolute; inset:-40%;
-      background:linear-gradient(90deg, transparent, rgba(77,185,255,.22), transparent);
-      transform:rotate(18deg);
-      animation: bolt 2.8s linear infinite;
-      opacity:.7;
+      position:absolute; inset:-55%;
+      background: linear-gradient(90deg, transparent, rgba(124,214,255,.22), transparent);
+      transform: rotate(18deg);
+      animation: btnshine 2.6s linear infinite;
+      opacity:.75;
       pointer-events:none;
     }
-    @keyframes bolt{
+    @keyframes btnshine{
       0%{transform:translateX(-55%) rotate(18deg)}
       100%{transform:translateX(55%) rotate(18deg)}
     }
-    .btn:active{transform:translateY(1px)}
     .btn.secondary{
-      color:var(--text);
+      color: var(--text);
+      border:1px solid rgba(124,214,255,.24);
       background:
-        radial-gradient(140px 50px at 30% 0%, rgba(255,255,255,.12), transparent 55%),
-        linear-gradient(180deg, rgba(77,185,255,.35), rgba(44,107,255,.35));
-      border:1px solid rgba(77,185,255,.25);
-      box-shadow: 0 16px 38px rgba(44,107,255,.10);
+        radial-gradient(160px 50px at 30% 0%, rgba(255,255,255,.10), transparent 55%),
+        linear-gradient(180deg, rgba(124,214,255,.22), rgba(63,123,255,.18));
+      box-shadow: 0 18px 48px rgba(63,123,255,.12);
     }
     .btn.ghost{
-      background:transparent;
+      color: var(--muted);
       border:1px dashed rgba(255,255,255,.18);
-      color:var(--muted);
-      font-weight:700;
+      background: transparent;
       box-shadow:none;
+      font-weight:800;
     }
-    .btn[disabled]{
-      opacity:.45;
-      cursor:not-allowed;
-      filter:saturate(.5);
-    }
+    .btn:active{ transform: translateY(1px); }
+    .btn[disabled]{opacity:.45; cursor:not-allowed; filter:saturate(.7);}
 
-    .row{display:flex; gap:10px;}
+    .row{display:flex; gap:10px; position:relative; z-index:1;}
     .row .btn{flex:1}
 
-    .field{display:flex; gap:10px; align-items:center; margin:10px 0;}
-    .input{
-      flex:1;
-      background:rgba(6,9,16,.65);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:14px;
-      padding:12px 12px;
-      color:var(--text);
-      outline:none;
-      font-size:14px;
-    }
-    .label{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:6px;
-    }
-
+    /* Boxes */
     .box{
-      background:rgba(6,8,14,.55);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:14px;
-      padding:12px;
-      margin-top:10px;
+      margin-top: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(5,6,10,.52);
+      padding: 12px;
+      position:relative;
+      z-index:1;
     }
     .mono{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:12px;
-      word-break:break-all;
-      color:#dfe6ff;
-      line-height:1.35;
-    }
-    .hint{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.4;
+      font-size: 12px;
+      line-height: 1.35;
+      word-break: break-all;
+      color: #e9eeff;
     }
 
-    .status{
+    .statusRow{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      font-size:12px;
-      color:var(--muted);
     }
     .badge{
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-      font-weight:750;
-      font-size:12px;
-      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      font-weight: 850;
+      font-size: 12px;
+      white-space: nowrap;
     }
-    .badge.ok{border-color:rgba(32,214,123,.35); color:#bdf7d7; background:rgba(32,214,123,.08)}
-    .badge.warn{border-color:rgba(255,204,0,.35); color:#fff2b3; background:rgba(255,204,0,.08)}
-    .badge.bad{border-color:rgba(255,59,59,.35); color:#ffb3b3; background:rgba(255,59,59,.08)}
+    .badge.ok{border-color: rgba(36,211,140,.35); background: rgba(36,211,140,.08); color:#c7ffe7;}
+    .badge.warn{border-color: rgba(255,214,106,.35); background: rgba(255,214,106,.08); color:#fff0c2;}
+    .badge.bad{border-color: rgba(255,77,77,.35); background: rgba(255,77,77,.08); color:#ffc6c6;}
 
-    /* bottom nav */
+    .hidden{display:none !important;}
+
+    /* Bottom nav */
     .nav{
       position:fixed;
       left:0; right:0; bottom:0;
-      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
-      background:rgba(6,7,10,.72);
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(5,6,10,.72);
+      border-top: 1px solid rgba(255,255,255,.08);
       backdrop-filter: blur(12px);
-      border-top:1px solid rgba(255,255,255,.08);
       z-index:5;
     }
-    .nav-inner{
+    .navInner{
       max-width:520px;
       margin:0 auto;
       display:flex;
@@ -333,23 +498,85 @@
     }
     .tab{
       flex:1;
-      padding:12px 10px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--muted);
-      font-weight:800;
+      padding: 12px 10px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-weight: 900;
+      letter-spacing:.2px;
       cursor:pointer;
     }
     .tab.active{
-      color:var(--text);
-      border-color: rgba(255,213,106,.28);
+      color: var(--text);
+      border-color: rgba(246,211,107,.26);
       background:
-        radial-gradient(220px 60px at 50% 0%, rgba(255,213,106,.14), rgba(255,255,255,.05)),
-        linear-gradient(180deg, rgba(77,185,255,.10), rgba(44,107,255,.06));
+        radial-gradient(220px 60px at 50% 0%, rgba(246,211,107,.14), rgba(255,255,255,.05)),
+        linear-gradient(180deg, rgba(124,214,255,.10), rgba(63,123,255,.06));
     }
 
-    .hidden{display:none !important;}
+    /* Swipe cards (instructions) */
+    .carousel{
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      padding-bottom: 6px;
+    }
+    .carousel::-webkit-scrollbar{display:none}
+    .slide{
+      min-width: 86%;
+      scroll-snap-align: start;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(340px 180px at 20% 0%, rgba(246,211,107,.10), transparent 60%),
+        radial-gradient(340px 180px at 82% 10%, rgba(124,214,255,.10), transparent 60%),
+        linear-gradient(180deg, rgba(10,12,20,.68), rgba(6,8,14,.68));
+      padding: 14px;
+      position:relative;
+      overflow:hidden;
+    }
+    .slide:before{
+      content:"";
+      position:absolute; inset:0;
+      opacity:.35;
+      background:
+        linear-gradient(120deg,
+          transparent 0%,
+          rgba(255,255,255,.05) 12%,
+          transparent 24%,
+          rgba(255,255,255,.035) 36%,
+          transparent 52%,
+          rgba(255,255,255,.03) 68%,
+          transparent 82%,
+          rgba(255,255,255,.02) 100%);
+      mix-blend-mode: overlay;
+      pointer-events:none;
+    }
+    .slideTitle{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom: 8px;
+      position:relative; z-index:1;
+    }
+    .slideTitle b{ font-size: 14px; letter-spacing:.3px; }
+    .slideTitle span{
+      font-size: 12px;
+      color: var(--muted);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .steps{
+      position:relative; z-index:1;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+
   </style>
 </head>
 
@@ -357,77 +584,103 @@
   <div class="storm"></div>
 
   <div class="app">
-    <div class="header">
+    <div class="topbar">
       <div class="brand">
-        <div class="logo"></div>
+        <div class="emblem"></div>
         <div style="min-width:0">
           <h1>ZEUSVPN</h1>
-          <small>Thunder-fast VLESS • Mobile-first</small>
+          <small>Олимпийская скорость • молниеносный VLESS</small>
         </div>
       </div>
 
       <div class="pill" id="apiPill">
-        <span class="dot"></span>
+        <span class="dot" id="apiDot"></span>
         <span id="apiText">API: проверяю…</span>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="heroTitle">Щит Олимпа. Молния в один тап.</div>
+      <p class="heroSub">
+        Получай индивидуальный VLESS-конфиг. Оплата Stars/USDT уже встроена (покажем конфиг после подтверждения).
+      </p>
+
+      <div class="heroRow">
+        <div class="miniStat">
+          <b>Подписка</b>
+          <span id="heroSub">пока без оплаты</span>
+        </div>
+        <div class="miniStat">
+          <b>Устройства</b>
+          <span>1/5/10 (UI)</span>
+        </div>
+        <div class="miniStat">
+          <b>Статус</b>
+          <span id="heroApi">—</span>
+        </div>
       </div>
     </div>
 
     <!-- HOME -->
     <div id="screenHome">
       <div class="card">
-        <div class="section-title">
-          <h2>Конфиг</h2>
-          <span>быстро • индивидуально</span>
-        </div>
-        <div class="accent-line"></div>
+        <div class="marble"></div>
 
-        <div class="field">
-          <input class="input" id="userKey" placeholder="ID пользователя (можно оставить авто)" />
+        <div class="head">
+          <h2>Конфиг ZEUS</h2>
+          <small>уникально для каждого</small>
         </div>
+        <div class="meanderLine"></div>
+
+        <input class="input" id="userKey" placeholder="ID пользователя (можно оставить пустым)" />
+        <div style="height:8px"></div>
         <div class="hint">
-          Оставь пустым — сделаем ID автоматически. Позже здесь будет Telegram ID/профиль.
+          Оставь пустым — сделаем ID автоматически. Позже тут будет Telegram профиль (tg id).
         </div>
 
         <div style="height:12px"></div>
-        <button class="btn" id="btnGetConfig">⚡ Получить конфиг</button>
+        <button class="btn primary" id="btnGetConfig">⚡ Получить конфиг</button>
 
         <div id="configBox" class="box hidden">
-          <div class="status">
-            <div>Твой VLESS</div>
-            <button class="btn secondary" style="width:auto; padding:10px 12px" id="btnCopy">Скопировать</button>
+          <div class="statusRow">
+            <div class="badge ok">VLESS</div>
+            <button class="btn secondary" id="btnCopy" style="width:auto; padding:10px 12px;">Скопировать</button>
           </div>
-          <div class="accent-line"></div>
+          <div class="meanderLine"></div>
           <div class="mono" id="configText"></div>
         </div>
 
-        <div id="errBox" class="box hidden" style="border-color: rgba(255,59,59,.35)">
-          <div class="status">
+        <div id="errBox" class="box hidden" style="border-color: rgba(255,77,77,.35);">
+          <div class="statusRow">
             <div class="badge bad">Ошибка</div>
-            <div class="hint" id="errText"></div>
+            <div class="hint" id="errText" style="text-align:right"></div>
           </div>
         </div>
       </div>
 
       <div class="card">
-        <div class="section-title">
+        <div class="marble"></div>
+
+        <div class="head">
           <h2>Оплата</h2>
-          <span>Stars / USDT</span>
+          <small>Stars / USDT</small>
         </div>
-        <div class="accent-line"></div>
+        <div class="meanderLine"></div>
 
         <div class="row">
-          <button class="btn" id="btnPayStars">⭐ Оплатить Stars</button>
+          <button class="btn primary" id="btnPayStars">⭐ Оплатить Stars</button>
           <button class="btn secondary" id="btnPayUsdt">💎 Оплатить USDT</button>
         </div>
 
         <div id="payBox" class="box hidden">
-          <div class="status">
+          <div class="statusRow">
             <div>Статус заказа</div>
             <div class="badge warn" id="payStatus">pending</div>
           </div>
-          <div class="label" id="payMeta"></div>
-          <div class="accent-line"></div>
-          <div class="hint">После оплаты ждём подтверждение и покажем конфиг автоматически.</div>
+          <div class="hint" id="payMeta" style="margin-top:6px"></div>
+          <div class="meanderLine"></div>
+          <div class="hint">После оплаты каждые ~1.2 сек проверяем заказ. Когда <b>paid</b> — покажем конфиг и активность.</div>
         </div>
       </div>
     </div>
@@ -435,63 +688,84 @@
     <!-- INSTRUCTIONS -->
     <div id="screenGuide" class="hidden">
       <div class="card">
-        <div class="section-title">
+        <div class="marble"></div>
+
+        <div class="head">
           <h2>Инструкции</h2>
-          <span>под мобилки</span>
+          <small>свайп-карточки</small>
         </div>
-        <div class="accent-line"></div>
+        <div class="meanderLine"></div>
 
-        <div class="box" style="margin-bottom:10px">
-          <div class="badge">iOS</div>
-          <div class="hint" style="margin-top:8px">
-            1) Установи V2Box / Shadowrocket<br/>
-            2) Импорт → “Вставить из буфера / по ссылке”<br/>
-            3) Подключись
+        <div class="carousel" id="carousel">
+          <div class="slide">
+            <div class="slideTitle">
+              <b>iOS</b>
+              <span>V2Box / Shadowrocket</span>
+            </div>
+            <div class="steps">
+              1) Нажми “Получить конфиг” на главной<br/>
+              2) Скопируй VLESS<br/>
+              3) В приложении: Import → “From Clipboard / Вставить”<br/>
+              4) Connect
+            </div>
+          </div>
+
+          <div class="slide">
+            <div class="slideTitle">
+              <b>Android</b>
+              <span>v2rayNG</span>
+            </div>
+            <div class="steps">
+              1) Нажми “Получить конфиг”<br/>
+              2) Скопируй VLESS<br/>
+              3) v2rayNG: + → Import from Clipboard<br/>
+              4) Connect
+            </div>
+          </div>
+
+          <div class="slide">
+            <div class="slideTitle">
+              <b>Desktop</b>
+              <span>Nekoray / v2rayN</span>
+            </div>
+            <div class="steps">
+              1) Получи конфиг и скопируй<br/>
+              2) Импорт по ссылке / из буфера<br/>
+              3) Подключись
+            </div>
           </div>
         </div>
 
-        <div class="box" style="margin-bottom:10px">
-          <div class="badge">Android</div>
-          <div class="hint" style="margin-top:8px">
-            1) Установи v2rayNG<br/>
-            2) Импорт → “Из буфера”<br/>
-            3) Подключись
-          </div>
-        </div>
-
-        <div class="box">
-          <div class="badge">Desktop</div>
-          <div class="hint" style="margin-top:8px">
-            Nekoray / v2rayN → import → connect
-          </div>
-        </div>
+        <div style="height:10px"></div>
+        <div class="hint">Подсказка: свайпай влево/вправо по карточкам.</div>
       </div>
     </div>
 
     <!-- PROFILE -->
     <div id="screenProfile" class="hidden">
       <div class="card">
-        <div class="section-title">
-          <h2>Профиль</h2>
-          <span>под Telegram позже</span>
-        </div>
-        <div class="accent-line"></div>
+        <div class="marble"></div>
 
-        <div class="status">
-          <div>ID</div>
+        <div class="head">
+          <h2>Профиль</h2>
+          <small>потом подключим Telegram</small>
+        </div>
+        <div class="meanderLine"></div>
+
+        <div class="statusRow">
+          <div class="hint">ID</div>
           <div class="badge" id="profileId">—</div>
         </div>
 
         <div style="height:10px"></div>
 
-        <div class="status">
-          <div>Подписка</div>
+        <div class="statusRow">
+          <div class="hint">Подписка</div>
           <div class="badge warn" id="subStatus">Не оплачено</div>
         </div>
+        <div class="hint" id="activeUntil" style="margin-top:6px">Активна до: —</div>
 
-        <div class="label" id="activeUntil">Активна до: —</div>
-
-        <div class="accent-line"></div>
+        <div class="meanderLine"></div>
 
         <div class="row">
           <button class="btn secondary" id="btnResetId">Новый ID</button>
@@ -499,19 +773,18 @@
         </div>
 
         <div class="box" style="margin-top:12px">
-          <div class="hint">
-            Рефералка (UI): “Пригласи друга — +7 дней”
-          </div>
+          <div class="hint"><b>Рефералка (UI сейчас, логика уже есть):</b><br/>“Пригласи друга — +7 дней”</div>
           <div style="height:10px"></div>
           <button class="btn secondary" id="btnRefCreate">Создать реф-код</button>
-          <div class="label" id="refOut"></div>
+          <div class="hint" id="refOut" style="margin-top:8px"></div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Bottom Nav -->
   <div class="nav">
-    <div class="nav-inner">
+    <div class="navInner">
       <button class="tab active" id="tabHome">Главная</button>
       <button class="tab" id="tabGuide">Инструкции</button>
       <button class="tab" id="tabProfile">Профиль</button>
@@ -529,18 +802,17 @@
     try { tg.expand(); } catch(e){}
   }
 
-  // helpers
   const $ = (id)=>document.getElementById(id);
   const show = (el)=>el.classList.remove("hidden");
   const hide = (el)=>el.classList.add("hidden");
 
-  function setError(msg){
-    $("errText").textContent = msg;
-    show($("errBox"));
-  }
   function clearError(){
     hide($("errBox"));
     $("errText").textContent = "";
+  }
+  function setError(msg){
+    $("errText").textContent = msg || "Неизвестная ошибка";
+    show($("errBox"));
   }
 
   function genUserKey(){
@@ -549,6 +821,7 @@
   }
   function setProfileId(id){
     $("profileId").textContent = id || "—";
+    localStorage.setItem("zeus_user_key", id || "");
   }
 
   // API check
@@ -557,17 +830,24 @@
       const r = await fetch(API_BASE + "/health", { method:"GET" });
       if(!r.ok) throw new Error("health not ok");
       await r.json();
+
       $("apiText").textContent = "API: online";
-      $("apiPill").querySelector(".dot").style.background = "var(--ok)";
+      $("apiDot").style.background = "var(--ok)";
+      $("apiDot").style.boxShadow = "0 0 14px rgba(36,211,140,.55)";
+
+      $("heroApi").textContent = "online";
       return true;
     }catch(e){
       $("apiText").textContent = "API: offline";
-      $("apiPill").querySelector(".dot").style.background = "var(--bad)";
+      $("apiDot").style.background = "var(--bad)";
+      $("apiDot").style.boxShadow = "0 0 14px rgba(255,77,77,.55)";
+
+      $("heroApi").textContent = "offline";
       return false;
     }
   }
 
-  // issue config
+  // CONFIG issuance
   let lastConfig = "";
 
   $("btnGetConfig").addEventListener("click", async ()=>{
@@ -582,7 +862,7 @@
     setProfileId(user_key);
 
     $("btnGetConfig").disabled = true;
-    $("btnGetConfig").textContent = "⚡ Получаю…";
+    $("btnGetConfig").textContent = "⚡ Добываю молнию…";
 
     try{
       const r = await fetch(API_BASE + "/issue-config", {
@@ -598,7 +878,7 @@
 
       const txt = await r.text();
       let data;
-      try{ data = JSON.parse(txt); } catch(e){ data = { raw: txt }; }
+      try { data = JSON.parse(txt); } catch(e){ data = { raw: txt }; }
 
       if(!r.ok){
         throw new Error(data?.detail || ("HTTP " + r.status + ": " + txt));
@@ -610,7 +890,7 @@
       $("configText").textContent = lastConfig;
       show($("configBox"));
     }catch(e){
-      setError(e.message || String(e));
+      setError(e?.message || String(e));
     }finally{
       $("btnGetConfig").disabled = false;
       $("btnGetConfig").textContent = "⚡ Получить конфиг";
@@ -620,47 +900,63 @@
   $("btnCopy").addEventListener("click", async ()=>{
     try{
       await navigator.clipboard.writeText(lastConfig);
+      const old = $("btnCopy").textContent;
       $("btnCopy").textContent = "Скопировано";
-      setTimeout(()=> $("btnCopy").textContent="Скопировать", 1000);
+      setTimeout(()=> $("btnCopy").textContent = old, 900);
     }catch(e){
-      alert("Не смог скопировать. Держи вручную:\n\n" + lastConfig);
+      alert("Не смог скопировать автоматически. Скопируй вручную:\n\n" + lastConfig);
     }
   });
 
-  // payments
+  // PAYMENTS + polling
   let pollTimer = null;
 
   async function pollOrder(orderId){
     if(pollTimer) clearInterval(pollTimer);
+
     pollTimer = setInterval(async ()=>{
       try{
-        const r = await fetch(API_BASE + "/pay/order/" + orderId);
+        const r = await fetch(API_BASE + "/pay/order/" + orderId, { method:"GET" });
         const j = await r.json();
 
-        $("payStatus").textContent = j.status;
-        $("payStatus").className = "badge " + (j.status === "paid" ? "ok" : "warn");
-        $("payMeta").textContent = `order: ${j.id} • ${j.amount || ""} ${j.currency || ""} • days: ${j.plan_days || ""}`;
+        $("payStatus").textContent = j.status || "pending";
+        $("payStatus").className = "badge " + ((j.status === "paid") ? "ok" : "warn");
+
+        const amount = (j.amount != null) ? `${j.amount} ${j.currency || ""}` : "";
+        $("payMeta").textContent = `order: ${j.id} • ${amount} • days: ${j.plan_days || ""} • devices: ${j.devices || ""}`;
 
         if(j.status === "paid"){
           clearInterval(pollTimer);
           pollTimer = null;
+
+          $("subStatus").textContent = "Активна";
+          $("subStatus").className = "badge ok";
+          $("heroSub").textContent = "активна";
+
+          if(j.active_until){
+            $("activeUntil").textContent = "Активна до: " + new Date(j.active_until).toLocaleString();
+          }
 
           if(j.config_link){
             lastConfig = j.config_link;
             $("configText").textContent = lastConfig;
             show($("configBox"));
           }
-
-          $("subStatus").textContent = "Активна";
-          $("subStatus").className = "badge ok";
-          if(j.active_until){
-            $("activeUntil").textContent = "Активна до: " + new Date(j.active_until).toLocaleString();
-          }
         }
       }catch(e){
-        // silent
+        // молчим, чтобы не бесить юзера
       }
     }, 1200);
+  }
+
+  async function ensureUserKey(){
+    let user_key = $("userKey").value.trim();
+    if(!user_key){
+      user_key = genUserKey();
+      $("userKey").value = user_key;
+    }
+    setProfileId(user_key);
+    return user_key;
   }
 
   $("btnPayStars").addEventListener("click", async ()=>{
@@ -670,12 +966,7 @@
     $("payStatus").className = "badge warn";
     $("payMeta").textContent = "";
 
-    let user_key = $("userKey").value.trim();
-    if(!user_key){
-      user_key = genUserKey();
-      $("userKey").value = user_key;
-    }
-    setProfileId(user_key);
+    const user_key = await ensureUserKey();
 
     try{
       const r = await fetch(API_BASE + "/pay/stars/create", {
@@ -690,14 +981,14 @@
       $("payMeta").textContent = `order: ${j.order_id}`;
 
       if(tg && tg.openInvoice){
-        tg.openInvoice(j.invoice_link, (status)=>{});
+        tg.openInvoice(j.invoice_link, ()=>{});
       } else {
         window.open(j.invoice_link, "_blank");
       }
 
       pollOrder(j.order_id);
     }catch(e){
-      setError(e.message || String(e));
+      setError(e?.message || String(e));
       $("payStatus").textContent = "error";
       $("payStatus").className = "badge bad";
     }
@@ -710,12 +1001,7 @@
     $("payStatus").className = "badge warn";
     $("payMeta").textContent = "";
 
-    let user_key = $("userKey").value.trim();
-    if(!user_key){
-      user_key = genUserKey();
-      $("userKey").value = user_key;
-    }
-    setProfileId(user_key);
+    const user_key = await ensureUserKey();
 
     try{
       const r = await fetch(API_BASE + "/pay/crypto/create", {
@@ -735,20 +1021,18 @@
 
       pollOrder(j.order_id);
     }catch(e){
-      setError(e.message || String(e));
+      setError(e?.message || String(e));
       $("payStatus").textContent = "error";
       $("payStatus").className = "badge bad";
     }
   });
 
-  // referrals
+  // REF
   $("btnRefCreate").addEventListener("click", async ()=>{
     clearError();
     $("refOut").textContent = "создаю…";
 
-    let user_key = $("userKey").value.trim() || genUserKey();
-    $("userKey").value = user_key;
-    setProfileId(user_key);
+    const user_key = await ensureUserKey();
 
     try{
       const r = await fetch(API_BASE + "/ref/create", {
@@ -758,10 +1042,11 @@
       });
       const j = await r.json();
       if(!r.ok) throw new Error(j?.detail || "ref create error");
+
       $("refOut").textContent = "Твой код: " + j.code;
     }catch(e){
       $("refOut").textContent = "";
-      setError(e.message || String(e));
+      setError(e?.message || String(e));
     }
   });
 
@@ -771,39 +1056,36 @@
     setProfileId(id);
   });
 
-  // tabs
+  // Tabs
   function setTab(tab){
-    const tabs = [
+    const map = [
       ["tabHome","screenHome"],
       ["tabGuide","screenGuide"],
-      ["tabProfile","screenProfile"],
+      ["tabProfile","screenProfile"]
     ];
-    tabs.forEach(([t,s])=>{
-      const bt = $(t), sc = $(s);
-      if(t === tab){
-        bt.classList.add("active");
-        sc.classList.remove("hidden");
-      } else {
-        bt.classList.remove("active");
-        sc.classList.add("hidden");
-      }
+    map.forEach(([t,s])=>{
+      $(t).classList.toggle("active", t === tab);
+      $(s).classList.toggle("hidden", t !== tab);
     });
   }
   $("tabHome").onclick = ()=>setTab("tabHome");
   $("tabGuide").onclick = ()=>setTab("tabGuide");
   $("tabProfile").onclick = ()=>setTab("tabProfile");
 
-  // init
+  // Init
   (async ()=>{
-    await pingApi();
-    const saved = localStorage.getItem("zeus_user_key");
+    const saved = localStorage.getItem("zeus_user_key") || "";
     if(saved){
       $("userKey").value = saved;
-      setProfileId(saved);
+      $("profileId").textContent = saved;
     }
     $("userKey").addEventListener("change", ()=>{
       localStorage.setItem("zeus_user_key", $("userKey").value.trim());
+      $("profileId").textContent = $("userKey").value.trim() || "—";
     });
+
+    await pingApi();
+    setInterval(pingApi, 12000);
   })();
 </script>
 </body>
