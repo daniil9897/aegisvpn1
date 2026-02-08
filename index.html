@@ -636,7 +636,7 @@
     const state = {
       screen: "home",
       slide: 0,
-      user: { tg_id:null, name:"Гость", photo_url:null, user_key:null },
+      user: { tg_id:null, name:"Гость", photo_url:null, user_key:null, tg_username:null, devices_limit:0, status:"none" },
       plan: { days:30, devices:1, price:PRICES[30] },
       orderId: null,
       config: null,
@@ -698,6 +698,7 @@
       const u = tg.initDataUnsafe?.user;
       if(u){
         state.user.tg_id = u.id ?? null;
+        state.user.tg_username = u.username ?? null;
         const name = [u.first_name, u.last_name].filter(Boolean).join(" ").trim();
         state.user.name = name || (u.username ? "@"+u.username : "Пользователь");
         state.user.photo_url = u.photo_url || null;
@@ -792,13 +793,11 @@
       copyBtn.style.display="none";
       state.config=null;
       backdrop.classList.add("show");
-      // trigger animation
       requestAnimationFrame(()=>sheet.classList.add("show"));
       updateChoice();
     }
     function hideSheet(){
       sheet.classList.remove("show");
-      // small delay to let it disappear smoothly
       setTimeout(()=>backdrop.classList.remove("show"), 120);
     }
     btnSubscribe.addEventListener("click", openSheet);
@@ -898,7 +897,6 @@
        Render profile
     ========================= */
     function renderProfile(){
-      // avatar
       avatar.innerHTML="";
       if(state.user.photo_url){
         const img=document.createElement("img");
@@ -932,6 +930,39 @@
       }catch(e){
         apiDot.style.background = "rgba(255,59,48,.85)";
         apiText.textContent="API OFF";
+      }
+    }
+
+    /* ====== ВОТ ЭТО ГЛАВНОЕ: /me sync ====== */
+    async function syncMe(){
+      try{
+        const tg = window.Telegram?.WebApp;
+        const u = tg?.initDataUnsafe?.user;
+
+        const params = new URLSearchParams();
+        params.set("user_key", state.user.user_key);
+
+        if(u?.id) params.set("tg_id", String(u.id));
+        if(u?.username) params.set("tg_username", u.username);
+
+        const r = await fetch(`${API_BASE}/me?${params.toString()}`);
+        const data = await r.json();
+        if(!r.ok) throw new Error(data?.detail || "me error");
+
+        // На главной показываем реальную дату из users.active_until
+        if(data.active_until){
+          const d = formatDate(data.active_until);
+          activeUntil.textContent = d || "активна";
+          btnSubscribe.textContent = "Продлить подписку";
+        } else {
+          activeUntil.textContent = "нет";
+          btnSubscribe.textContent = "Приобрести подписку";
+        }
+
+        state.user.devices_limit = data.devices_limit ?? 0;
+        state.user.status = data.status ?? "none";
+      }catch(e){
+        // молча, чтобы UX не ломать
       }
     }
 
@@ -1003,14 +1034,12 @@
           const o=await getOrder(orderId);
           orderLine.textContent=`Заказ: ${o.id} • статус: ${o.status}`;
 
-          // active_until -> only on MAIN
+          // Если backend уже кладёт active_until в order — ок, обновим UI тоже.
+          // Но главный источник подписки теперь /me (users), поэтому после оплаты ты просто вызовешь syncMe().
           if(o.active_until){
             const d=formatDate(o.active_until);
             activeUntil.textContent = d ? d : "активна";
             btnSubscribe.textContent = "Продлить подписку";
-          }else{
-            activeUntil.textContent = "нет";
-            btnSubscribe.textContent = "Приобрести подписку";
           }
 
           if(o.config_link){
@@ -1020,9 +1049,10 @@
           }
 
           if(o.status==="paid"){
-            // if no config from backend yet, allow fallback
             copyBtn.style.display="inline-flex";
             copyBtn.textContent = state.config ? "Скопировать конфиг" : "Получить и скопировать конфиг";
+            // после оплаты ещё раз подтянем user подписку (users.active_until)
+            await syncMe();
           }
         }catch(e){
           // no spam
@@ -1085,6 +1115,8 @@
       saveKey();
       renderProfile();
       toast("Новый ID создан");
+      // создадим/обновим user в backend заново
+      syncMe();
     });
 
     /* =========================
@@ -1129,24 +1161,6 @@
     })();
 
     /* =========================
-       Load active from last order
-    ========================= */
-    async function refreshActive(){
-      if(!state.orderId) return;
-      try{
-        const o=await getOrder(state.orderId);
-        if(o.active_until){
-          const d=formatDate(o.active_until);
-          activeUntil.textContent = d || "активна";
-          btnSubscribe.textContent = "Продлить подписку";
-        }else{
-          activeUntil.textContent = "нет";
-          btnSubscribe.textContent = "Приобрести подписку";
-        }
-      }catch(e){}
-    }
-
-    /* =========================
        Boot
     ========================= */
     (async function boot(){
@@ -1156,8 +1170,11 @@
       renderProfile();
 
       await apiHealth();
-      await refreshActive();
 
+      // ВАЖНО: привязка Telegram->users SQLite + реальное active_until
+      await syncMe();
+
+      // если есть прошлый заказ — пусть поллит order для статуса/конфига
       if(state.orderId) startPolling(state.orderId);
     })();
   </script>
