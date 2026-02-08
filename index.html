@@ -6,23 +6,22 @@
   <title>ZEUSVPN</title>
   <style>
     :root{
-      --bg:#070A10;
-      --bg2:#0A0F1C;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.08);
-      --stroke:rgba(255,255,255,.10);
-      --stroke2:rgba(255,255,255,.16);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.62);
-      --muted2:rgba(255,255,255,.42);
-      --shadow: 0 18px 50px rgba(0,0,0,.55);
-      --shadow2: 0 10px 28px rgba(0,0,0,.45);
-      --radius: 18px;
-      --radius2: 22px;
+      --bg:#000000;
+      --bg2:#0B0B0D;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.10);
+      --stroke2: rgba(255,255,255,.16);
 
-      --blue:#2B6CFF;
-      --blue2:#1D4EFF;
-      --cyan:#6DE0FF;
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.62);
+      --muted2: rgba(255,255,255,.42);
+
+      --shadow: 0 18px 60px rgba(0,0,0,.65);
+      --shadow2: 0 10px 28px rgba(0,0,0,.55);
+
+      --radius: 18px;
+      --radius2: 24px;
 
       --ok:#25D366;
       --warn:#FFB020;
@@ -35,12 +34,11 @@
     html,body{height:100%}
     body{
       margin:0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display","SF Pro Text", Inter, system-ui, Segoe UI, Roboto, Arial;
+      font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display","SF Pro Text", Inter, system-ui, Segoe UI, Roboto, Arial;
       color:var(--text);
       background:
-        radial-gradient(1100px 800px at 20% -10%, rgba(43,108,255,.18), transparent 60%),
-        radial-gradient(900px 700px at 110% 10%, rgba(109,224,255,.10), transparent 55%),
-        radial-gradient(700px 500px at 50% 120%, rgba(29,78,255,.10), transparent 55%),
+        radial-gradient(900px 700px at 20% -10%, rgba(255,255,255,.06), transparent 60%),
+        radial-gradient(800px 600px at 110% 10%, rgba(255,255,255,.04), transparent 55%),
         linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
       overflow-x:hidden;
     }
@@ -50,19 +48,18 @@
       content:"";
       position:fixed; inset:0;
       pointer-events:none;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
       mix-blend-mode:overlay;
       opacity:.22;
     }
 
-    a{color:inherit}
     .app{
       max-width: 440px;
       margin: 0 auto;
       padding: calc(16px + var(--safeTop)) 16px calc(16px + var(--safeBottom)) 16px;
     }
 
-    /* Top bar */
+    /* top */
     .topbar{
       display:flex;
       align-items:center;
@@ -78,12 +75,11 @@
       width:40px; height:40px;
       border-radius: 14px;
       background:
-        radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,.20), transparent 70%),
-        linear-gradient(135deg, rgba(43,108,255,.9), rgba(29,78,255,.65));
-      border:1px solid rgba(255,255,255,.16);
-      box-shadow: 0 12px 30px rgba(43,108,255,.18);
+        radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,.18), transparent 70%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 12px 30px rgba(0,0,0,.55);
       overflow:hidden;
-      position:relative;
     }
     .logo img{
       width:100%; height:100%;
@@ -92,7 +88,7 @@
     }
     .brandText{min-width:0}
     .brandTitle{
-      font-weight: 750;
+      font-weight: 800;
       letter-spacing: .2px;
       font-size: 16px;
       line-height: 1.1;
@@ -119,7 +115,7 @@
       border:1px solid rgba(255,255,255,.10);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 10px 24px rgba(0,0,0,.20);
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
       cursor:pointer;
       user-select:none;
       transition: transform .15s ease, background .15s ease;
@@ -127,7 +123,7 @@
     .pill:active{transform: scale(.98)}
     .pill small{color:var(--muted); font-size:12px}
 
-    /* Tabs (bottom iOS-ish) */
+    /* tabs */
     .tabs{
       position: sticky;
       bottom: calc(10px + var(--safeBottom));
@@ -135,7 +131,7 @@
       margin-top: 18px;
       border-radius: 999px;
       padding: 8px;
-      background: rgba(10,14,24,.62);
+      background: rgba(10,10,12,.62);
       border: 1px solid rgba(255,255,255,.12);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
@@ -149,7 +145,7 @@
       padding: 10px 12px;
       border-radius: 999px;
       color: var(--muted);
-      font-weight: 650;
+      font-weight: 750;
       font-size: 13px;
       cursor:pointer;
       user-select:none;
@@ -162,7 +158,7 @@
       border: 1px solid rgba(255,255,255,.14);
     }
 
-    /* screens + transitions (fade+slide) */
+    /* screens */
     .screen{
       opacity:0;
       transform: translateY(10px);
@@ -189,19 +185,21 @@
 
     .title{
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 850;
       letter-spacing: .2px;
       margin: 2px 0 10px;
     }
-    .muted{color: var(--muted)}
-    .muted2{color: var(--muted2)}
-
-    .row{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
     }
+
+    .sep{height:1px; background: rgba(255,255,255,.10); margin: 12px 0}
+
+    .row{display:flex; gap:12px; align-items:center; justify-content:space-between}
     .stack{display:flex; flex-direction:column; gap:6px}
 
-    /* Active until */
     .activeBox{
       display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
       padding: 12px;
@@ -209,13 +207,13 @@
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.10);
     }
-    .activeTitle{font-weight: 750}
+    .activeTitle{font-weight: 780}
     .activeValue{font-size: 12px; color: var(--muted); margin-top:2px}
     .badge{
       display:inline-flex; align-items:center; gap:6px;
       padding: 7px 10px;
       border-radius: 999px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 12px;
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.08);
@@ -226,7 +224,7 @@
     .badge.warn{border-color: rgba(255,176,32,.28); background: rgba(255,176,32,.12)}
     .badge.off{border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.06); color: var(--muted)}
 
-    /* Big primary button */
+    /* primary button (iOS black/white) */
     .btnPrimary{
       width:100%;
       margin-top: 12px;
@@ -235,23 +233,18 @@
       user-select:none;
       border-radius: 18px;
       padding: 14px 14px;
-      font-weight: 800;
+      font-weight: 850;
       font-size: 15px;
-      color: rgba(255,255,255,.96);
+      color: rgba(0,0,0,.92);
       background:
-        radial-gradient(60% 120% at 15% 20%, rgba(255,255,255,.20), transparent 55%),
-        linear-gradient(135deg, rgba(43,108,255,.95), rgba(29,78,255,.70));
-      box-shadow: 0 18px 45px rgba(43,108,255,.22);
+        radial-gradient(60% 140% at 18% 20%, rgba(255,255,255,.80), rgba(255,255,255,.55)),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.88));
+      box-shadow: 0 18px 45px rgba(0,0,0,.40);
       transition: transform .15s ease, filter .2s ease;
     }
     .btnPrimary:active{transform: scale(.985)}
-    .btnPrimary[disabled]{
-      opacity:.45;
-      cursor:not-allowed;
-      filter: grayscale(.25);
-    }
+    .btnPrimary[disabled]{opacity:.55; cursor:not-allowed}
 
-    /* small buttons */
     .btn{
       width:100%;
       border:none;
@@ -259,7 +252,7 @@
       user-select:none;
       border-radius: 16px;
       padding: 12px 12px;
-      font-weight: 750;
+      font-weight: 780;
       font-size: 14px;
       color: rgba(255,255,255,.92);
       background: rgba(255,255,255,.08);
@@ -282,25 +275,17 @@
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
       color: rgba(255,255,255,.86);
-      font-weight: 750;
+      font-weight: 780;
       font-size: 13px;
       cursor:pointer;
       user-select:none;
       transition: transform .15s ease, background .15s ease, border-color .15s ease;
-      position:relative;
-      overflow:hidden;
     }
     .chip:active{transform: scale(.985)}
     .chip.active{
-      background: rgba(43,108,255,.20);
-      border-color: rgba(43,108,255,.35);
+      background: rgba(255,255,255,.14);
+      border-color: rgba(255,255,255,.22);
       color: rgba(255,255,255,.95);
-    }
-    .hint{
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 10px;
-      line-height: 1.4;
     }
 
     /* plan cards */
@@ -311,33 +296,35 @@
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.12);
       display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+      cursor:pointer;
+      transition: transform .15s ease;
     }
-    .planTitle{font-weight: 820; font-size: 14px}
+    .planCard:active{transform: scale(.99)}
+    .planTitle{font-weight: 860; font-size: 14px}
     .planSub{color:var(--muted); font-size:12px; margin-top:3px; line-height:1.35}
     .tag{
-      display:inline-flex;
-      align-items:center;
+      display:inline-flex; align-items:center;
       padding: 6px 10px;
       border-radius: 999px;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 11px;
       border: 1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.08);
       color: rgba(255,255,255,.92);
       white-space:nowrap;
     }
-    .tag.pop{border-color: rgba(43,108,255,.38); background: rgba(43,108,255,.16)}
-    .tag.best{border-color: rgba(109,224,255,.35); background: rgba(109,224,255,.12)}
+    .tag.pop{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.22)}
+    .tag.best{background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.22)}
     .tag.off{color: var(--muted); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12)}
 
-    /* selection 3D card with subtle shimmer */
+    /* selection 3D card */
     .selected3d{
       margin-top: 12px;
       border-radius: 20px;
       padding: 14px;
       border: 1px solid rgba(255,255,255,.14);
       background:
-        radial-gradient(120% 120% at 20% 10%, rgba(255,255,255,.10), transparent 55%),
+        radial-gradient(140% 140% at 18% 14%, rgba(255,255,255,.12), transparent 55%),
         linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
       box-shadow: 0 18px 55px rgba(0,0,0,.55);
       position:relative;
@@ -350,7 +337,7 @@
       inset:-40% -60%;
       background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.12) 35%, transparent 70%);
       transform: rotate(12deg) translateX(-30%);
-      animation: shimmer 2.8s ease-in-out infinite;
+      animation: shimmer 3.1s ease-in-out infinite;
       opacity:.55;
       pointer-events:none;
     }
@@ -360,16 +347,16 @@
       100%{transform: rotate(12deg) translateX(-45%)}
     }
     .selTop{display:flex; justify-content:space-between; align-items:center; gap:10px}
-    .selTitle{font-weight: 860}
+    .selTitle{font-weight: 900}
     .selPrice{font-weight: 900}
     .selMeta{margin-top:6px; color: var(--muted); font-size:12px}
 
     /* modal */
     .overlay{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.52);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(0,0,0,.56);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display:none;
       align-items:flex-end;
       justify-content:center;
@@ -379,9 +366,9 @@
     .overlay.show{display:flex}
     .modal{
       width: min(440px, 100%);
-      max-height: 78vh;
-      border-radius: 24px;
-      background: rgba(10,14,24,.92);
+      height: 76vh;                 /* фикс-высота */
+      border-radius: 26px;
+      background: rgba(12,12,14,.96);  /* НЕ прозрачная */
       border: 1px solid rgba(255,255,255,.14);
       box-shadow: var(--shadow);
       overflow:hidden;
@@ -408,122 +395,11 @@
     .modalBody{
       padding: 14px;
       overflow:auto;
-      max-height: calc(78vh - 56px);
+      height: calc(76vh - 56px);
+      -webkit-overflow-scrolling: touch;
     }
 
-    /* iOS check animation */
-    .checkWrap{
-      display:none;
-      position:fixed; inset:0;
-      z-index: 80;
-      align-items:center;
-      justify-content:center;
-      background: rgba(0,0,0,.42);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .checkWrap.show{display:flex}
-    .checkCard{
-      width: min(360px, calc(100% - 32px));
-      border-radius: 22px;
-      background: rgba(10,14,24,.92);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: var(--shadow);
-      padding: 18px;
-      text-align:center;
-    }
-    .checkIcon{
-      width: 74px; height: 74px;
-      margin: 2px auto 10px;
-      border-radius: 24px;
-      background: rgba(37,211,102,.14);
-      border: 1px solid rgba(37,211,102,.28);
-      display:flex; align-items:center; justify-content:center;
-    }
-    .checkIcon svg{
-      width:44px; height:44px;
-      stroke: rgba(255,255,255,.94);
-      stroke-width: 4.2;
-      fill:none;
-      stroke-linecap:round;
-      stroke-linejoin:round;
-      stroke-dasharray: 60;
-      stroke-dashoffset: 60;
-      animation: draw .55s ease forwards .12s;
-    }
-    @keyframes draw{to{stroke-dashoffset:0}}
-    .checkTitle{font-weight: 900; font-size: 16px}
-    .checkSub{margin-top:6px; color: var(--muted); font-size: 13px; line-height:1.35}
-
-    /* Skeleton */
-    .skeleton{
-      position:relative;
-      overflow:hidden;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: 14px;
-      height: 16px;
-    }
-    .skeleton::after{
-      content:"";
-      position:absolute; inset:-40%;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.16) 45%, transparent 70%);
-      transform: translateX(-30%);
-      animation: sk 1.25s ease-in-out infinite;
-      opacity:.9;
-    }
-    @keyframes sk{
-      0%{transform: translateX(-40%)}
-      50%{transform: translateX(20%)}
-      100%{transform: translateX(-40%)}
-    }
-    .skRow{display:flex; gap:10px}
-    .skRow .skeleton{flex:1}
-    .skBig{height:44px; border-radius: 16px}
-
-    /* Pull to refresh indicator */
-    .ptr{
-      position: fixed;
-      top: calc(6px + var(--safeTop));
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 90;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(10,14,24,.70);
-      border: 1px solid rgba(255,255,255,.12);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      display:none;
-      align-items:center;
-      gap:8px;
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 12px;
-    }
-    .ptr.show{display:flex}
-    .spinner{
-      width:14px; height:14px;
-      border-radius: 99px;
-      border: 2px solid rgba(255,255,255,.22);
-      border-top-color: rgba(255,255,255,.76);
-      animation: spin .75s linear infinite;
-    }
-    @keyframes spin{to{transform: rotate(360deg)}}
-
-    /* Tiny helpers */
-    .sep{height:1px; background: rgba(255,255,255,.10); margin: 12px 0}
-    .kv{
-      display:flex; justify-content:space-between; gap:12px;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      font-size: 13px;
-    }
-    .kv:last-child{border-bottom:none}
-    .kv b{font-weight: 800}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
-
-    /* Instructions slider */
+    /* instruction slider */
     .slider{
       display:flex;
       gap:12px;
@@ -540,37 +416,59 @@
       background: rgba(255,255,255,.06);
       padding: 14px;
     }
-    .slide h3{
-      margin:0 0 6px;
-      font-size: 14px;
-      font-weight: 900;
-    }
-    .slide p{
-      margin:0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
+    .slide h3{margin:0 0 6px; font-size: 14px; font-weight: 900;}
+    .slide p{margin:0; color: var(--muted); font-size: 13px; line-height: 1.45;}
 
-    /* Safe: prevent iOS overscroll glow inside modal */
-    .modalBody{-webkit-overflow-scrolling: touch}
+    /* KV */
+    .kv{
+      display:flex; justify-content:space-between; gap:12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      font-size: 13px;
+    }
+    .kv:last-child{border-bottom:none}
+    .kv b{font-weight: 850}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
+
+    /* tiny toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: calc(84px + var(--safeBottom));
+      transform: translateX(-50%);
+      z-index: 90;
+      background: rgba(12,12,14,.92);
+      border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: rgba(255,255,255,.92);
+      padding: 10px 12px;
+      border-radius: 999px;
+      box-shadow: var(--shadow2);
+      font-size: 12px;
+      display:none;
+      max-width: calc(100% - 32px);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .toast.show{display:block}
   </style>
 </head>
 <body>
-  <div class="ptr" id="ptr"><div class="spinner"></div><span>Обновляем…</span></div>
+  <div class="toast" id="toast">—</div>
 
   <div class="app">
     <div class="topbar">
       <div class="brand">
-        <div class="logo" id="logoBox">
-          <!-- ВСТАВЬ СВОЙ ЛОГОТИП: положи файл logo.png рядом и раскомментируй -->
-          <img id="logoImg" src="logo.png" alt="ZEUSVPN" onerror="this.style.display='none'">
+        <div class="logo">
+          <img src="logo.png" alt="ZEUSVPN" onerror="this.style.display='none'">
         </div>
         <div class="brandText">
           <div class="brandTitle">ZEUSVPN</div>
           <div class="brandSub">
             <span id="netDot" class="dot"></span>
-            <span id="netText">Проверка соединения…</span>
+            <span id="netText">Проверка API…</span>
           </div>
         </div>
       </div>
@@ -587,23 +485,20 @@
 
           <div class="activeBox">
             <div class="stack">
-              <div class="activeTitle">Статус подписки</div>
-              <div class="activeValue" id="activeText">
-                <div class="skeleton" style="width:180px"></div>
-              </div>
+              <div class="activeTitle">Активна до</div>
+              <div class="activeValue" id="activeText">—</div>
             </div>
             <div class="badge off" id="statusBadge">—</div>
           </div>
 
           <button class="btnPrimary" id="btnMain">Приобрести подписку</button>
 
-          <div class="hint" id="smartHint">
-            Выберите срок и устройства — кнопка автоматически подскажет “Приобрести” или “Продлить”.
+          <div class="hint" id="smartHint" style="margin-top:10px">
+            Выберите устройства и срок — затем оплатите Stars или USDT.
           </div>
 
           <div class="sep"></div>
 
-          <div class="title" style="font-size:16px;margin:0 0 8px;">Быстрый доступ</div>
           <div class="btnRow">
             <button class="btn secondary" id="btnShowConfig" disabled>Показать конфиг</button>
             <button class="btn secondary" id="btnHow">Инструкция</button>
@@ -615,19 +510,16 @@
 
       <div class="card">
         <div class="cardInner">
-          <div class="title" style="margin:0 0 8px;">Параметры</div>
-          <div class="hint" style="margin-top:0">
-            Мы пока храним всё локально в браузере. Скоро подключим сохранение пользователя на бэкенде.
-          </div>
-          <div class="sep"></div>
-
+          <div class="title" style="font-size:16px;margin:0 0 8px;">Данные</div>
           <div class="kv"><span>Ваш ID</span><b class="mono" id="userKeyText">—</b></div>
+          <div class="kv"><span>Telegram ID</span><b class="mono" id="tgIdText">—</b></div>
+          <div class="kv"><span>Username</span><b class="mono" id="tgUserText">—</b></div>
           <div class="kv"><span>Последний заказ</span><b class="mono" id="lastOrderText">—</b></div>
         </div>
       </div>
     </section>
 
-    <!-- INSTRUCTIONS -->
+    <!-- HOW -->
     <section class="screen" id="screenHow">
       <div class="card">
         <div class="cardInner">
@@ -639,21 +531,21 @@
           <div class="slider">
             <div class="slide">
               <h3>iOS</h3>
-              <p>1) Установи V2Box / Streisand / Shadowrocket (если есть).<br>
+              <p>1) Установи V2Box / Streisand.<br>
                  2) Нажми “Скопировать конфиг”.<br>
-                 3) В приложении выбери Import / From Clipboard.</p>
+                 3) В приложении: Import → From Clipboard.</p>
             </div>
             <div class="slide">
               <h3>Android</h3>
               <p>1) Установи v2rayNG.<br>
                  2) Нажми “Скопировать конфиг”.<br>
-                 3) В v2rayNG: “Import config from clipboard” или вставь ссылку.</p>
+                 3) Import from clipboard / вставь ссылку.</p>
             </div>
             <div class="slide">
               <h3>Desktop</h3>
-              <p>1) Установи Nekoray / v2rayN.<br>
-                 2) Вставь VLESS ссылку в импорт.<br>
-                 3) Подключись и проверь доступ.</p>
+              <p>1) Nekoray / v2rayN.<br>
+                 2) Импортируй VLESS ссылку.<br>
+                 3) Подключись и проверь.</p>
             </div>
           </div>
 
@@ -663,25 +555,20 @@
       </div>
     </section>
 
-    <!-- PROFILE -->
+    <!-- PROFILE (MINIMAL) -->
     <section class="screen" id="screenProfile">
       <div class="card">
         <div class="cardInner">
           <div class="title">Профиль</div>
-          <div class="hint" style="margin-top:0">
-            Здесь минимум: твой ID. Telegram-данные подключим позже (когда включим initData).
-          </div>
-
+          <div class="hint" style="margin-top:0">Минимум. Подписка показывается только на главной.</div>
           <div class="sep"></div>
           <div class="kv"><span>Ваш ID</span><b class="mono" id="profileUserKey">—</b></div>
-
           <div style="height:12px"></div>
-          <button class="btn secondary" id="btnResetId">Сбросить / новый ID</button>
+          <button class="btn secondary" id="btnResetId">Сбросить ID</button>
         </div>
       </div>
     </section>
 
-    <!-- TABS -->
     <div class="tabs">
       <div class="tab active" data-tab="home">Главная</div>
       <div class="tab" data-tab="how">Инструкция</div>
@@ -689,17 +576,17 @@
     </div>
   </div>
 
-  <!-- MODAL: subscription & payments -->
+  <!-- MODAL: subscribe -->
   <div class="overlay" id="overlay">
-    <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal">
       <div class="modalHeader">
-        <div class="modalTitle" id="modalTitle">Выбор подписки</div>
+        <div class="modalTitle">Подписка</div>
         <div class="close" id="btnClose">✕</div>
       </div>
       <div class="modalBody">
 
         <div class="hint" style="margin-top:0">
-          Выбери устройства и срок — ниже появится карточка “Вы выбрали”.
+          Выбери устройства и срок → появится карточка выбора → оплата.
         </div>
 
         <div style="height:10px"></div>
@@ -709,10 +596,7 @@
 
         <div style="height:10px"></div>
         <div class="title" style="font-size:14px;margin:0 0 6px;">Срок</div>
-
-        <div class="planGrid" id="planGrid">
-          <!-- generated -->
-        </div>
+        <div class="planGrid" id="planGrid"></div>
 
         <div class="selected3d" id="selectedCard" style="display:none">
           <div class="selTop">
@@ -729,22 +613,20 @@
           <button class="btn" id="btnPayUSDT" disabled>Оплатить USDT</button>
         </div>
 
-        <div class="hint" id="payHint">
-          После оплаты мы автоматически выдадим конфиг (когда заказ станет paid).
+        <div class="hint" id="payHint" style="margin-top:10px">
+          После оплаты мы будем проверять статус заказа и покажем конфиг.
         </div>
 
-        <div style="height:10px"></div>
-
-        <div id="orderBox" style="display:none">
+        <div id="orderBox" style="display:none; margin-top:12px">
           <div class="sep"></div>
-          <div class="title" style="font-size:14px;margin:0 0 8px;">Статус оплаты</div>
+          <div class="title" style="font-size:14px;margin:0 0 8px;">Оплата</div>
 
           <div class="activeBox">
             <div class="stack">
-              <div class="activeTitle">Заказ</div>
-              <div class="activeValue" id="orderStatusText">Проверяем…</div>
+              <div class="activeTitle">Статус</div>
+              <div class="activeValue" id="orderStatusText">—</div>
             </div>
-            <div class="badge off" id="orderBadge">pending</div>
+            <div class="badge off" id="orderBadge">—</div>
           </div>
 
           <div style="height:10px"></div>
@@ -758,708 +640,527 @@
     </div>
   </div>
 
-  <!-- success check overlay -->
-  <div class="checkWrap" id="checkWrap">
-    <div class="checkCard">
-      <div class="checkIcon">
-        <svg viewBox="0 0 24 24">
-          <path d="M20 7L10.5 16.5L4 10"></path>
-        </svg>
-      </div>
-      <div class="checkTitle">Оплата прошла</div>
-      <div class="checkSub">Подписка активирована. Можно копировать конфиг.</div>
-    </div>
-  </div>
-
-  <script>
-    /*********************
-     * CONFIG
-     *********************/
-    const API_BASE = "https://api.45.133.251.210.nip.io:8443"; // <-- твой API
-    const DEFAULT_INBOUND_ID = 1;
-
-    // Prices (как в бэке)
-    const PRICES = {
-      30: 199,
-      90: 399,
-      180: 599
-    };
-
-    const DEVICES_OPTIONS = [1,3,5,10];
-
-    /*********************
-     * STATE (local)
-     *********************/
-    const LS = {
-      userKey: "zeusvpn_user_key",
-      lastOrder: "zeusvpn_last_order",
-      activeUntil: "zeusvpn_active_until",
-      lastConfig: "zeusvpn_last_config"
-    };
-
-    let state = {
-      userKey: localStorage.getItem(LS.userKey) || makeUserKey(),
-      lastOrderId: localStorage.getItem(LS.lastOrder) || "",
-      activeUntil: localStorage.getItem(LS.activeUntil) || "",
-      lastConfig: localStorage.getItem(LS.lastConfig) || "",
-
-      selection: {
-        devices: 1,
-        days: 30
-      },
-
-      polling: null,
-      lastInvoiceLink: ""
-    };
-
-    // persist userKey if newly created
-    localStorage.setItem(LS.userKey, state.userKey);
-
-    /*********************
-     * Telegram WebApp (optional)
-     *********************/
-    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-    try { tg && tg.ready && tg.ready(); } catch(e){}
-
-    /*********************
-     * UI refs
-     *********************/
-    const $ = (id)=>document.getElementById(id);
-
-    const screens = {
-      home: $("screenHome"),
-      how: $("screenHow"),
-      profile: $("screenProfile")
-    };
-
-    const tabs = document.querySelectorAll(".tab");
-
-    const netDot = $("netDot");
-    const netText = $("netText");
-
-    const pillUserText = $("pillUserText");
-
-    const activeText = $("activeText");
-    const statusBadge = $("statusBadge");
-    const btnMain = $("btnMain");
-    const smartHint = $("smartHint");
-    const btnHow = $("btnHow");
-    const btnShowConfig = $("btnShowConfig");
-
-    const userKeyText = $("userKeyText");
-    const lastOrderText = $("lastOrderText");
-    const profileUserKey = $("profileUserKey");
-
-    const overlay = $("overlay");
-    const btnClose = $("btnClose");
-
-    const chipsDevices = $("chipsDevices");
-    const planGrid = $("planGrid");
-    const selectedCard = $("selectedCard");
-    const selTitle = $("selTitle");
-    const selPrice = $("selPrice");
-    const selMeta = $("selMeta");
-
-    const btnPayStars = $("btnPayStars");
-    const btnPayUSDT = $("btnPayUSDT");
-    const payHint = $("payHint");
-
-    const orderBox = $("orderBox");
-    const orderStatusText = $("orderStatusText");
-    const orderBadge = $("orderBadge");
-    const btnOpenInvoice = $("btnOpenInvoice");
-    const btnCopyConfig = $("btnCopyConfig");
-
-    const checkWrap = $("checkWrap");
-    const ptr = $("ptr");
-
-    /*********************
-     * helpers
-     *********************/
-    function makeUserKey(){
-      // короткий id типа ehhq6t85
-      const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-      let out = "";
-      for(let i=0;i<8;i++) out += chars[Math.floor(Math.random()*chars.length)];
-      return out;
-    }
-
-    function haptic(type="impact"){
-      // легкий haptic в Telegram
-      try{
-        if(!tg) return;
-        if(tg.HapticFeedback){
-          if(type==="soft") tg.HapticFeedback.impactOccurred("soft");
-          else tg.HapticFeedback.impactOccurred("light");
-        }
-      }catch(e){}
-    }
-
-    function fmtDate(iso){
-      try{
-        const d = new Date(iso);
-        if(isNaN(d.getTime())) return "—";
-        // ru short
-        return d.toLocaleDateString("ru-RU", {year:"numeric",month:"2-digit",day:"2-digit"}) + " " +
-               d.toLocaleTimeString("ru-RU", {hour:"2-digit",minute:"2-digit"});
-      }catch(e){ return "—"; }
-    }
-
-    function daysLeft(iso){
-      if(!iso) return null;
-      const d = new Date(iso);
-      if(isNaN(d.getTime())) return null;
-      const diff = d.getTime() - Date.now();
-      return Math.floor(diff / (1000*60*60*24));
-    }
-
-    function setScreen(name){
-      Object.keys(screens).forEach(k=>{
-        screens[k].classList.toggle("active", k===name);
-      });
-      tabs.forEach(t=>{
-        t.classList.toggle("active", t.dataset.tab===name);
-      });
-      haptic("soft");
-    }
-
-    function openModal(){
-      overlay.classList.add("show");
-      document.body.style.overflow = "hidden";
-      haptic("soft");
-    }
-    function closeModal(){
-      overlay.classList.remove("show");
-      document.body.style.overflow = "";
-      stopPolling();
-    }
-
-    function showSuccess(){
-      checkWrap.classList.add("show");
-      setTimeout(()=>checkWrap.classList.remove("show"), 950);
-    }
-
-    function showPTR(on){
-      ptr.classList.toggle("show", !!on);
-    }
-
-    async function api(path, {method="GET", body=null} = {}){
-      const opts = { method, headers: {} };
-      if(body){
-        opts.headers["Content-Type"] = "application/json";
-        opts.body = JSON.stringify(body);
-      }
-      const res = await fetch(API_BASE + path, opts);
-      if(!res.ok){
-        let txt = "";
-        try{ txt = await res.text(); }catch(e){}
-        throw new Error(txt || ("HTTP " + res.status));
-      }
-      return await res.json();
-    }
-
-    function enablePayButtons(){
-      btnPayStars.disabled = false;
-      btnPayUSDT.disabled = false;
-    }
-
-    function disablePayButtons(){
-      btnPayStars.disabled = true;
-      btnPayUSDT.disabled = true;
-    }
-
-    function updateSelectedCard(){
-      const {days, devices} = state.selection;
-      const price = PRICES[days] ?? "—";
-
-      selectedCard.style.display = "block";
-      selTitle.textContent = `${days} дней • ${devices} устр.`;
-      selPrice.textContent = `${price} Stars`;
-      selMeta.textContent = (days===30 ? "Популярно для старта" :
-                           (days===180 ? "Максимальная выгода" : "Оптимально на сезон")) +
-                           ` • Ваш ID: ${state.userKey}`;
-
-      enablePayButtons();
-    }
-
-    function renderDevicesChips(){
-      chipsDevices.innerHTML = "";
-      DEVICES_OPTIONS.forEach(n=>{
-        const el = document.createElement("div");
-        el.className = "chip" + (state.selection.devices===n ? " active" : "");
-        el.textContent = n + " устр.";
-        el.onclick = ()=>{
-          state.selection.devices = n;
-          haptic("soft");
-          renderDevicesChips();
-          updateSelectedCard();
-        };
-        chipsDevices.appendChild(el);
-      });
-    }
-
-    function renderPlanCards(){
-      planGrid.innerHTML = "";
-
-      const plans = [
-        {days:30, tag:"pop", tagText:"Популярно", sub:"Идеально чтобы попробовать"},
-        {days:90, tag:"off", tagText:"", sub:"Три месяца спокойствия"},
-        {days:180, tag:"best", tagText:"Выгоднее", sub:"Максимальная экономия"}
-      ];
-
-      plans.forEach(p=>{
-        const price = PRICES[p.days];
-        const card = document.createElement("div");
-        card.className = "planCard";
-        card.style.cursor = "pointer";
-        card.onclick = ()=>{
-          state.selection.days = p.days;
-          haptic("soft");
-          renderPlanCards();
-          updateSelectedCard();
-        };
-
-        const left = document.createElement("div");
-        const t = document.createElement("div");
-        t.className = "planTitle";
-        t.textContent = `${p.days} дней — ${price} Stars`;
-        const s = document.createElement("div");
-        s.className = "planSub";
-        s.textContent = p.sub;
-        left.appendChild(t);
-        left.appendChild(s);
-
-        const right = document.createElement("div");
-        const tag = document.createElement("div");
-        tag.className = "tag " + (p.tag || "off");
-        tag.textContent = p.tagText || (state.selection.days===p.days ? "Выбрано" : "");
-        right.appendChild(tag);
-
-        if(state.selection.days===p.days){
-          card.style.borderColor = "rgba(43,108,255,.35)";
-          card.style.background = "rgba(43,108,255,.12)";
-          tag.textContent = tag.textContent || "Выбрано";
-        }
-
-        card.appendChild(left);
-        card.appendChild(right);
-
-        planGrid.appendChild(card);
-      });
-    }
-
-    function updateSmartButton(){
-      // we only know activeUntil locally for now
-      const left = daysLeft(state.activeUntil);
-      const hasActive = left !== null && left >= 0;
-
-      // button label logic
-      btnMain.textContent = hasActive ? "Продлить подписку" : "Приобрести подписку";
-
-      // status badge & text
-      if(!state.activeUntil){
-        statusBadge.className = "badge off";
-        statusBadge.textContent = "нет";
-        activeText.textContent = "Нет активной подписки";
-        btnShowConfig.disabled = true;
-        smartHint.textContent = "Выберите параметры подписки — оплатите Stars или USDT.";
-        return;
-      }
-
-      // has date (maybe expired)
-      if(left < 0){
-        statusBadge.className = "badge off";
-        statusBadge.textContent = "истекла";
-        activeText.textContent = "Подписка истекла: " + fmtDate(state.activeUntil);
-        btnShowConfig.disabled = !(state.lastConfig);
-        smartHint.textContent = "Можно продлить подписку. После оплаты будет выдан новый конфиг.";
-        return;
-      }
-
-      // active
-      if(left <= 3){
-        statusBadge.className = "badge warn";
-        statusBadge.textContent = "скоро";
-      }else{
-        statusBadge.className = "badge ok";
-        statusBadge.textContent = "активна";
-      }
-      activeText.textContent = "Активна до: " + fmtDate(state.activeUntil) + (left!==null ? ` • осталось ~${left} дн.` : "");
-      btnShowConfig.disabled = !(state.lastConfig);
-      smartHint.textContent = left<=3
-        ? "Подписка скоро закончится — лучше продлить заранее."
-        : "Подписка активна. Можно продлить в любой момент.";
-    }
-
-    function setUserUI(){
-      userKeyText.textContent = state.userKey;
-      profileUserKey.textContent = state.userKey;
-
-      lastOrderText.textContent = state.lastOrderId ? state.lastOrderId : "—";
-      $("lastOrderText").title = state.lastOrderId || "";
-
-      // Telegram user label (optional, minimal)
-      if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user){
-        const u = tg.initDataUnsafe.user;
-        pillUserText.textContent = (u.username ? "@"+u.username : (u.first_name || "Пользователь"));
-      }else{
-        pillUserText.textContent = "Гость";
-      }
-    }
-
-    async function checkHealth(){
-      try{
-        const t0 = performance.now();
-        await api("/health");
-        const ms = Math.round(performance.now() - t0);
-        netDot.style.background = "rgba(37,211,102,.9)";
-        netText.textContent = `Онлайн • ${ms} ms`;
-      }catch(e){
-        netDot.style.background = "rgba(255,176,32,.9)";
-        netText.textContent = "Нет связи с API";
-      }
-    }
-
-    function stopPolling(){
-      if(state.polling){
-        clearInterval(state.polling);
-        state.polling = null;
-      }
-    }
-
-    function showOrderUI(order){
-      orderBox.style.display = "block";
-      orderBadge.textContent = order.status || "pending";
-
-      if(order.status === "paid"){
-        orderBadge.className = "badge ok";
-        orderStatusText.textContent = "Оплачено • подписка активируется…";
-      }else{
-        orderBadge.className = "badge off";
-        orderStatusText.textContent = "Ожидание оплаты…";
-      }
-
-      // active_until -> to main screen
-      if(order.active_until){
-        state.activeUntil = order.active_until;
-        localStorage.setItem(LS.activeUntil, state.activeUntil);
-        updateSmartButton();
-      }
-
-      // config link
-      if(order.config_link){
-        state.lastConfig = order.config_link;
-        localStorage.setItem(LS.lastConfig, state.lastConfig);
-        btnCopyConfig.disabled = false;
-      }
-
-      if(order.invoice_link){
-        state.lastInvoiceLink = order.invoice_link;
-      }
-      if(order.invoice_url){
-        state.lastInvoiceLink = order.invoice_url;
-      }
-    }
-
-    async function pollOrder(orderId){
-      stopPolling();
-      state.polling = setInterval(async ()=>{
-        try{
-          const order = await api(`/pay/order/${orderId}`);
-          showOrderUI(order);
-
-          if(order.status === "paid"){
-            // show success once
-            if(!order.__shown){
-              showSuccess();
-              order.__shown = true;
-            }
-            // if config not ready yet, request issue-config once
-            if(!order.config_link){
-              try{
-                const cfg = await api("/issue-config", {
-                  method:"POST",
-                  body:{
-                    inbound_id: DEFAULT_INBOUND_ID,
-                    user_key: state.userKey,
-                    days: state.selection.days,
-                    limit_ip: 0
-                  }
-                });
-                if(cfg && cfg.link){
-                  state.lastConfig = cfg.link;
-                  localStorage.setItem(LS.lastConfig, state.lastConfig);
-                  btnCopyConfig.disabled = false;
-                }
-              }catch(e){}
-            }
-          }
-        }catch(e){
-          // ignore transient
-        }
-      }, 1500);
-    }
-
-    async function createStarsInvoice(){
-      const body = { user_key: state.userKey, days: state.selection.days, devices: state.selection.devices };
-      const res = await api("/pay/stars/create", { method:"POST", body });
-      const { order_id, invoice_link } = res;
-
-      state.lastOrderId = order_id;
-      localStorage.setItem(LS.lastOrder, state.lastOrderId);
-      setUserUI();
-
-      state.lastInvoiceLink = invoice_link || "";
-      showOrderUI({ id: order_id, status:"pending", provider:"stars" });
-      pollOrder(order_id);
-
-      // Open invoice in Telegram if possible
-      if(invoice_link){
-        if(tg && tg.openTelegramLink){
-          tg.openTelegramLink(invoice_link);
-        }else{
-          window.open(invoice_link, "_blank");
-        }
-      }
-    }
-
-    async function createCryptoInvoice(){
-      const body = { user_key: state.userKey, days: state.selection.days, devices: state.selection.devices };
-      const res = await api("/pay/crypto/create", { method:"POST", body });
-      const { order_id, invoice_url } = res;
-
-      state.lastOrderId = order_id;
-      localStorage.setItem(LS.lastOrder, state.lastOrderId);
-      setUserUI();
-
-      state.lastInvoiceLink = invoice_url || "";
-      showOrderUI({ id: order_id, status:"pending", provider:"cryptopay" });
-      pollOrder(order_id);
-
-      if(invoice_url){
-        window.open(invoice_url, "_blank");
-      }
-    }
-
-    async function copyText(text){
-      try{
-        await navigator.clipboard.writeText(text);
-        haptic("soft");
-        return true;
-      }catch(e){
-        // fallback
-        try{
-          const ta = document.createElement("textarea");
-          ta.value = text;
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand("copy");
-          ta.remove();
-          haptic("soft");
-          return true;
-        }catch(err){
-          return false;
-        }
-      }
-    }
-
-    /*********************
-     * Pull to refresh
-     *********************/
-    let touchStartY = 0;
-    let pulling = false;
-
-    window.addEventListener("touchstart", (e)=>{
-      if(window.scrollY !== 0) return;
-      touchStartY = e.touches[0].clientY;
-      pulling = true;
-    }, {passive:true});
-
-    window.addEventListener("touchmove", (e)=>{
-      if(!pulling) return;
-      const dy = e.touches[0].clientY - touchStartY;
-      if(dy > 70){
-        showPTR(true);
-      }
-    }, {passive:true});
-
-    window.addEventListener("touchend", async ()=>{
-      if(!pulling) return;
-      pulling = false;
-
-      if(ptr.classList.contains("show")){
-        // refresh
-        await refreshAll();
-        setTimeout(()=>showPTR(false), 350);
-      }else{
-        showPTR(false);
-      }
-    });
-
-    async function refreshAll(){
-      await checkHealth();
-      setUserUI();
-      updateSmartButton();
-
-      // if we have last order, refresh it
-      if(state.lastOrderId){
-        try{
-          const order = await api(`/pay/order/${state.lastOrderId}`);
-          showOrderUI(order);
-        }catch(e){}
-      }
-    }
-
-    /*********************
-     * Events
-     *********************/
-    tabs.forEach(t=>{
-      t.addEventListener("click", ()=> setScreen(t.dataset.tab));
-    });
-
-    btnHow.addEventListener("click", ()=> setScreen("how"));
-    $("btnBackFromHow").addEventListener("click", ()=> setScreen("home"));
-
-    btnMain.addEventListener("click", ()=>{
-      // open selection modal
-      openModal();
-    });
-
-    btnShowConfig.addEventListener("click", async ()=>{
-      if(!state.lastConfig) return;
-      openModal();
-      // show in order box area
-      orderBox.style.display = "block";
-      orderStatusText.textContent = "Конфиг готов";
-      orderBadge.className = "badge ok";
-      orderBadge.textContent = "ready";
-      btnCopyConfig.disabled = false;
-      btnOpenInvoice.style.display = "none";
-      btnCopyConfig.textContent = "Скопировать конфиг";
-    });
-
-    btnClose.addEventListener("click", closeModal);
-    overlay.addEventListener("click", (e)=>{
-      if(e.target === overlay) closeModal();
-    });
-
-    $("btnResetId").addEventListener("click", ()=>{
-      state.userKey = makeUserKey();
-      localStorage.setItem(LS.userKey, state.userKey);
-
-      // optional: clear local sub
-      state.activeUntil = "";
-      localStorage.removeItem(LS.activeUntil);
-
-      state.lastConfig = "";
-      localStorage.removeItem(LS.lastConfig);
-
-      state.lastOrderId = "";
-      localStorage.removeItem(LS.lastOrder);
-
-      setUserUI();
-      updateSmartButton();
-      haptic("soft");
-    });
-
-    btnPayStars.addEventListener("click", async ()=>{
-      try{
-        btnPayStars.disabled = true;
-        btnPayUSDT.disabled = true;
-        payHint.textContent = "Создаём инвойс Stars…";
-        await createStarsInvoice();
-        payHint.textContent = "Инвойс открыт. Мы проверяем статус оплаты…";
-      }catch(e){
-        payHint.textContent = "Ошибка оплаты Stars: " + (e.message || "Load failed");
-      }finally{
-        // will be re-enabled by selection changes; keep disabled during flow
-      }
-    });
-
-    btnPayUSDT.addEventListener("click", async ()=>{
-      try{
-        btnPayStars.disabled = true;
-        btnPayUSDT.disabled = true;
-        payHint.textContent = "Создаём инвойс USDT…";
-        await createCryptoInvoice();
-        payHint.textContent = "Открылся счёт. Мы проверяем статус оплаты…";
-      }catch(e){
-        payHint.textContent = "Ошибка оплаты USDT: " + (e.message || "Load failed");
-      }
-    });
-
-    btnOpenInvoice.addEventListener("click", ()=>{
-      if(!state.lastInvoiceLink) return;
-      if(tg && tg.openTelegramLink && state.lastInvoiceLink.startsWith("https://t.me/")){
-        tg.openTelegramLink(state.lastInvoiceLink);
-      }else{
-        window.open(state.lastInvoiceLink, "_blank");
-      }
-    });
-
-    btnCopyConfig.addEventListener("click", async ()=>{
-      if(!state.lastConfig) return;
-      const ok = await copyText(state.lastConfig);
-      btnCopyConfig.textContent = ok ? "Скопировано ✅" : "Не удалось скопировать";
-      setTimeout(()=>btnCopyConfig.textContent = "Скопировать конфиг", 900);
-    });
-
-    $("pillUser").addEventListener("click", ()=>{
-      setScreen("profile");
-    });
-
-    /*********************
-     * Init
-     *********************/
-    function initSkeletonThenReal(){
-      // show skeleton for a moment for premium feel
-      activeText.innerHTML = `<div class="skeleton" style="width:180px"></div>`;
-      setTimeout(()=>updateSmartButton(), 250);
-    }
-
-    function initSelectionUI(){
+<script>
+/***************
+ * CONFIG
+ ***************/
+const API_BASE = "https://api.45.133.251.210.nip.io:8443"; // твой API
+const DEFAULT_INBOUND_ID = 1;
+const PRICES = { 30:199, 90:399, 180:599 };
+const DEVICES_OPTIONS = [1,3,5,10];
+
+const LS = {
+  userKey: "zeusvpn_user_key",
+  lastOrder: "zeusvpn_last_order",
+  activeUntil: "zeusvpn_active_until",
+  lastConfig: "zeusvpn_last_config"
+};
+
+let state = {
+  userKey: localStorage.getItem(LS.userKey) || makeUserKey(),
+  lastOrderId: localStorage.getItem(LS.lastOrder) || "",
+  activeUntil: localStorage.getItem(LS.activeUntil) || "",
+  lastConfig: localStorage.getItem(LS.lastConfig) || "",
+  selection: { devices: 1, days: 30 },
+  polling: null,
+  lastInvoiceLink: ""
+};
+localStorage.setItem(LS.userKey, state.userKey);
+
+const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+try { tg && tg.ready && tg.ready(); } catch(e){}
+
+/***************
+ * DOM
+ ***************/
+const $ = (id)=>document.getElementById(id);
+const toast = $("toast");
+
+const screens = { home:$("screenHome"), how:$("screenHow"), profile:$("screenProfile") };
+const tabs = document.querySelectorAll(".tab");
+
+const netDot = $("netDot");
+const netText = $("netText");
+const pillUserText = $("pillUserText");
+
+const activeText = $("activeText");
+const statusBadge = $("statusBadge");
+const btnMain = $("btnMain");
+const smartHint = $("smartHint");
+
+const btnHow = $("btnHow");
+const btnBackFromHow = $("btnBackFromHow");
+const btnShowConfig = $("btnShowConfig");
+
+const userKeyText = $("userKeyText");
+const profileUserKey = $("profileUserKey");
+const lastOrderText = $("lastOrderText");
+
+const tgIdText = $("tgIdText");
+const tgUserText = $("tgUserText");
+
+const overlay = $("overlay");
+const btnClose = $("btnClose");
+
+const chipsDevices = $("chipsDevices");
+const planGrid = $("planGrid");
+const selectedCard = $("selectedCard");
+const selTitle = $("selTitle");
+const selPrice = $("selPrice");
+const selMeta = $("selMeta");
+
+const btnPayStars = $("btnPayStars");
+const btnPayUSDT = $("btnPayUSDT");
+const payHint = $("payHint");
+
+const orderBox = $("orderBox");
+const orderStatusText = $("orderStatusText");
+const orderBadge = $("orderBadge");
+const btnOpenInvoice = $("btnOpenInvoice");
+const btnCopyConfig = $("btnCopyConfig");
+
+const btnResetId = $("btnResetId");
+
+/***************
+ * helpers
+ ***************/
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"), 1200);
+}
+
+function makeUserKey(){
+  const chars="abcdefghijklmnopqrstuvwxyz0123456789";
+  let out="";
+  for(let i=0;i<8;i++) out+=chars[Math.floor(Math.random()*chars.length)];
+  return out;
+}
+
+function hapticSoft(){
+  try{
+    if(tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred("soft");
+  }catch(e){}
+}
+
+function fmtDate(iso){
+  try{
+    const d = new Date(iso);
+    if(isNaN(d.getTime())) return "—";
+    return d.toLocaleDateString("ru-RU",{year:"numeric",month:"2-digit",day:"2-digit"})+" "+
+           d.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
+  }catch(e){ return "—"; }
+}
+
+function daysLeft(iso){
+  if(!iso) return null;
+  const d = new Date(iso);
+  if(isNaN(d.getTime())) return null;
+  const diff = d.getTime() - Date.now();
+  return Math.floor(diff / (1000*60*60*24));
+}
+
+async function api(path, {method="GET", body=null} = {}){
+  const opts = { method, headers: {} };
+  if(body){
+    opts.headers["Content-Type"]="application/json";
+    opts.body = JSON.stringify(body);
+  }
+  const res = await fetch(API_BASE + path, opts);
+  const txt = await res.text().catch(()=> "");
+  if(!res.ok){
+    throw new Error(txt || ("HTTP "+res.status));
+  }
+  return txt ? JSON.parse(txt) : {};
+}
+
+function setScreen(name){
+  Object.keys(screens).forEach(k => screens[k].classList.toggle("active", k===name));
+  tabs.forEach(t => t.classList.toggle("active", t.dataset.tab===name));
+  hapticSoft();
+}
+
+function openModal(){
+  overlay.classList.add("show");
+  document.body.style.overflow="hidden";
+  hapticSoft();
+}
+
+function closeModal(){
+  overlay.classList.remove("show");
+  document.body.style.overflow="";
+  stopPolling();
+}
+
+function stopPolling(){
+  if(state.polling){
+    clearInterval(state.polling);
+    state.polling=null;
+  }
+}
+
+async function checkHealth(){
+  try{
+    const t0 = performance.now();
+    await api("/health");
+    const ms = Math.round(performance.now()-t0);
+    netDot.style.background="rgba(37,211,102,.9)";
+    netText.textContent=`Онлайн • ${ms} ms`;
+  }catch(e){
+    netDot.style.background="rgba(255,176,32,.9)";
+    netText.textContent="Нет связи с API";
+  }
+}
+
+function setTGUser(){
+  if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user){
+    const u = tg.initDataUnsafe.user;
+    pillUserText.textContent = u.username ? "@"+u.username : (u.first_name || "Пользователь");
+    tgIdText.textContent = u.id ? String(u.id) : "—";
+    tgUserText.textContent = u.username ? "@"+u.username : "—";
+  }else{
+    pillUserText.textContent="Гость";
+    tgIdText.textContent="—";
+    tgUserText.textContent="—";
+  }
+}
+
+function updateMainSubscriptionUI(){
+  const left = daysLeft(state.activeUntil);
+  const hasDate = !!state.activeUntil;
+
+  if(!hasDate){
+    statusBadge.className="badge off";
+    statusBadge.textContent="нет";
+    activeText.textContent="Нет активной подписки";
+    btnMain.textContent="Приобрести подписку";
+    btnShowConfig.disabled = !state.lastConfig;
+    smartHint.textContent="Выберите устройства и срок — затем оплатите Stars или USDT.";
+    return;
+  }
+
+  if(left !== null && left < 0){
+    statusBadge.className="badge off";
+    statusBadge.textContent="истекла";
+    activeText.textContent="Истекла: "+fmtDate(state.activeUntil);
+    btnMain.textContent="Продлить подписку";
+    btnShowConfig.disabled = !state.lastConfig;
+    smartHint.textContent="Подписка истекла — продлите, затем получите новый конфиг.";
+    return;
+  }
+
+  // active
+  if(left !== null && left <= 3){
+    statusBadge.className="badge warn";
+    statusBadge.textContent="скоро";
+  }else{
+    statusBadge.className="badge ok";
+    statusBadge.textContent="активна";
+  }
+
+  activeText.textContent = "До: "+fmtDate(state.activeUntil) + (left!==null ? ` • осталось ~${left} дн.` : "");
+  btnMain.textContent="Продлить подписку";
+  btnShowConfig.disabled = !state.lastConfig;
+  smartHint.textContent = "Можно продлить заранее — не потеряете дни.";
+}
+
+function setUserUI(){
+  userKeyText.textContent = state.userKey;
+  profileUserKey.textContent = state.userKey;
+  lastOrderText.textContent = state.lastOrderId || "—";
+}
+
+function enablePayButtons(){ btnPayStars.disabled=false; btnPayUSDT.disabled=false; }
+function disablePayButtons(){ btnPayStars.disabled=true; btnPayUSDT.disabled=true; }
+
+function renderDevicesChips(){
+  chipsDevices.innerHTML="";
+  DEVICES_OPTIONS.forEach(n=>{
+    const el=document.createElement("div");
+    el.className="chip"+(state.selection.devices===n?" active":"");
+    el.textContent = n+" устр.";
+    el.onclick=()=>{
+      state.selection.devices=n;
       renderDevicesChips();
+      updateSelectedCard();
+      hapticSoft();
+    };
+    chipsDevices.appendChild(el);
+  });
+}
+
+function renderPlanCards(){
+  planGrid.innerHTML="";
+  const plans=[
+    {days:30, tag:"pop", tagText:"Популярно", sub:"Лучший старт"},
+    {days:90, tag:"off", tagText:"", sub:"Оптимально"},
+    {days:180, tag:"best", tagText:"Выгоднее", sub:"Максимальная экономия"}
+  ];
+
+  plans.forEach(p=>{
+    const price = PRICES[p.days];
+    const card=document.createElement("div");
+    card.className="planCard";
+
+    if(state.selection.days===p.days){
+      card.style.borderColor="rgba(255,255,255,.22)";
+      card.style.background="rgba(255,255,255,.10)";
+    }
+
+    card.onclick=()=>{
+      state.selection.days=p.days;
       renderPlanCards();
-      disablePayButtons();
-      selectedCard.style.display = "none";
-    }
+      updateSelectedCard();
+      hapticSoft();
+    };
 
-    function autoPickPlanTags(){
-      // preselect defaults
-      state.selection.devices = 1;
-      state.selection.days = 30;
-    }
+    const left=document.createElement("div");
+    const t=document.createElement("div");
+    t.className="planTitle";
+    t.textContent=`${p.days} дней — ${price} Stars`;
+    const s=document.createElement("div");
+    s.className="planSub";
+    s.textContent=p.sub;
+    left.appendChild(t); left.appendChild(s);
 
-    async function boot(){
-      setUserUI();
-      autoPickPlanTags();
-      initSelectionUI();
-      initSkeletonThenReal();
+    const right=document.createElement("div");
+    const tag=document.createElement("div");
+    tag.className="tag "+(p.tag||"off");
+    tag.textContent = (p.tagText || (state.selection.days===p.days ? "Выбрано" : ""));
+    right.appendChild(tag);
 
-      await checkHealth();
+    card.appendChild(left);
+    card.appendChild(right);
+    planGrid.appendChild(card);
+  });
+}
 
-      // If we have last order -> refresh once
-      if(state.lastOrderId){
+function updateSelectedCard(){
+  const {days, devices} = state.selection;
+  const price = PRICES[days] ?? "—";
+  selectedCard.style.display="block";
+  selTitle.textContent = `${days} дней • ${devices} устр.`;
+  selPrice.textContent = `${price} Stars`;
+  selMeta.textContent = `ID: ${state.userKey} • После оплаты появится конфиг`;
+  enablePayButtons();
+}
+
+/***************
+ * order flow
+ ***************/
+function showOrderUI(order){
+  orderBox.style.display="block";
+
+  orderBadge.textContent = order.status || "pending";
+  orderBadge.className = (order.status==="paid") ? "badge ok" : "badge off";
+
+  if(order.status==="paid"){
+    orderStatusText.textContent = "Оплачено ✅";
+  }else{
+    orderStatusText.textContent = "Ожидаем оплату…";
+  }
+
+  if(order.active_until){
+    state.activeUntil = order.active_until;
+    localStorage.setItem(LS.activeUntil, state.activeUntil);
+    updateMainSubscriptionUI();
+  }
+
+  if(order.config_link){
+    state.lastConfig = order.config_link;
+    localStorage.setItem(LS.lastConfig, state.lastConfig);
+    btnCopyConfig.disabled=false;
+  }
+
+  if(order.invoice_link) state.lastInvoiceLink = order.invoice_link;
+  if(order.invoice_url) state.lastInvoiceLink = order.invoice_url;
+}
+
+function pollOrder(orderId){
+  stopPolling();
+  state.polling = setInterval(async ()=>{
+    try{
+      const order = await api(`/pay/order/${orderId}`);
+      showOrderUI(order);
+
+      if(order.status==="paid" && !order.config_link){
+        // запросить выдачу конфига (пока так)
         try{
-          const order = await api(`/pay/order/${state.lastOrderId}`);
-          // if order exists, update activeUntil + config
-          showOrderUI(order);
+          const cfg = await api("/issue-config", {
+            method:"POST",
+            body:{
+              inbound_id: DEFAULT_INBOUND_ID,
+              user_key: state.userKey,
+              days: state.selection.days,
+              limit_ip: 0
+            }
+          });
+          if(cfg && cfg.link){
+            state.lastConfig = cfg.link;
+            localStorage.setItem(LS.lastConfig, state.lastConfig);
+            btnCopyConfig.disabled=false;
+          }
         }catch(e){}
       }
+    }catch(e){}
+  }, 1500);
+}
 
-      // smart button depends on activeUntil
-      updateSmartButton();
+async function createStarsInvoice(){
+  const body = { user_key: state.userKey, days: state.selection.days, devices: state.selection.devices };
+  const res = await api("/pay/stars/create",{method:"POST", body});
+  const {order_id, invoice_link} = res;
 
-      // In modal: when opening, we want card visible as soon as user touches choices
-      // first open: keep disabled until user picks anything -> we can auto-show selection for default
-      // Let's show selection immediately for default pick (premium UX)
-      updateSelectedCard();
+  state.lastOrderId = order_id;
+  localStorage.setItem(LS.lastOrder, state.lastOrderId);
+  setUserUI();
 
-      // make pay buttons enabled
-      enablePayButtons();
-    }
+  state.lastInvoiceLink = invoice_link || "";
+  showOrderUI({id:order_id, status:"pending", provider:"stars", invoice_link});
+  pollOrder(order_id);
 
-    boot();
-  </script>
+  if(invoice_link){
+    if(tg && tg.openTelegramLink) tg.openTelegramLink(invoice_link);
+    else window.open(invoice_link, "_blank");
+  }
+}
+
+async function createCryptoInvoice(){
+  const body = { user_key: state.userKey, days: state.selection.days, devices: state.selection.devices };
+  const res = await api("/pay/crypto/create",{method:"POST", body});
+  const {order_id, invoice_url} = res;
+
+  state.lastOrderId = order_id;
+  localStorage.setItem(LS.lastOrder, state.lastOrderId);
+  setUserUI();
+
+  state.lastInvoiceLink = invoice_url || "";
+  showOrderUI({id:order_id, status:"pending", provider:"crypto", invoice_url});
+  pollOrder(order_id);
+
+  if(invoice_url) window.open(invoice_url, "_blank");
+}
+
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }catch(e){
+    try{
+      const ta=document.createElement("textarea");
+      ta.value=text; document.body.appendChild(ta);
+      ta.select(); document.execCommand("copy"); ta.remove();
+      return true;
+    }catch(err){ return false; }
+  }
+}
+
+/***************
+ * events
+ ***************/
+tabs.forEach(t=>t.addEventListener("click",()=>setScreen(t.dataset.tab)));
+
+$("btnHow").addEventListener("click",()=>setScreen("how"));
+$("btnBackFromHow").addEventListener("click",()=>setScreen("home"));
+
+btnMain.addEventListener("click",()=>openModal());
+
+btnClose.addEventListener("click", closeModal);
+overlay.addEventListener("click",(e)=>{ if(e.target===overlay) closeModal(); });
+
+btnShowConfig.addEventListener("click",()=>{
+  if(!state.lastConfig){ showToast("Конфига ещё нет"); return; }
+  openModal();
+  orderBox.style.display="block";
+  orderBadge.className="badge ok";
+  orderBadge.textContent="ready";
+  orderStatusText.textContent="Конфиг готов";
+  btnCopyConfig.disabled=false;
+  btnOpenInvoice.style.display="none";
+});
+
+btnPayStars.addEventListener("click", async ()=>{
+  try{
+    disablePayButtons();
+    payHint.textContent="Создаём invoice Stars…";
+    await createStarsInvoice();
+    payHint.textContent="Инвойс открыт. Проверяем оплату…";
+  }catch(e){
+    payHint.textContent="Ошибка Stars: " + (e.message || "Load failed");
+    enablePayButtons();
+  }
+});
+
+btnPayUSDT.addEventListener("click", async ()=>{
+  try{
+    disablePayButtons();
+    payHint.textContent="Создаём invoice USDT…";
+    await createCryptoInvoice();
+    payHint.textContent="Счёт открыт. Проверяем оплату…";
+  }catch(e){
+    payHint.textContent="Ошибка USDT: " + (e.message || "Load failed");
+    enablePayButtons();
+  }
+});
+
+btnOpenInvoice.addEventListener("click", ()=>{
+  if(!state.lastInvoiceLink){ showToast("Ссылка не найдена"); return; }
+  if(tg && tg.openTelegramLink && state.lastInvoiceLink.startsWith("https://t.me/")){
+    tg.openTelegramLink(state.lastInvoiceLink);
+  }else{
+    window.open(state.lastInvoiceLink, "_blank");
+  }
+});
+
+btnCopyConfig.addEventListener("click", async ()=>{
+  if(!state.lastConfig){ showToast("Конфига ещё нет"); return; }
+  const ok = await copyText(state.lastConfig);
+  showToast(ok ? "Скопировано ✅" : "Не удалось скопировать");
+});
+
+$("pillUser").addEventListener("click",()=>setScreen("profile"));
+
+btnResetId.addEventListener("click", ()=>{
+  state.userKey = makeUserKey();
+  localStorage.setItem(LS.userKey, state.userKey);
+
+  state.activeUntil = "";
+  localStorage.removeItem(LS.activeUntil);
+
+  state.lastConfig = "";
+  localStorage.removeItem(LS.lastConfig);
+
+  state.lastOrderId = "";
+  localStorage.removeItem(LS.lastOrder);
+
+  setUserUI();
+  updateMainSubscriptionUI();
+  showToast("ID обновлён");
+});
+
+/***************
+ * init
+ ***************/
+async function boot(){
+  setUserUI();
+  setTGUser();
+  renderDevicesChips();
+  renderPlanCards();
+  disablePayButtons();
+  selectedCard.style.display="none";
+
+  await checkHealth();
+  updateMainSubscriptionUI();
+
+  // если есть последний заказ — обновим 1 раз
+  if(state.lastOrderId){
+    try{
+      const order = await api(`/pay/order/${state.lastOrderId}`);
+      showOrderUI(order);
+    }catch(e){}
+  }
+}
+boot();
+</script>
 </body>
 </html>
