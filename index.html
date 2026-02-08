@@ -3,567 +3,612 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#000000" />
   <title>ZEUSVPN</title>
+
+  <!-- Telegram WebApp (если открыто в Telegram, объект появится) -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     :root{
-      --bg:#000;
-      --panel: rgba(255,255,255,.06);
-      --panel2: rgba(255,255,255,.08);
-      --stroke: rgba(255,255,255,.10);
-      --stroke2: rgba(255,255,255,.16);
-
-      --text: rgba(255,255,255,.98);
-      --muted: rgba(255,255,255,.72);
-      --muted2: rgba(255,255,255,.52);
-
-      --blue:#0A84FF;     /* iOS blue */
-      --cyan:#64D2FF;     /* iOS cyan */
-      --good:#30D158;     /* iOS green */
-      --warn:#FFD60A;     /* iOS yellow */
-      --bad:#FF453A;      /* iOS red */
-
-      --shadow: 0 18px 60px rgba(0,0,0,.65);
-      --radius: 22px;
-      --radius2: 16px;
-
-      --safeTop: env(safe-area-inset-top, 0px);
-      --safeBot: env(safe-area-inset-bottom, 0px);
-      --tap: cubic-bezier(.2,.9,.2,1);
+      --bg:#0a0b0e;
+      --bg2:#0d0f14;
+      --card:#12141a;
+      --card2:#0f1117;
+      --text:#f3f4f6;
+      --muted:#a8acb3;
+      --muted2:#7b808a;
+      --stroke:rgba(255,255,255,.08);
+      --stroke2:rgba(255,255,255,.12);
+      --shadow: 0 16px 50px rgba(0,0,0,.55);
+      --shadow2: 0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
+      --radius2:24px;
+      --ease: cubic-bezier(.2,.8,.2,1);
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Segoe UI,Roboto,Arial,sans-serif;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display","SF Pro Text", Inter, Segoe UI, Roboto, Arial, sans-serif;
       background:
-        radial-gradient(900px 600px at 15% -10%, rgba(10,132,255,.22), rgba(0,0,0,0) 55%),
-        radial-gradient(700px 520px at 95% 5%, rgba(100,210,255,.14), rgba(0,0,0,0) 55%),
-        linear-gradient(180deg, #000, #000);
+        radial-gradient(1200px 700px at 50% -10%, rgba(255,255,255,.06), rgba(255,255,255,0) 55%),
+        radial-gradient(900px 500px at 80% 20%, rgba(255,255,255,.03), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, var(--bg), #06070a);
       color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
       overflow-x:hidden;
     }
 
-    .app{
+    /* Safe area for iOS */
+    .safe{
+      padding:
+        calc(16px + env(safe-area-inset-top))
+        16px
+        calc(18px + env(safe-area-inset-bottom))
+        16px;
       max-width:520px;
       margin:0 auto;
-      padding: calc(16px + var(--safeTop)) 14px calc(18px + var(--safeBot));
     }
 
+    /* ===== Topbar ===== */
     .topbar{
-      display:flex; align-items:center; justify-content:space-between;
-      margin-bottom: 14px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:12px;
-      min-width:0;
-    }
-    .logo{
-      width:46px; height:46px; border-radius:14px;
-      background: rgba(255,255,255,.06);
-      border:1px solid var(--stroke);
-      box-shadow: 0 10px 30px rgba(0,0,0,.45);
-      display:grid; place-items:center;
-      overflow:hidden;
-    }
-    .logo img{width:100%; height:100%; object-fit:cover}
-    .brand h1{
-      margin:0;
-      font-size:16px;
-      letter-spacing:.2px;
-      line-height:1.15;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .brand p{
-      margin:4px 0 0;
-      font-size:12px;
-      color:var(--muted);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .pill{
-      display:flex; align-items:center; gap:8px;
-      padding:10px 12px;
-      border-radius:999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid var(--stroke);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 12px 40px rgba(0,0,0,.35);
-      max-width: 44%;
-      min-width: 0;
-    }
-    .avatar{
-      width:26px; height:26px; border-radius:999px;
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.12);
-      overflow:hidden;
-      flex:0 0 auto;
-    }
-    .avatar img{width:100%; height:100%; object-fit:cover}
-    .pill .name{
-      font-size:12px;
-      color:var(--text);
-      overflow:hidden;
-      white-space:nowrap;
-      text-overflow:ellipsis;
-    }
-
-    .card{
-      background: var(--panel);
-      border:1px solid var(--stroke);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-    }
-    .card + .card{ margin-top: 12px; }
-
-    .hero{
-      padding:16px;
-      position:relative;
-      overflow:hidden;
-    }
-    .hero:before{
-      content:"";
-      position:absolute; inset:-40% -30%;
-      background:
-        radial-gradient(closest-side at 20% 30%, rgba(10,132,255,.22), rgba(0,0,0,0) 55%),
-        radial-gradient(closest-side at 80% 20%, rgba(100,210,255,.14), rgba(0,0,0,0) 60%);
-      filter: blur(10px);
-      opacity:.85;
-      pointer-events:none;
-    }
-    .hero > *{ position:relative; z-index:1; }
-    .heroRow{
-      display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
-    }
-    .heroTitle{
-      margin:0 0 6px 0;
-      font-size:18px;
-      letter-spacing:.2px;
-    }
-    .heroDesc{
-      margin:0;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.35;
-    }
-    .status{
-      margin-top:12px;
-      display:flex; gap:10px; flex-wrap:wrap;
-    }
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      color:var(--text);
-      font-size:12px;
-      line-height:1;
-      user-select:none;
-    }
-    .dot{
-      width:8px; height:8px; border-radius:999px;
-      background: var(--good);
-      box-shadow: 0 0 0 3px rgba(48,209,88,.18);
-    }
-    .dot.bad{ background: var(--bad); box-shadow: 0 0 0 3px rgba(255,69,58,.18); }
-
-    .actions{
-      padding:14px;
-      display:flex;
-      gap:10px;
-    }
-    .btn{
-      appearance:none; border:0; cursor:pointer;
-      width:100%;
-      border-radius: 16px;
-      padding:14px 14px;
-      font-weight: 700;
-      letter-spacing:.2px;
-      background: rgba(255,255,255,.10);
-      color: var(--text);
-      border:1px solid rgba(255,255,255,.14);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 16px 46px rgba(0,0,0,.45);
-      transition: transform .15s var(--tap), filter .15s var(--tap);
-    }
-    .btn:active{ transform: scale(.98); }
-    .btn.primary{
-      background: linear-gradient(180deg, rgba(10,132,255,.95), rgba(10,132,255,.70));
-      border:1px solid rgba(10,132,255,.35);
-      box-shadow: 0 18px 54px rgba(10,132,255,.18);
-    }
-    .btn.ghost{
-      background: rgba(255,255,255,.06);
-    }
-    .btn[disabled]{
-      opacity:.55;
-      cursor:not-allowed;
-      filter: grayscale(.3);
-    }
-
-    /* Bottom nav */
-    .nav{
-      margin-top: 12px;
-      display:flex;
-      gap:10px;
-    }
-    .navBtn{
-      width:100%;
-      padding:12px 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      color: var(--muted);
-      font-weight:700;
-      letter-spacing:.15px;
-      cursor:pointer;
-      transition: transform .15s var(--tap), background .15s var(--tap);
-    }
-    .navBtn:active{ transform: scale(.98); }
-    .navBtn.active{
-      background: rgba(255,255,255,.10);
-      color: var(--text);
-      border-color: rgba(255,255,255,.14);
-    }
-
-    /* screens */
-    .screen{
-      margin-top: 12px;
-      overflow:hidden;
-    }
-    .screenInner{ padding: 14px; }
-    .row{
-      display:flex; justify-content:space-between; align-items:center;
-      padding: 12px 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-      margin-bottom: 10px;
-    }
-    .row:last-child{ margin-bottom:0; }
-    .k{ color:var(--muted); font-size:12px; }
-    .v{ color:var(--text); font-size:12px; font-weight:700; }
-
-    /* Instructions swipe */
-    .swipeWrap{
-      position:relative;
-      overflow:hidden;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-    }
-    .swipeTrack{
-      display:flex;
-      width:300%;
-      transform: translateX(0%);
-      transition: transform .28s var(--tap);
-    }
-    .slide{
-      width: 100%;
-      padding: 14px;
-      min-height: 160px;
-    }
-    .slide h3{ margin:2px 0 8px; font-size:14px; letter-spacing:.2px; }
-    .slide p{ margin:0; color:var(--muted); font-size:12.5px; line-height:1.4; }
-    .dots{
-      display:flex; gap:8px; justify-content:center;
-      padding: 10px 0 0;
-    }
-    .dot2{
-      width:7px; height:7px; border-radius: 999px;
-      background: rgba(255,255,255,.22);
-    }
-    .dot2.active{ background: rgba(255,255,255,.80); }
-
-    /* Modal */
-    .overlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.62);
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
-      padding: 12px 10px calc(12px + var(--safeBot));
-      z-index: 999;
-    }
-    .overlay.show{ display:flex; }
-    .sheet{
-      width:100%;
-      max-width: 520px;
-      border-radius: 26px;
-      background: rgba(22,22,22,.75);
-      border:1px solid rgba(255,255,255,.12);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      box-shadow: 0 24px 90px rgba(0,0,0,.75);
-      overflow:hidden;
-
-      /* IMPORTANT: фиксируем высоту, чтобы НИЧЕГО не резало */
-      max-height: min(78vh, 560px);
-      display:flex;
-      flex-direction:column;
-    }
-    .sheetHeader{
-      padding: 14px 14px 10px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
-      border-bottom:1px solid rgba(255,255,255,.10);
+      gap:12px;
+      margin-bottom:14px;
     }
-    .sheetTitle{ margin:0; font-size:14px; letter-spacing:.2px; }
-    .close{
-      width:34px; height:34px;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      cursor:pointer;
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      min-width:0;
     }
-    .sheetBody{
-      padding: 12px 14px 14px;
-      overflow:auto; /* скролл внутри */
+    .logo{
+      width:38px; height:38px;
+      border-radius:12px;
+      border:1px solid var(--stroke2);
+      background: rgba(255,255,255,.04);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      display:grid; place-items:center;
+      flex:0 0 auto;
+    }
+    .logo img{width:100%;height:100%;object-fit:cover;display:block}
+    .brandText{
+      display:flex; flex-direction:column; gap:2px;
+      min-width:0;
+    }
+    .brandTitle{
+      font-weight:700; letter-spacing:.2px;
+      font-size:14.5px;
+      line-height:1.1;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .brandSub{
+      font-size:12px; color:var(--muted);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
 
-    .sectionLabel{
-      margin: 8px 0 8px;
+    .pill{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      border-radius:999px;
+      padding:8px 10px;
       font-size:12px;
-      color: var(--muted);
+      display:flex; align-items:center; gap:8px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.22);
+    }
+    .pillDot{
+      width:8px;height:8px;border-radius:50%;
+      background: rgba(255,255,255,.45);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.07);
+    }
+
+    /* ===== Sections ===== */
+    .section{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--stroke);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+      margin-bottom:14px;
+    }
+    .section::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(900px 300px at 20% -10%, rgba(255,255,255,.08), rgba(255,255,255,0) 60%),
+        radial-gradient(700px 260px at 90% 10%, rgba(255,255,255,.04), rgba(255,255,255,0) 65%);
+      pointer-events:none;
+    }
+    .sectionInner{
+      position:relative;
+      padding:16px;
+    }
+    .row{display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .h{
+      font-weight:800;
+      font-size:16px;
       letter-spacing:.2px;
     }
-    .chips{
-      display:flex; flex-wrap:wrap; gap:10px;
-      margin-bottom: 10px;
-    }
-    .sel{
-      padding:10px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      color: var(--text);
-      font-weight:800;
-      font-size:12px;
-      cursor:pointer;
-      user-select:none;
-      transition: transform .12s var(--tap), background .12s var(--tap), border-color .12s var(--tap);
-    }
-    .sel:active{ transform: scale(.98); }
-    .sel.active{
-      background: rgba(10,132,255,.18);
-      border-color: rgba(10,132,255,.40);
-      box-shadow: 0 0 0 4px rgba(10,132,255,.10);
+    .muted{color:var(--muted); font-size:12.5px; line-height:1.35}
+    .divider{
+      height:1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.10), rgba(255,255,255,0));
+      margin:12px 0;
     }
 
-    .previewCard{
-      margin-top: 10px;
-      padding: 14px;
-      border-radius: 20px;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      box-shadow: 0 22px 70px rgba(0,0,0,.55);
+    /* ===== Profile card on main ===== */
+    .userBox{display:flex; align-items:center; gap:12px}
+    .avatar{
+      width:44px;height:44px;border-radius:14px;
+      background: rgba(255,255,255,.05);
+      border:1px solid var(--stroke);
+      overflow:hidden;
+      flex:0 0 auto;
+      box-shadow: 0 10px 24px rgba(0,0,0,.22);
+      display:grid; place-items:center;
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+    .avatar span{font-weight:800; color:rgba(255,255,255,.55)}
+    .userMeta{min-width:0}
+    .userName{
+      font-weight:750;
+      font-size:14px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .userId{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
+    }
+
+    .statusPill{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    /* ===== Button ===== */
+    .btn{
+      width:100%;
+      border:1px solid var(--stroke2);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      border-radius:16px;
+      padding:14px 14px;
+      font-weight:750;
+      letter-spacing:.15px;
+      font-size:14.5px;
+      box-shadow: 0 14px 28px rgba(0,0,0,.28);
+      transition: transform .12s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
       position:relative;
       overflow:hidden;
     }
-    .previewCard:before{
-      content:"";
-      position:absolute; inset:-40% -25%;
-      background:
-        radial-gradient(closest-side at 30% 30%, rgba(10,132,255,.22), rgba(0,0,0,0) 55%),
-        radial-gradient(closest-side at 80% 20%, rgba(100,210,255,.14), rgba(0,0,0,0) 60%);
-      filter: blur(12px);
-      opacity:.9;
-      pointer-events:none;
+    .btn:active{transform: scale(.985)}
+    .btnPrimary{
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
     }
-    .previewCard > *{ position:relative; z-index:1; }
-    .pcTop{
-      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
+    .btnGhost{
+      background: rgba(255,255,255,.03);
     }
-    .pcName{ font-size:13px; font-weight:900; letter-spacing:.2px; margin:0; }
-    .pcBadge{
-      font-size:11px; font-weight:900;
-      color: rgba(255,255,255,.88);
+    .btnRow{display:flex; gap:10px}
+    .btnRow .btn{flex:1}
+
+    /* micro-scale + ring on chip taps */
+    .chip{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s var(--ease), background .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease);
+    }
+    .chip:active{transform: scale(.98)}
+    .chip.selected{
       background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      padding:7px 10px;
-      border-radius: 999px;
-      white-space:nowrap;
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 0 0 6px rgba(255,255,255,.04);
     }
-    .pcLine{ margin-top:10px; color:var(--muted); font-size:12px; line-height:1.35; }
-    .payRow{
-      display:flex; gap:10px; margin-top: 12px;
+    .chip .tag{
+      font-size:11px;
+      color: rgba(0,0,0,.9);
+      background: rgba(255,255,255,.75);
+      padding:3px 8px;
+      border-radius:999px;
+      font-weight:800;
+      letter-spacing:.1px;
     }
 
+    /* ===== Tabs (Main/Profile/Instructions) ===== */
+    .tabs{
+      display:flex; gap:8px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.03);
+      padding:6px;
+      border-radius:16px;
+      margin-bottom:12px;
+    }
+    .tab{
+      flex:1;
+      text-align:center;
+      padding:10px 10px;
+      border-radius:12px;
+      font-weight:800;
+      font-size:12.5px;
+      color:var(--muted);
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: background .2s var(--ease), color .2s var(--ease), transform .12s var(--ease);
+    }
+    .tab:active{transform: scale(.99)}
+    .tab.active{
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.12);
+    }
+
+    /* ===== Screens + iOS-like transition (fade+slide) ===== */
+    .screen{display:none; animation: none}
+    .screen.active{display:block}
+    .animIn{
+      animation: fadeSlideIn .28s var(--ease) both;
+    }
+    .animOut{
+      animation: fadeSlideOut .22s var(--ease) both;
+    }
+    @keyframes fadeSlideIn{
+      from{opacity:0; transform: translateY(10px)}
+      to{opacity:1; transform: translateY(0)}
+    }
+    @keyframes fadeSlideOut{
+      from{opacity:1; transform: translateY(0)}
+      to{opacity:0; transform: translateY(8px)}
+    }
+
+    /* ===== Modal ===== */
+    .backdrop{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.65);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 16px 16px calc(16px + env(safe-area-inset-bottom)) 16px;
+      z-index:50;
+    }
+    .backdrop.show{display:flex}
+    .modal{
+      width:min(520px, 100%);
+      background: linear-gradient(180deg, rgba(20,22,28,.98), rgba(12,13,18,.98));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 26px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.65);
+      overflow:hidden;
+
+      /* фикс-высота чтобы не резало */
+      max-height: 78vh;
+      display:flex;
+      flex-direction:column;
+    }
+    .modalHeader{
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .modalTitle{font-weight:900; font-size:14px}
+    .modalClose{
+      width:36px;height:36px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      display:grid; place-items:center;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s var(--ease), background .2s var(--ease);
+    }
+    .modalClose:active{transform: scale(.98)}
+    .modalBody{
+      padding:16px;
+      overflow:auto;
+    }
+
+    .chips{display:flex; flex-wrap:wrap; gap:10px}
+    .subGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+
+    /* ===== 3D selection card (with subtle shimmer) ===== */
+    .choiceCard{
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      padding:14px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+      position:relative;
+      overflow:hidden;
+      transform: perspective(900px) rotateX(0deg) rotateY(0deg);
+      transition: transform .18s var(--ease);
+    }
+    .choiceCard::after{
+      content:"";
+      position:absolute; inset:-40% -60%;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,.06) 45%,
+        rgba(255,255,255,.12) 55%,
+        rgba(255,255,255,0) 100%);
+      transform: translateX(-35%);
+      animation: shimmer 1.4s infinite;
+      opacity:.35; /* очень слабый */
+      pointer-events:none;
+    }
+    @keyframes shimmer { to { transform: translateX(55%); } }
+
+    .choiceTop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+    .choiceName{font-weight:900; font-size:14px}
+    .choiceMeta{color:var(--muted); font-size:12.5px; margin-top:3px}
+    .price{
+      font-weight:950;
+      font-size:18px;
+      letter-spacing:.2px;
+      line-height:1;
+    }
+    .price small{font-size:12px; color:var(--muted); font-weight:800}
+    .miniRow{display:flex; gap:10px; margin-top:12px}
+    .miniBtn{
+      flex:1;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      padding:12px 12px;
+      text-align:center;
+      font-weight:900;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s var(--ease), background .2s var(--ease);
+    }
+    .miniBtn:active{transform: scale(.985)}
+    .miniBtn.disabled{
+      opacity:.45;
+      pointer-events:none;
+    }
+
+    /* ===== Toast ===== */
     .toast{
       position:fixed;
       left:50%;
-      bottom: calc(18px + var(--safeBot));
-      transform: translateX(-50%) translateY(20px);
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      background: rgba(20,22,28,.94);
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:12.5px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.5);
       opacity:0;
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.14);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 999px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.55);
-      transition: opacity .22s var(--tap), transform .22s var(--tap);
-      font-size:12px;
-      z-index: 1000;
+      pointer-events:none;
+      z-index:100;
+      transition: opacity .18s var(--ease), transform .18s var(--ease);
     }
-    .toast.show{ opacity:1; transform: translateX(-50%) translateY(0px); }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-2px);
+    }
 
-    .hidden{ display:none !important; }
-    a{ color: var(--text); text-decoration:none; }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    /* ===== Pull to refresh ===== */
+    .ptr{
+      position:fixed;
+      left:50%;
+      top: calc(10px + env(safe-area-inset-top));
+      transform: translateX(-50%);
+      background: rgba(20,22,28,.92);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      color:var(--muted);
+      opacity:0;
+      transition: opacity .18s var(--ease);
+      z-index:120;
+      pointer-events:none;
+    }
+    .ptr.show{opacity:1}
+
+    /* small helper */
+    a{color:inherit}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace}
+    .hidden{display:none !important}
   </style>
 </head>
 
 <body>
-  <div class="app">
-    <!-- TOP -->
+  <div class="ptr" id="ptr">Обновление…</div>
+  <div class="toast" id="toast">Скопировано</div>
+
+  <div class="safe">
+    <!-- TOPBAR -->
     <div class="topbar">
       <div class="brand">
-        <div class="logo" aria-label="ZEUSVPN logo">
-          <img src="logo.png" alt="ZEUSVPN" />
+        <div class="logo">
+          <!-- положи logo.png рядом с index.html -->
+          <img src="logo.png" alt="ZEUSVPN" onerror="this.style.display='none'; this.parentNode.innerHTML='<span>Z</span>';">
         </div>
-        <div style="min-width:0">
-          <h1>ZEUSVPN</h1>
-          <p id="subtitle">Private access • Premium tunnel</p>
-        </div>
-      </div>
-
-      <div class="pill" title="Профиль Telegram">
-        <div class="avatar" id="avatar">
-          <img id="avatarImg" class="hidden" alt="avatar" />
-        </div>
-        <div class="name" id="tgName">Гость</div>
-      </div>
-    </div>
-
-    <!-- HERO -->
-    <div class="card hero">
-      <div class="heroRow">
-        <div style="min-width:0">
-          <h2 class="heroTitle">Подписка</h2>
-          <p class="heroDesc" id="heroDesc">Выберите параметры — оплатите — получите конфиг.</p>
+        <div class="brandText">
+          <div class="brandTitle">ZEUSVPN</div>
+          <div class="brandSub">Premium • iOS-style</div>
         </div>
       </div>
 
-      <div class="status">
-        <div class="chip" id="subChip">
-          <span class="dot bad" id="subDot"></span>
-          <span id="subText">Не активна</span>
-        </div>
-        <div class="chip">
-          <span style="opacity:.8">ID</span>
-          <span class="mono" id="userKey">—</span>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="btn primary" id="openBuyBtn">Приобрести подписку</button>
-        <button class="btn ghost" id="openProfileBtn">Профиль</button>
+      <div class="pill" title="Статус API">
+        <span class="pillDot" id="apiDot"></span>
+        <span id="apiText">API</span>
       </div>
     </div>
 
-    <!-- NAV -->
-    <div class="nav">
-      <button class="navBtn active" id="navMain">Главная</button>
-      <button class="navBtn" id="navInstr">Инструкция</button>
-      <button class="navBtn" id="navProfile">Профиль</button>
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" data-screen="home">Главная</div>
+      <div class="tab" data-screen="profile">Профиль</div>
+      <div class="tab" data-screen="instructions">Инструкция</div>
     </div>
 
-    <!-- MAIN SCREEN -->
-    <div class="card screen" id="screenMain">
-      <div class="screenInner">
-        <div class="row">
-          <div>
-            <div class="k">Быстрый старт</div>
-            <div class="v">Оплата → Конфиг → Вставить в V2Box/V2Ray</div>
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <div class="k">Оплата</div>
-            <div class="v">Stars / USDT</div>
-          </div>
-          <div class="k">в модалке</div>
-        </div>
-        <div class="row">
-          <div>
-            <div class="k">Конфиг</div>
-            <div class="v">Выдаётся после оплаты</div>
-          </div>
-          <div class="k">автомат</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- INSTRUCTIONS SCREEN -->
-    <div class="card screen hidden" id="screenInstr">
-      <div class="screenInner">
-        <div class="swipeWrap" id="swipeWrap">
-          <div class="swipeTrack" id="swipeTrack">
-            <div class="slide">
-              <h3>iOS (V2Box)</h3>
-              <p>Открой V2Box → “+” → Import from clipboard → вставь ссылку vless → Save → Connect.</p>
+    <!-- HOME -->
+    <div class="screen active animIn" id="screen-home">
+      <div class="section">
+        <div class="sectionInner">
+          <div class="row">
+            <div class="userBox">
+              <div class="avatar" id="avatar">
+                <span id="avatarFallback">Z</span>
+              </div>
+              <div class="userMeta">
+                <div class="userName" id="userName">Гость</div>
+                <div class="userId" id="tgLine">tg_id: —</div>
+              </div>
             </div>
-            <div class="slide">
-              <h3>Android (v2rayNG)</h3>
-              <p>v2rayNG → “+” → Import from clipboard/URL → вставь vless → OK → подключись.</p>
-            </div>
-            <div class="slide">
-              <h3>Desktop</h3>
-              <p>Windows/Mac: v2rayN / Nekoray → Import → вставь vless → запусти профиль.</p>
+
+            <div class="statusPill" id="activeUntilPill">Подписка: нет</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="muted" style="margin-bottom:12px">
+            Нажми <b>«Приобрести подписку»</b> → выбери срок и устройства → оплати Stars или USDT → получишь конфиг.
+          </div>
+
+          <button class="btn btnPrimary" id="btnSubscribe">Приобрести подписку</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sectionInner">
+          <div class="row">
+            <div>
+              <div class="h">Быстрый доступ</div>
+              <div class="muted">Конфиг появится после оплаты</div>
             </div>
           </div>
-        </div>
 
-        <div class="dots">
-          <div class="dot2 active" data-dot="0"></div>
-          <div class="dot2" data-dot="1"></div>
-          <div class="dot2" data-dot="2"></div>
+          <div class="divider"></div>
+
+          <button class="btn btnGhost" id="btnOpenModal">
+            Открыть выбор подписки
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- PROFILE SCREEN -->
-    <div class="card screen hidden" id="screenProfile">
-      <div class="screenInner">
-        <div class="row">
-          <div>
-            <div class="k">Telegram</div>
-            <div class="v" id="profileTg">—</div>
+    <!-- PROFILE -->
+    <div class="screen" id="screen-profile">
+      <div class="section">
+        <div class="sectionInner">
+          <div class="h">Профиль</div>
+          <div class="muted" style="margin-top:6px">
+            Минимально: только данные Telegram и твой внутренний ключ пользователя.
           </div>
-          <div class="k mono" id="profileTgId">—</div>
-        </div>
 
-        <div class="row">
-          <div>
-            <div class="k">Ваш ID (user_key)</div>
-            <div class="v mono" id="profileUserKey">—</div>
+          <div class="divider"></div>
+
+          <div class="row" style="align-items:flex-start">
+            <div style="flex:1;min-width:0">
+              <div class="muted2" style="font-size:12px;color:var(--muted2)">Telegram</div>
+              <div style="font-weight:900;margin-top:4px" id="profileName">—</div>
+              <div class="userId" style="margin-top:6px" id="profileTgId">tg_id: —</div>
+            </div>
           </div>
-          <button class="btn ghost" id="regenIdBtn" style="width:auto;padding:10px 12px;border-radius:14px">Новый</button>
-        </div>
 
-        <div class="row">
-          <div>
-            <div class="k">Статус</div>
-            <div class="v" id="profileStatus">—</div>
+          <div class="divider"></div>
+
+          <div class="muted2" style="font-size:12px;color:var(--muted2)">user_key (для backend)</div>
+          <div class="mono" style="margin-top:6px;font-weight:900" id="profileUserKey">—</div>
+
+          <div class="divider"></div>
+
+          <button class="btn btnGhost" id="btnNewUserKey">Сбросить / новый ID</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTRUCTIONS -->
+    <div class="screen" id="screen-instructions">
+      <div class="section">
+        <div class="sectionInner">
+          <div class="h">Инструкция</div>
+          <div class="muted" style="margin-top:6px">Свайпай карточки → выбери свою платформу.</div>
+
+          <div class="divider"></div>
+
+          <!-- swipe cards -->
+          <div id="swipeWrap" style="overflow:hidden">
+            <div id="swipeTrack" style="
+              display:flex; gap:12px;
+              transform: translateX(0);
+              transition: transform .28s var(--ease);
+              will-change: transform;
+              ">
+              <div class="section" style="min-width:100%; margin:0; box-shadow:none">
+                <div class="sectionInner">
+                  <div class="h">iOS (V2Box / Streisand)</div>
+                  <div class="muted" style="margin-top:8px;line-height:1.5">
+                    1) Нажми «Скопировать конфиг»<br>
+                    2) Открой клиент → Import from Clipboard<br>
+                    3) Подключись
+                  </div>
+                </div>
+              </div>
+
+              <div class="section" style="min-width:100%; margin:0; box-shadow:none">
+                <div class="sectionInner">
+                  <div class="h">Android (v2rayNG)</div>
+                  <div class="muted" style="margin-top:8px;line-height:1.5">
+                    1) Скопируй конфиг<br>
+                    2) v2rayNG → + → Import from Clipboard<br>
+                    3) Включи VPN
+                  </div>
+                </div>
+              </div>
+
+              <div class="section" style="min-width:100%; margin:0; box-shadow:none">
+                <div class="sectionInner">
+                  <div class="h">Desktop (Hiddify / Nekoray)</div>
+                  <div class="muted" style="margin-top:8px;line-height:1.5">
+                    1) Скопируй ссылку VLESS<br>
+                    2) Import / Add profile<br>
+                    3) Connect
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <button class="btn btnGhost" id="prevSlide">Назад</button>
+            <button class="btn btnGhost" id="nextSlide">Далее</button>
           </div>
         </div>
       </div>
@@ -571,469 +616,737 @@
 
   </div>
 
-  <!-- BUY MODAL -->
-  <div class="overlay" id="overlay">
-    <div class="sheet" role="dialog" aria-modal="true" aria-label="Оплата">
-      <div class="sheetHeader">
-        <div>
-          <p class="sheetTitle">Выбор подписки</p>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">Выбери устройства и срок — кнопка оплаты обновится</div>
-        </div>
-        <button class="close" id="closeModalBtn">✕</button>
+  <!-- MODAL -->
+  <div class="backdrop" id="backdrop">
+    <div class="modal" id="modal">
+      <div class="modalHeader">
+        <div class="modalTitle">Подписка ZEUSVPN</div>
+        <div class="modalClose" id="closeModal">✕</div>
       </div>
 
-      <div class="sheetBody">
-        <div class="sectionLabel">Устройства</div>
-        <div class="chips" id="devicesChips">
-          <div class="sel active" data-dev="1">1</div>
-          <div class="sel" data-dev="3">3</div>
-          <div class="sel" data-dev="5">5</div>
-          <div class="sel" data-dev="10">10</div>
-        </div>
+      <div class="modalBody">
+        <div class="muted">Выбери <b>срок</b> и <b>устройства</b>. Цена и кнопка оплаты обновятся.</div>
 
-        <div class="sectionLabel">Срок</div>
-        <div class="chips" id="daysChips">
-          <div class="sel active" data-days="30">30 дней <span style="opacity:.7;font-weight:900">•</span> <span style="color:var(--warn);font-weight:900">Популярно</span></div>
-          <div class="sel" data-days="90">90 дней</div>
-          <div class="sel" data-days="180">180 дней <span style="opacity:.7;font-weight:900">•</span> <span style="color:var(--good);font-weight:900">Выгоднее</span></div>
-        </div>
+        <div class="divider"></div>
 
-        <div class="previewCard" id="previewCard">
-          <div class="pcTop">
-            <p class="pcName">ZEUSVPN • Подписка</p>
-            <div class="pcBadge" id="priceBadge">199 XTR</div>
-          </div>
-          <div class="pcLine" id="previewLine">1 устройство • 30 дней</div>
-          <div class="payRow">
-            <button class="btn primary" id="payStarsBtn">Оплатить Stars</button>
-            <button class="btn ghost" id="payUsdtBtn">Оплатить USDT</button>
-          </div>
+        <div class="muted2" style="font-size:12px;color:var(--muted2);margin-bottom:8px">Срок</div>
+        <div class="chips" id="chipsDays"></div>
 
-          <div id="afterPay" class="hidden" style="margin-top:12px">
-            <div class="sectionLabel">Ваш конфиг</div>
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <button class="btn ghost" id="copyConfigBtn" style="flex:1">Скопировать</button>
-              <button class="btn ghost" id="closeAfterBtn" style="flex:1">Закрыть</button>
+        <div style="height:12px"></div>
+
+        <div class="muted2" style="font-size:12px;color:var(--muted2);margin-bottom:8px">Устройства</div>
+        <div class="chips" id="chipsDevices"></div>
+
+        <div class="divider"></div>
+
+        <!-- 3D card -->
+        <div class="choiceCard" id="choiceCard">
+          <div class="choiceTop">
+            <div>
+              <div class="choiceName" id="choiceTitle">Выбор</div>
+              <div class="choiceMeta" id="choiceMeta">—</div>
             </div>
-            <div style="margin-top:10px;color:var(--muted2);font-size:12px;line-height:1.35">
-              Если не открылось приложение — скопируй ссылку и вставь в V2Box/v2rayNG вручную.
-            </div>
-            <textarea id="configBox" class="mono" readonly
-              style="margin-top:10px;width:100%;min-height:88px;max-height:160px;resize:none;
-              padding:12px;border-radius:16px;background:rgba(0,0,0,.35);
-              border:1px solid rgba(255,255,255,.12);color:var(--text);"></textarea>
+            <div class="price" id="priceText">—</div>
           </div>
 
-          <div id="loaderArea" class="hidden" style="margin-top:12px;color:var(--muted);font-size:12px">
-            Оплата создаётся… затем ждём подтверждение.
+          <div class="miniRow">
+            <div class="miniBtn" id="payStarsBtn">Оплатить Stars</div>
+            <div class="miniBtn" id="payUsdtBtn">USDT (CryptoPay)</div>
           </div>
         </div>
+
+        <div class="divider"></div>
+
+        <div class="muted2" style="font-size:12px;color:var(--muted2)">Статус заказа</div>
+        <div class="muted" id="orderLine" style="margin-top:6px">Нет активного заказа</div>
+
+        <div style="height:10px"></div>
+
+        <button class="btn btnGhost hidden" id="copyConfigBtn">Скопировать конфиг</button>
       </div>
     </div>
   </div>
-
-  <div class="toast" id="toast">Готово</div>
 
   <script>
-    /* ======================
+    /* =========================
        CONFIG
-    ====================== */
-    const API_BASE = "https://api.45.133.251.210.nip.io:8443";
+    ========================= */
+    const API_BASE = "https://api.45.133.251.210.nip.io:8443"; // твой nginx SSL порт
+    const DEFAULT_INBOUND_ID = 1;
 
-    // price map (дальше можешь подстроить под devices тоже)
-    const STARS_PRICE = { 30: 199, 90: 399, 180: 599 };
-
-    /* ======================
-       SIMPLE STATE
-    ====================== */
+    /* =========================
+       State
+    ========================= */
     const state = {
-      user_key: null,
-      tg: { id: null, name: "Гость", username: null, photo_url: null },
-      sub: { active: false, active_until: null },
-      plan: { devices: 1, days: 30, price: STARS_PRICE[30] },
-      lastOrderId: null,
-      lastConfig: null,
-      swipeIndex: 0
+      screen: "home",
+      user: {
+        tg_id: null,
+        name: "Гость",
+        photo_url: null,
+        user_key: null, // наш внутренний ключ, сохраняем в localStorage
+      },
+      plan: { days: 30, devices: 1, price: 199, currency: "XTR" },
+      currentOrderId: null,
+      currentConfig: null,
+      pollTimer: null,
+      slideIndex: 0
     };
 
-    /* ======================
-       HELPERS
-    ====================== */
-    const $ = (id) => document.getElementById(id);
-    const toast = (msg) => {
-      const t = $("toast");
-      t.textContent = msg;
-      t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"), 1600);
+    const PRICES = {
+      // можно менять как хочешь
+      30: 199,
+      90: 399,
+      180: 599
     };
-    const randKey = () => ("u_" + Math.random().toString(16).slice(2,10) + Math.random().toString(16).slice(2,10)).slice(0, 18);
 
-    function isTelegram() {
-      return !!(window.Telegram && window.Telegram.WebApp);
-    }
+    const DEVICE_CHOICES = [1,3,5,10];
 
-    function safeHaptic() {
+    /* =========================
+       Helpers: haptic + toast
+    ========================= */
+    function haptic(type="light"){
       try{
-        if(isTelegram()){
-          window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+        if (window.Telegram?.WebApp?.HapticFeedback){
+          Telegram.WebApp.HapticFeedback.impactOccurred(type);
+        } else if (navigator.vibrate) {
+          navigator.vibrate(8);
         }
       }catch(e){}
     }
 
-    function setActive(active, untilIso) {
-      state.sub.active = !!active;
-      state.sub.active_until = untilIso || null;
-
-      const dot = $("subDot");
-      const txt = $("subText");
-      if(active){
-        dot.classList.remove("bad");
-        txt.textContent = "Активна до " + formatDate(untilIso);
-        $("openBuyBtn").textContent = "Продлить";
-      } else {
-        dot.classList.add("bad");
-        txt.textContent = "Не активна";
-        $("openBuyBtn").textContent = "Приобрести подписку";
-      }
-      $("profileStatus").textContent = active ? ("Активна до " + formatDate(untilIso)) : "Не активна";
+    const toastEl = document.getElementById("toast");
+    let toastTimer = null;
+    function toast(msg="Скопировано"){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>toastEl.classList.remove("show"), 1400);
     }
 
-    function formatDate(iso){
-      if(!iso) return "—";
-      try{
-        const d = new Date(iso);
-        return d.toLocaleDateString("ru-RU", { day:"2-digit", month:"2-digit", year:"numeric" });
-      }catch(e){ return iso; }
+    function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+
+    function formatDate(ts){
+      if(!ts) return null;
+      const d = new Date(ts);
+      if (Number.isNaN(d.getTime())) return null;
+      const dd = String(d.getDate()).padStart(2,"0");
+      const mm = String(d.getMonth()+1).padStart(2,"0");
+      const yy = d.getFullYear();
+      return `${dd}.${mm}.${yy}`;
     }
 
-    function updatePlanUI(){
-      state.plan.price = STARS_PRICE[state.plan.days] || 199;
-
-      $("previewLine").textContent = `${state.plan.devices} устройство${state.plan.devices>1 ? "а" : ""} • ${state.plan.days} дней`;
-      $("priceBadge").textContent = `${state.plan.price} XTR`;
-
-      // highlight chips
-      [...$("devicesChips").querySelectorAll(".sel")].forEach(el=>{
-        el.classList.toggle("active", Number(el.dataset.dev)===state.plan.devices);
-      });
-      [...$("daysChips").querySelectorAll(".sel")].forEach(el=>{
-        el.classList.toggle("active", Number(el.dataset.days)===state.plan.days);
-      });
+    function randKey(){
+      // короткий user_key как у тебя (#ehhq6t85). Можно заменить логикой бекенда потом.
+      const chars = "abcdefghjkmnpqrstuvwxyz23456789";
+      let s = "";
+      for(let i=0;i<8;i++) s += chars[Math.floor(Math.random()*chars.length)];
+      return s;
     }
 
-    function setScreen(name){
-      const map = { main:"screenMain", instr:"screenInstr", profile:"screenProfile" };
-      Object.values(map).forEach(id => $(id).classList.add("hidden"));
-      $(map[name]).classList.remove("hidden");
-
-      $("navMain").classList.toggle("active", name==="main");
-      $("navInstr").classList.toggle("active", name==="instr");
-      $("navProfile").classList.toggle("active", name==="profile");
-    }
-
-    function showModal(show){
-      $("overlay").classList.toggle("show", !!show);
-      document.body.style.overflow = show ? "hidden" : "";
-    }
-
-    function setSwipe(idx){
-      state.swipeIndex = Math.max(0, Math.min(2, idx));
-      $("swipeTrack").style.transform = `translateX(${-state.swipeIndex*100}%)`;
-      document.querySelectorAll(".dot2").forEach(d=>{
-        d.classList.toggle("active", Number(d.dataset.dot)===state.swipeIndex);
-      });
-    }
-
-    async function api(path, opts={}){
-      const url = API_BASE + path;
-      const res = await fetch(url, {
-        ...opts,
-        headers: {
-          "Content-Type": "application/json",
-          ...(opts.headers||{})
+    /* =========================
+       Telegram user
+    ========================= */
+    function initTelegram(){
+      const tg = window.Telegram?.WebApp;
+      if(tg){
+        try{ tg.expand(); }catch(e){}
+        const u = tg.initDataUnsafe?.user;
+        if(u){
+          state.user.tg_id = u.id ?? null;
+          const uname = [u.first_name, u.last_name].filter(Boolean).join(" ").trim();
+          state.user.name = uname || (u.username ? "@"+u.username : "Пользователь");
+          state.user.photo_url = u.photo_url || null;
         }
-      });
-      let data = null;
-      try{ data = await res.json(); } catch(e){}
-      if(!res.ok){
-        const msg = (data && (data.detail || data.error)) ? (data.detail || data.error) : (`HTTP ${res.status}`);
-        throw new Error(msg);
       }
+    }
+
+    function loadLocal(){
+      const savedKey = localStorage.getItem("zeus_user_key");
+      state.user.user_key = savedKey || randKey();
+      if(!savedKey) localStorage.setItem("zeus_user_key", state.user.user_key);
+      const lastOrder = localStorage.getItem("zeus_last_order");
+      if(lastOrder) state.currentOrderId = lastOrder;
+    }
+
+    function saveUserKey(){
+      localStorage.setItem("zeus_user_key", state.user.user_key);
+    }
+
+    function saveLastOrder(id){
+      state.currentOrderId = id;
+      localStorage.setItem("zeus_last_order", id);
+    }
+
+    /* =========================
+       UI refs
+    ========================= */
+    const apiDot = document.getElementById("apiDot");
+    const apiText = document.getElementById("apiText");
+
+    const userName = document.getElementById("userName");
+    const tgLine = document.getElementById("tgLine");
+    const avatar = document.getElementById("avatar");
+
+    const profileName = document.getElementById("profileName");
+    const profileTgId = document.getElementById("profileTgId");
+    const profileUserKey = document.getElementById("profileUserKey");
+
+    const activeUntilPill = document.getElementById("activeUntilPill");
+
+    const btnSubscribe = document.getElementById("btnSubscribe");
+    const btnOpenModal = document.getElementById("btnOpenModal");
+    const btnNewUserKey = document.getElementById("btnNewUserKey");
+
+    const backdrop = document.getElementById("backdrop");
+    const closeModal = document.getElementById("closeModal");
+
+    const chipsDays = document.getElementById("chipsDays");
+    const chipsDevices = document.getElementById("chipsDevices");
+
+    const choiceCard = document.getElementById("choiceCard");
+    const choiceTitle = document.getElementById("choiceTitle");
+    const choiceMeta = document.getElementById("choiceMeta");
+    const priceText = document.getElementById("priceText");
+    const payStarsBtn = document.getElementById("payStarsBtn");
+    const payUsdtBtn = document.getElementById("payUsdtBtn");
+    const orderLine = document.getElementById("orderLine");
+    const copyConfigBtn = document.getElementById("copyConfigBtn");
+
+    const swipeTrack = document.getElementById("swipeTrack");
+    const prevSlide = document.getElementById("prevSlide");
+    const nextSlide = document.getElementById("nextSlide");
+
+    /* =========================
+       Screen switching (fade+slide)
+    ========================= */
+    function setScreen(name){
+      if(state.screen === name) return;
+
+      const old = document.getElementById("screen-"+state.screen);
+      const next = document.getElementById("screen-"+name);
+
+      old.classList.remove("animIn");
+      old.classList.add("animOut");
+
+      setTimeout(()=>{
+        old.classList.remove("active","animOut");
+        next.classList.add("active","animIn");
+        state.screen = name;
+
+        // tabs update
+        document.querySelectorAll(".tab").forEach(t=>{
+          t.classList.toggle("active", t.dataset.screen===name);
+        });
+      }, 170);
+    }
+
+    document.querySelectorAll(".tab").forEach(t=>{
+      t.addEventListener("click", ()=>{ haptic("light"); setScreen(t.dataset.screen); });
+    });
+
+    /* =========================
+       Modal
+    ========================= */
+    function openModal(){
+      haptic("light");
+      backdrop.classList.add("show");
+      // reset config button
+      copyConfigBtn.classList.add("hidden");
+      state.currentConfig = null;
+      updateChoiceCard();
+    }
+    function hideModal(){
+      backdrop.classList.remove("show");
+    }
+
+    btnSubscribe.addEventListener("click", openModal);
+    btnOpenModal.addEventListener("click", openModal);
+    closeModal.addEventListener("click", hideModal);
+    backdrop.addEventListener("click", (e)=>{ if(e.target===backdrop) hideModal(); });
+
+    /* =========================
+       Chips builders
+    ========================= */
+    function makeChip(text, onClick){
+      const el = document.createElement("div");
+      el.className = "chip";
+      el.textContent = text;
+      el.addEventListener("click", ()=>{
+        haptic("light");
+        onClick(el);
+      });
+      return el;
+    }
+
+    function renderChips(){
+      chipsDays.innerHTML = "";
+      chipsDevices.innerHTML = "";
+
+      // days
+      [30,90,180].forEach(d=>{
+        const el = document.createElement("div");
+        el.className = "chip";
+        el.textContent = `${d} дней`;
+
+        // подсказки “Популярно / Выгоднее”
+        if(d===30){
+          const tag = document.createElement("span");
+          tag.className="tag";
+          tag.textContent="Популярно";
+          el.appendChild(tag);
+        }
+        if(d===180){
+          const tag = document.createElement("span");
+          tag.className="tag";
+          tag.textContent="Выгоднее";
+          el.appendChild(tag);
+        }
+
+        el.addEventListener("click", ()=>{
+          haptic("light");
+          state.plan.days = d;
+          state.plan.price = PRICES[d];
+          // micro-scale pulse already via :active
+          updateSelectedChips();
+          updateChoiceCard(true); // morph
+        });
+
+        el.dataset.days = d;
+        chipsDays.appendChild(el);
+      });
+
+      // devices
+      DEVICE_CHOICES.forEach(n=>{
+        const el = document.createElement("div");
+        el.className="chip";
+        el.textContent = `${n} устройство${n===1?"":"(а)"}`;
+        el.addEventListener("click", ()=>{
+          haptic("light");
+          state.plan.devices = n;
+          updateSelectedChips();
+          updateChoiceCard();
+        });
+        el.dataset.devices = n;
+        chipsDevices.appendChild(el);
+      });
+
+      updateSelectedChips();
+      updateChoiceCard();
+    }
+
+    function updateSelectedChips(){
+      chipsDays.querySelectorAll(".chip").forEach(c=>{
+        c.classList.toggle("selected", Number(c.dataset.days)===state.plan.days);
+      });
+      chipsDevices.querySelectorAll(".chip").forEach(c=>{
+        c.classList.toggle("selected", Number(c.dataset.devices)===state.plan.devices);
+      });
+    }
+
+    /* =========================
+       Price morph (smooth)
+    ========================= */
+    function animateNumber(el, from, to, ms=260){
+      const start = performance.now();
+      function tick(now){
+        const p = clamp((now-start)/ms, 0, 1);
+        const eased = 1 - Math.pow(1-p,3);
+        const v = Math.round(from + (to-from)*eased);
+        el.textContent = `${v} `;
+        const small = document.createElement("small");
+        small.textContent = "Stars";
+        el.appendChild(small);
+        if(p<1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function updateChoiceCard(morph=false){
+      choiceTitle.textContent = `Подписка`;
+      choiceMeta.textContent = `${state.plan.days} дней • ${state.plan.devices} устройство(а)`;
+
+      if(morph){
+        // morph price
+        const current = parseInt((priceText.textContent||"0").replace(/\D/g,"")) || state.plan.price;
+        animateNumber(priceText, current, state.plan.price, 260);
+      } else {
+        priceText.textContent = `${state.plan.price} `;
+        const small = document.createElement("small");
+        small.textContent = "Stars";
+        priceText.appendChild(small);
+      }
+
+      // кнопки активны всегда (бекенд решит)
+      payStarsBtn.classList.remove("disabled");
+      payUsdtBtn.classList.remove("disabled");
+    }
+
+    /* =========================
+       3D tilt (subtle) on choice card
+    ========================= */
+    (function bind3DTilt(){
+      let rect = null;
+      choiceCard.addEventListener("pointerenter", ()=>{ rect = choiceCard.getBoundingClientRect(); });
+      choiceCard.addEventListener("pointermove", (e)=>{
+        if(!rect) rect = choiceCard.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        const rx = (0.5 - y) * 6;
+        const ry = (x - 0.5) * 8;
+        choiceCard.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      });
+      choiceCard.addEventListener("pointerleave", ()=>{
+        rect = null;
+        choiceCard.style.transform = `perspective(900px) rotateX(0deg) rotateY(0deg)`;
+      });
+    })();
+
+    /* =========================
+       API calls
+    ========================= */
+    async function apiHealth(){
+      try{
+        const r = await fetch(`${API_BASE}/health`, { method:"GET" });
+        if(!r.ok) throw new Error("bad");
+        apiDot.style.background = "rgba(255,255,255,.65)";
+        apiText.textContent = "API OK";
+      }catch(e){
+        apiDot.style.background = "rgba(255,255,255,.25)";
+        apiText.textContent = "API OFF";
+      }
+    }
+
+    async function createStarsInvoice(){
+      const body = { user_key: state.user.user_key, days: state.plan.days, devices: state.plan.devices };
+      const r = await fetch(`${API_BASE}/pay/stars/create`, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await r.json();
+      if(!r.ok) throw new Error(data?.detail || "Stars error");
+      return data; // {order_id, invoice_link}
+    }
+
+    async function createCryptoInvoice(){
+      const body = { user_key: state.user.user_key, days: state.plan.days, devices: state.plan.devices };
+      const r = await fetch(`${API_BASE}/pay/crypto/create`, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await r.json();
+      if(!r.ok) throw new Error(data?.detail || "Crypto error");
+      return data; // {order_id, invoice_url}
+    }
+
+    async function getOrder(orderId){
+      const r = await fetch(`${API_BASE}/pay/order/${orderId}`, { method:"GET" });
+      const data = await r.json();
+      if(!r.ok) throw new Error(data?.detail || "Order error");
       return data;
     }
 
-    /* ======================
-       PAYMENT FLOW
-    ====================== */
-    async function createStarsOrder(){
-      $("loaderArea").classList.remove("hidden");
-      $("afterPay").classList.add("hidden");
-
+    async function issueConfig(){
+      // если ты хочешь выдавать конфиг сразу после оплаты — конфиг у тебя появляется из бекенда.
+      // но оставляю кнопку "получить" как fallback.
       const body = {
-        user_key: state.user_key,
+        inbound_id: DEFAULT_INBOUND_ID,
+        user_key: state.user.user_key,
         days: state.plan.days,
-        devices: state.plan.devices
+        limit_ip: 0
       };
-      const data = await api("/pay/stars/create", { method:"POST", body: JSON.stringify(body) });
-      state.lastOrderId = data.order_id;
-
-      // open invoice
-      if(isTelegram()){
-        try{
-          window.Telegram.WebApp.openTelegramLink(data.invoice_link);
-        }catch(e){
-          window.open(data.invoice_link, "_blank");
-        }
-      } else {
-        window.open(data.invoice_link, "_blank");
-      }
-
-      // poll order
-      await pollOrder(state.lastOrderId);
+      const r = await fetch(`${API_BASE}/issue-config`, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await r.json();
+      if(!r.ok) throw new Error(data?.detail || "Config error");
+      return data; // {link}
     }
 
-    async function createUsdtOrder(){
-      $("loaderArea").classList.remove("hidden");
-      $("afterPay").classList.add("hidden");
-
-      const body = {
-        user_key: state.user_key,
-        days: state.plan.days,
-        devices: state.plan.devices
-      };
-      const data = await api("/pay/crypto/create", { method:"POST", body: JSON.stringify(body) });
-      state.lastOrderId = data.order_id;
-
-      const invoiceUrl = data.invoice_url || data.invoice_link || data.pay_url;
-      if(invoiceUrl){
-        if(isTelegram()){
-          try{ window.Telegram.WebApp.openLink(invoiceUrl); }
-          catch(e){ window.open(invoiceUrl, "_blank"); }
-        } else {
-          window.open(invoiceUrl, "_blank");
-        }
-      }
-
-      await pollOrder(state.lastOrderId);
-    }
-
-    async function pollOrder(orderId){
-      const started = Date.now();
-      const timeoutMs = 120000; // 2 min
-      while(Date.now() - started < timeoutMs){
-        await new Promise(r=>setTimeout(r, 1200));
-        let order;
-        try{
-          order = await api(`/pay/order/${orderId}`, { method:"GET" });
-        }catch(e){
-          // не падаем моментально, продолжаем
-          continue;
-        }
-
-        if(order && order.active_until){
-          setActive(true, order.active_until);
-        }
-
-        if(order && order.status === "paid" && order.config_link){
-          state.lastConfig = order.config_link;
-          $("configBox").value = order.config_link;
-          $("loaderArea").classList.add("hidden");
-          $("afterPay").classList.remove("hidden");
-          toast("Оплата подтверждена");
-          safeHaptic();
+    /* =========================
+       Invoice open: Telegram and browser
+    ========================= */
+    function openInvoice(url){
+      // В Telegram WebApp: openInvoice (если поддерживается)
+      try{
+        if(window.Telegram?.WebApp?.openInvoice){
+          Telegram.WebApp.openInvoice(url, (status)=>{
+            // status может быть: paid/cancelled/failed/pending (зависит от платформы)
+          });
           return;
         }
+      }catch(e){}
 
-        if(order && order.status === "paid" && !order.config_link){
-          // если paid но конфиг ещё генерится — подождём
-          continue;
+      // В браузере — просто открыть ссылку
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    /* =========================
+       Polling order every 1.2s
+    ========================= */
+    function startPolling(orderId){
+      stopPolling();
+      orderLine.textContent = `Заказ: ${orderId} • статус: pending`;
+      state.pollTimer = setInterval(async ()=>{
+        try{
+          const o = await getOrder(orderId);
+
+          const paidAt = o.paid_at ? " • оплачено" : "";
+          orderLine.textContent =
+            `Заказ: ${o.id} • статус: ${o.status}${paidAt}`;
+
+          // главная — Active until
+          if(o.active_until){
+            activeUntilPill.textContent = `Активна до: ${formatDate(o.active_until)}`;
+            btnSubscribe.textContent = "Продлить подписку";
+          } else {
+            // если нет — оставляем старое
+            if(!state.currentOrderId) activeUntilPill.textContent = "Подписка: нет";
+          }
+
+          // если конфиг пришел (бекенд)
+          if(o.config_link){
+            state.currentConfig = o.config_link;
+            copyConfigBtn.classList.remove("hidden");
+            copyConfigBtn.textContent = "Скопировать конфиг";
+          }
+
+          if(o.status === "paid"){
+            // paid — показываем кнопку копирования (если конфиг уже есть)
+            if(o.config_link){
+              copyConfigBtn.classList.remove("hidden");
+              state.currentConfig = o.config_link;
+            } else {
+              // fallback: можно выдать через issue-config
+              copyConfigBtn.classList.remove("hidden");
+              copyConfigBtn.textContent = "Получить и скопировать конфиг";
+            }
+          }
+        }catch(e){
+          // тихо
+        }
+      }, 1200);
+    }
+
+    function stopPolling(){
+      if(state.pollTimer){
+        clearInterval(state.pollTimer);
+        state.pollTimer = null;
+      }
+    }
+
+    /* =========================
+       Actions
+    ========================= */
+    payStarsBtn.addEventListener("click", async ()=>{
+      try{
+        haptic("medium");
+        orderLine.textContent = "Создаём инвойс Stars…";
+        const { order_id, invoice_link } = await createStarsInvoice();
+        saveLastOrder(order_id);
+        orderLine.textContent = `Инвойс готов • заказ ${order_id}`;
+        openInvoice(invoice_link);
+        startPolling(order_id);
+      }catch(e){
+        orderLine.textContent = "Ошибка оплаты Stars: " + (e.message || e);
+      }
+    });
+
+    payUsdtBtn.addEventListener("click", async ()=>{
+      try{
+        haptic("medium");
+        orderLine.textContent = "Создаём инвойс USDT…";
+        const data = await createCryptoInvoice();
+        const orderId = data.order_id;
+        saveLastOrder(orderId);
+        orderLine.textContent = `Инвойс готов • заказ ${orderId}`;
+        // у CryptoPay обычно ссылка invoice_url
+        openInvoice(data.invoice_url || data.invoice_link || "");
+        startPolling(orderId);
+      }catch(e){
+        orderLine.textContent = "Ошибка оплаты USDT: " + (e.message || e);
+      }
+    });
+
+    copyConfigBtn.addEventListener("click", async ()=>{
+      try{
+        haptic("light");
+        let link = state.currentConfig;
+        if(!link){
+          // fallback issue-config
+          orderLine.textContent = "Получаем конфиг…";
+          const data = await issueConfig();
+          link = data.link;
+          state.currentConfig = link;
+        }
+        await navigator.clipboard.writeText(link);
+        toast("Конфиг скопирован");
+      }catch(e){
+        // если clipboard не доступен
+        try{
+          const ta = document.createElement("textarea");
+          ta.value = state.currentConfig || "";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          toast("Скопировано");
+        }catch(err){
+          orderLine.textContent = "Не удалось скопировать";
         }
       }
-      $("loaderArea").classList.add("hidden");
-      toast("Не дождались оплаты (проверьте позже)");
+    });
+
+    btnNewUserKey.addEventListener("click", ()=>{
+      haptic("light");
+      state.user.user_key = randKey();
+      saveUserKey();
+      renderProfile();
+      toast("Новый ID создан");
+    });
+
+    /* =========================
+       Instructions swipe
+    ========================= */
+    function updateSlides(){
+      const x = -state.slideIndex * 100;
+      swipeTrack.style.transform = `translateX(${x}%)`;
     }
-
-    /* ======================
-       INIT TELEGRAM PROFILE
-    ====================== */
-    function initTelegramProfile(){
-      if(!isTelegram()){
-        // browser
-        state.tg.name = "Гость";
-        state.tg.id = null;
-        $("tgName").textContent = state.tg.name;
-        $("profileTg").textContent = "Открыто в браузере";
-        $("profileTgId").textContent = "—";
-        return;
-      }
-
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-      tg.expand();
-
-      const u = tg.initDataUnsafe?.user;
-      if(u){
-        state.tg.id = u.id;
-        state.tg.username = u.username || null;
-        state.tg.name = [u.first_name, u.last_name].filter(Boolean).join(" ").trim() || (u.username ? "@"+u.username : "Пользователь");
-        state.tg.photo_url = u.photo_url || null;
-      } else {
-        state.tg.name = "Telegram";
-      }
-
-      $("tgName").textContent = state.tg.name;
-      $("profileTg").textContent = state.tg.username ? ("@"+state.tg.username) : state.tg.name;
-      $("profileTgId").textContent = state.tg.id ? String(state.tg.id) : "—";
-
-      if(state.tg.photo_url){
-        $("avatarImg").src = state.tg.photo_url;
-        $("avatarImg").classList.remove("hidden");
-      }
-    }
-
-    /* ======================
-       USER KEY
-    ====================== */
-    function loadUserKey(){
-      // Если в Telegram — можно привязать к tg.id
-      if(isTelegram() && state.tg.id){
-        state.user_key = "tg_" + String(state.tg.id);
-      } else {
-        // браузер — из localStorage
-        const saved = localStorage.getItem("zeusvpn_user_key");
-        state.user_key = saved || randKey();
-        localStorage.setItem("zeusvpn_user_key", state.user_key);
-      }
-
-      $("userKey").textContent = state.user_key;
-      $("profileUserKey").textContent = state.user_key;
-    }
-
-    /* ======================
-       OPTIONAL: quick config issue (если хочешь тестом выдавать без оплаты)
-       Сейчас НЕ вызываем автоматом, чтобы логика была "после оплаты".
-    ====================== */
-    async function issueConfigNow(){
-      const body = { inbound_id: 1, user_key: state.user_key, days: state.plan.days, limit_ip: 0 };
-      const data = await api("/issue-config", { method:"POST", body: JSON.stringify(body) });
-      return data.link;
-    }
-
-    /* ======================
-       EVENTS
-    ====================== */
-    $("openBuyBtn").addEventListener("click", ()=>{ safeHaptic(); showModal(true); updatePlanUI(); });
-    $("openProfileBtn").addEventListener("click", ()=>{ safeHaptic(); setScreen("profile"); });
-
-    $("navMain").addEventListener("click", ()=>{ safeHaptic(); setScreen("main"); });
-    $("navInstr").addEventListener("click", ()=>{ safeHaptic(); setScreen("instr"); });
-    $("navProfile").addEventListener("click", ()=>{ safeHaptic(); setScreen("profile"); });
-
-    $("closeModalBtn").addEventListener("click", ()=> showModal(false));
-    $("overlay").addEventListener("click", (e)=>{ if(e.target.id==="overlay") showModal(false); });
-
-    $("devicesChips").addEventListener("click", (e)=>{
-      const el = e.target.closest(".sel"); if(!el) return;
-      state.plan.devices = Number(el.dataset.dev);
-      safeHaptic();
-      updatePlanUI();
+    prevSlide.addEventListener("click", ()=>{
+      haptic("light");
+      state.slideIndex = clamp(state.slideIndex-1, 0, 2);
+      updateSlides();
+    });
+    nextSlide.addEventListener("click", ()=>{
+      haptic("light");
+      state.slideIndex = clamp(state.slideIndex+1, 0, 2);
+      updateSlides();
     });
 
-    $("daysChips").addEventListener("click", (e)=>{
-      const el = e.target.closest(".sel"); if(!el) return;
-      state.plan.days = Number(el.dataset.days);
-      safeHaptic();
-      updatePlanUI();
-    });
-
-    $("payStarsBtn").addEventListener("click", async ()=>{
-      safeHaptic();
-      try{
-        await createStarsOrder();
-      }catch(err){
-        $("loaderArea").classList.add("hidden");
-        toast("Ошибка оплаты: " + err.message);
-      }
-    });
-
-    $("payUsdtBtn").addEventListener("click", async ()=>{
-      safeHaptic();
-      try{
-        await createUsdtOrder();
-      }catch(err){
-        $("loaderArea").classList.add("hidden");
-        toast("Ошибка USDT: " + err.message);
-      }
-    });
-
-    $("copyConfigBtn").addEventListener("click", async ()=>{
-      try{
-        await navigator.clipboard.writeText($("configBox").value);
-        toast("Скопировано");
-        safeHaptic();
-      }catch(e){
-        toast("Не удалось скопировать");
-      }
-    });
-
-    $("closeAfterBtn").addEventListener("click", ()=> showModal(false));
-
-    $("regenIdBtn").addEventListener("click", ()=>{
-      safeHaptic();
-      if(isTelegram() && state.tg.id){
-        toast("В Telegram ID фиксированный");
-        return;
-      }
-      state.user_key = randKey();
-      localStorage.setItem("zeusvpn_user_key", state.user_key);
-      $("userKey").textContent = state.user_key;
-      $("profileUserKey").textContent = state.user_key;
-      toast("Новый ID");
-    });
-
-    /* Swipe (touch) for instructions */
-    (function initSwipe(){
-      const wrap = $("swipeWrap");
+    // touch swipe
+    (function bindSwipe(){
       let startX=0, curX=0, dragging=false;
-
-      const onStart = (x)=>{ dragging=true; startX=x; curX=x; };
-      const onMove = (x)=>{
+      swipeTrack.addEventListener("touchstart",(e)=>{
+        dragging=true;
+        startX = e.touches[0].clientX;
+        curX = startX;
+      }, {passive:true});
+      swipeTrack.addEventListener("touchmove",(e)=>{
         if(!dragging) return;
-        curX=x;
-      };
-      const onEnd = ()=>{
+        curX = e.touches[0].clientX;
+      }, {passive:true});
+      swipeTrack.addEventListener("touchend",()=>{
         if(!dragging) return;
         dragging=false;
         const dx = curX - startX;
         if(Math.abs(dx) > 40){
-          if(dx < 0) setSwipe(state.swipeIndex+1);
-          else setSwipe(state.swipeIndex-1);
-          safeHaptic();
+          if(dx<0) state.slideIndex = clamp(state.slideIndex+1,0,2);
+          else state.slideIndex = clamp(state.slideIndex-1,0,2);
+          haptic("light");
+          updateSlides();
         }
-      };
-
-      wrap.addEventListener("touchstart", (e)=> onStart(e.touches[0].clientX), {passive:true});
-      wrap.addEventListener("touchmove", (e)=> onMove(e.touches[0].clientX), {passive:true});
-      wrap.addEventListener("touchend", onEnd);
-
-      // dots click
-      document.querySelectorAll(".dot2").forEach(d=>{
-        d.addEventListener("click", ()=>{ setSwipe(Number(d.dataset.dot)); safeHaptic(); });
       });
     })();
 
-    /* ======================
-       INIT
-    ====================== */
-    (async function init(){
-      initTelegramProfile();
-      loadUserKey();
-      updatePlanUI();
-      setScreen("main");
-      setSwipe(0);
+    /* =========================
+       Pull-to-refresh (very simple)
+    ========================= */
+    (function pullToRefresh(){
+      let startY=0, pulling=false;
+      const ptr = document.getElementById("ptr");
 
-      // по умолчанию считаем что не активна (позже можно подтягивать последний order)
-      setActive(false, null);
+      window.addEventListener("touchstart",(e)=>{
+        if(window.scrollY===0){
+          pulling=true;
+          startY = e.touches[0].clientY;
+        }
+      }, {passive:true});
+
+      window.addEventListener("touchmove",(e)=>{
+        if(!pulling) return;
+        const dy = e.touches[0].clientY - startY;
+        if(dy>70){
+          ptr.classList.add("show");
+        }
+      }, {passive:true});
+
+      window.addEventListener("touchend", async ()=>{
+        if(!pulling) return;
+        pulling=false;
+        if(ptr.classList.contains("show")){
+          ptr.textContent="Обновление…";
+          await refreshAll();
+          setTimeout(()=>{
+            ptr.classList.remove("show");
+            ptr.textContent="Обновление…";
+          }, 500);
+        }
+      });
+    })();
+
+    /* =========================
+       Render
+    ========================= */
+    function renderProfile(){
+      // avatar
+      avatar.innerHTML = "";
+      if(state.user.photo_url){
+        const img = document.createElement("img");
+        img.src = state.user.photo_url;
+        img.alt = "avatar";
+        avatar.appendChild(img);
+      } else {
+        const span = document.createElement("span");
+        span.textContent = (state.user.name||"Z").trim().slice(0,1).toUpperCase();
+        avatar.appendChild(span);
+      }
+
+      userName.textContent = state.user.name || "Гость";
+      tgLine.textContent = `tg_id: ${state.user.tg_id ?? "—"}`;
+
+      profileName.textContent = state.user.name || "—";
+      profileTgId.textContent = `tg_id: ${state.user.tg_id ?? "—"}`;
+      profileUserKey.textContent = state.user.user_key || "—";
+    }
+
+    async function refreshActiveFromLastOrder(){
+      if(!state.currentOrderId) return;
+      try{
+        const o = await getOrder(state.currentOrderId);
+        if(o.active_until){
+          activeUntilPill.textContent = `Активна до: ${formatDate(o.active_until)}`;
+          btnSubscribe.textContent = "Продлить подписку";
+        } else {
+          activeUntilPill.textContent = "Подписка: нет";
+          btnSubscribe.textContent = "Приобрести подписку";
+        }
+      }catch(e){
+        // ignore
+      }
+    }
+
+    async function refreshAll(){
+      await apiHealth();
+      await refreshActiveFromLastOrder();
+    }
+
+    /* =========================
+       Boot
+    ========================= */
+    (async function boot(){
+      initTelegram();
+      loadLocal();
+      renderChips();
+      renderProfile();
+      await refreshAll();
+
+      // если был прошлый заказ — начнём поллинг в фоне
+      if(state.currentOrderId){
+        startPolling(state.currentOrderId);
+      }
     })();
   </script>
 </body>
