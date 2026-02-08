@@ -4,32 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ZEUSVPN</title>
-
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     :root{
-      --bg:#070A10;
-      --bg2:#0A0F18;
+      --bg:#05070C;
+      --bg2:#070B12;
+
+      /* тот самый “темно-сине/черный” как на скрине */
+      --glow: rgba(40, 90, 255, .18);
+      --glow2: rgba(60, 120, 255, .12);
 
       --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.08);
+      --card2: rgba(255,255,255,.085);
       --stroke: rgba(255,255,255,.12);
       --stroke2: rgba(255,255,255,.16);
 
       --text:#F3F6FF;
-      --muted: rgba(243,246,255,.65);
+      --muted: rgba(243,246,255,.62);
 
-      /* темный сине-черный, НЕ яркий */
-      --accent1: rgba(20,38,74,.95);
-      --accent2: rgba(10,20,45,.95);
+      --blue1:#2C67FF;
+      --blue2:#214EE0;
 
       --ok:#22c55e;
       --warn:#fbbf24;
       --bad:#ef4444;
 
       --r:18px;
-      --shadow: 0 18px 70px rgba(0,0,0,.55);
+      --shadow: 0 22px 70px rgba(0,0,0,.55);
+      --shadow2: 0 18px 60px rgba(0,0,0,.45);
     }
 
     *{box-sizing:border-box}
@@ -39,8 +42,8 @@
       color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       background:
-        radial-gradient(900px 520px at 80% -10%, rgba(20,38,74,.22), transparent 60%),
-        radial-gradient(780px 520px at -20% 20%, rgba(20,38,74,.14), transparent 62%),
+        radial-gradient(900px 520px at 75% -10%, var(--glow), transparent 60%),
+        radial-gradient(780px 520px at -20% 10%, var(--glow2), transparent 60%),
         linear-gradient(180deg, var(--bg2), var(--bg));
       overflow-x:hidden;
     }
@@ -48,223 +51,375 @@
     .wrap{
       max-width:520px;
       margin:0 auto;
-      padding: 18px 16px 32px;
-      padding-bottom: calc(32px + env(safe-area-inset-bottom));
+      padding: 16px 14px 22px;
+      padding-bottom: calc(22px + 74px + env(safe-area-inset-bottom));
     }
 
-    /* top */
-    .top{
+    /* ===== Header pill (как на скрине) ===== */
+    .headerPill{
+      margin-top: 6px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.045));
+      box-shadow: var(--shadow2);
+      padding: 12px 12px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:14px;
-      margin-top: 6px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:12px; min-width:0;
-    }
-    .logo{
-      width:44px;height:44px;border-radius:14px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
+      gap:12px;
+      position:relative;
       overflow:hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-      flex:0 0 auto;
-      display:grid; place-items:center;
     }
-    .logo img{width:100%;height:100%;object-fit:cover}
-    .titlebox{min-width:0}
-    .title{margin:0;font-weight:900;font-size:16px;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .subtitle{margin:4px 0 0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .headerPill:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(800px 220px at 25% 0%, rgba(45,105,255,.18), transparent 55%),
+        radial-gradient(700px 260px at 90% 20%, rgba(255,255,255,.06), transparent 55%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .headerPill > *{position:relative}
 
-    .chip{
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      padding:10px 12px;
-      border-radius: 999px;
-      font-size:12px;
-      color: var(--muted);
+    .brand{
       display:flex;
       align-items:center;
-      gap:8px;
-      user-select:none;
+      gap:10px;
+      min-width:0;
+    }
+    .bolt{
+      width:42px;height:42px;border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      display:grid; place-items:center;
+      box-shadow: 0 14px 38px rgba(0,0,0,.35);
       flex:0 0 auto;
     }
-    .dot{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.18)}
+    .bolt svg{width:18px;height:18px;opacity:.95}
+    .btxt{min-width:0}
+    .btitle{
+      margin:0;
+      font-weight:900;
+      font-size:14px;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .bsub{
+      margin:4px 0 0;
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .statusChip{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.24);
+      color: rgba(243,246,255,.7);
+      font-size:12px;
+      flex:0 0 auto;
+      user-select:none;
+    }
+    .dot{
+      width:10px;height:10px;border-radius: 99px;
+      background: rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.20);
+    }
     .dot.ok{background:rgba(34,197,94,.85);border-color:rgba(34,197,94,.9)}
     .dot.warn{background:rgba(251,191,36,.85);border-color:rgba(251,191,36,.9)}
     .dot.bad{background:rgba(239,68,68,.85);border-color:rgba(239,68,68,.9)}
 
-    /* cards */
+    /* ===== Main card (как на скрине) ===== */
     .card{
-      margin-top:14px;
-      border-radius: var(--r);
-      border:1px solid var(--stroke);
+      margin-top: 12px;
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.10);
       background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.045));
       box-shadow: var(--shadow);
       overflow:hidden;
       position:relative;
     }
-    .card::before{
+    .card:before{
       content:"";
       position:absolute; inset:0;
       background:
-        radial-gradient(800px 180px at 20% 0%, rgba(20,38,74,.18), transparent 60%),
-        radial-gradient(700px 220px at 90% 15%, rgba(255,255,255,.06), transparent 55%);
+        radial-gradient(800px 220px at 18% 0%, rgba(45,105,255,.16), transparent 55%),
+        radial-gradient(700px 260px at 90% 15%, rgba(255,255,255,.06), transparent 55%);
       pointer-events:none;
-      opacity:.9;
+      opacity:.95;
     }
     .card > *{position:relative}
-    .cardHead{
-      padding: 16px 16px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .cardTitle{margin:0;font-size:14px;font-weight:900;letter-spacing:.2px}
-    .small{font-size:12px;color:var(--muted)}
-    .divider{
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent);
-      margin:0 16px;
-    }
-    .cardBody{padding: 12px 16px 16px}
 
-    /* profile row */
-    .profileRow{display:flex;align-items:center;gap:12px}
-    .avatar{
-      width:46px;height:46px;border-radius:16px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
-      overflow:hidden;
-      flex:0 0 auto;
+    .cardBody{
+      padding: 16px 16px 16px;
     }
-    .avatar img{width:100%;height:100%;object-fit:cover}
-    .pmeta{min-width:0}
-    .pname{margin:0;font-weight:900;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .pid{margin:4px 0 0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-    /* subscription line (ONLY on home) */
-    .subStatus{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-top:12px;
-      padding: 12px 12px;
-      border:1px solid var(--stroke);
-      border-radius: 14px;
-      background: rgba(255,255,255,.05);
+    .h1{
+      margin:0;
+      font-size: 28px;
+      font-weight: 950;
+      letter-spacing: -.2px;
     }
-    .subLeft{min-width:0}
-    .subLabel{margin:0;font-size:12px;color:var(--muted);font-weight:800}
-    .subValue{margin:4px 0 0;font-size:14px;font-weight:950;letter-spacing:.2px}
-    .pill{
-      padding:8px 10px;
-      border-radius: 999px;
-      font-size:12px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.05);
-      color: var(--muted);
-      white-space:nowrap;
-    }
-    .pill.active{border-color: rgba(34,197,94,.35); color: rgba(180,255,210,.92)}
-    .pill.none{border-color: rgba(251,191,36,.25); color: rgba(255,235,180,.92)}
-
-    /* buttons */
-    .btnRow{display:flex;gap:10px;margin-top:14px}
-    .btn{
-      width:100%;
-      appearance:none;
-      border:none;
-      border-radius: 16px;
-      padding: 14px 14px;
-      font-weight:950;
+    .lead{
+      margin:10px 0 0;
+      color: rgba(243,246,255,.62);
       font-size:14px;
-      letter-spacing:.2px;
-      color: var(--text);
-      background: linear-gradient(180deg, var(--accent1), var(--accent2));
+      line-height:1.35;
+    }
+
+    .stats{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .stat{
+      border-radius: 18px;
       border:1px solid rgba(255,255,255,.10);
-      box-shadow: 0 16px 46px rgba(0,0,0,.45);
+      background: rgba(0,0,0,.20);
+      padding: 12px 12px;
+      min-height: 68px;
+    }
+    .stat .k{
+      margin:0;
+      font-size:14px;
+      font-weight: 900;
+      letter-spacing:.2px;
+      color: rgba(243,246,255,.92);
+    }
+    .stat .v{
+      margin:8px 0 0;
+      font-size:14px;
+      color: rgba(243,246,255,.58);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .section{
+      margin-top: 14px;
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      overflow:hidden;
+    }
+    .secHead{
+      padding: 12px 14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .secTitle{
+      margin:0;
+      font-weight: 950;
+      font-size: 16px;
+      letter-spacing:.18px;
+      text-transform: uppercase;
+      opacity:.9;
+    }
+    .secRight{
+      margin:0;
+      font-size:12px;
+      color: rgba(243,246,255,.55);
+    }
+    .secBody{
+      padding: 14px;
+    }
+
+    .label{
+      margin:0 0 8px;
+      font-size:12px;
+      color: rgba(243,246,255,.58);
+      font-weight: 850;
+      letter-spacing:.2px;
+    }
+
+    .input{
+      width:100%;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      padding: 14px 14px;
+      color: rgba(243,246,255,.9);
+      font-size:14px;
+      outline:none;
+    }
+
+    .hint{
+      margin: 10px 0 0;
+      font-size:12px;
+      color: rgba(243,246,255,.50);
+    }
+
+    .primaryBtn{
+      width:100%;
+      margin-top: 14px;
+      border:0;
+      border-radius: 18px;
+      padding: 14px 14px;
+      font-size: 16px;
+      font-weight: 950;
+      letter-spacing:.2px;
+      color:#fff;
+      background: linear-gradient(180deg, var(--blue1), var(--blue2));
+      box-shadow: 0 18px 50px rgba(33, 78, 224, .28);
       cursor:pointer;
       transition: transform .12s ease;
-      user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
-    .btn:active{transform: scale(.985)}
-    .btn.secondary{
-      background: rgba(255,255,255,.06);
-      border:1px solid var(--stroke);
-      box-shadow:none;
-      color: rgba(243,246,255,.86);
-    }
+    .primaryBtn:active{transform: scale(.985)}
 
-    /* config box */
+    /* ===== Config shown after paid ===== */
     .configBox{
       margin-top: 12px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.30);
-      padding: 12px;
       display:none;
     }
     .configBox.show{display:block}
-    .configBox .label{margin:0 0 8px;font-size:12px;color:rgba(243,246,255,.65);font-weight:850}
-    .configBox textarea{
+    .ta{
       width:100%;
-      min-height: 92px;
-      border-radius: 14px;
+      min-height: 96px;
+      border-radius: 16px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.04);
       color: rgba(243,246,255,.92);
-      padding: 10px;
+      padding: 12px 12px;
       font-size:12px;
-      line-height:1.4;
+      line-height:1.45;
       outline:none;
       resize:none;
     }
+    .rowBtns{
+      display:flex;
+      gap:10px;
+      margin-top: 10px;
+    }
+    .ghostBtn{
+      flex:1;
+      border-radius: 18px;
+      padding: 12px 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: rgba(243,246,255,.88);
+      font-weight: 900;
+      cursor:pointer;
+      transition: transform .12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ghostBtn:active{transform: scale(.985)}
 
-    /* modal overlay */
+    /* ===== Bottom nav (как на скрине) ===== */
+    .navWrap{
+      position:fixed;
+      left:0; right:0;
+      bottom: 14px;
+      padding: 0 14px;
+      padding-bottom: calc(0px + env(safe-area-inset-bottom));
+      z-index: 20;
+    }
+    .nav{
+      max-width:520px;
+      margin: 0 auto;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.28);
+      backdrop-filter: blur(18px);
+      display:flex;
+      overflow:hidden;
+    }
+    .tab{
+      flex:1;
+      text-align:center;
+      padding: 12px 10px;
+      font-weight: 950;
+      font-size: 13px;
+      color: rgba(243,246,255,.55);
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab.active{
+      color: rgba(243,246,255,.92);
+      background: rgba(45,105,255,.12);
+      border-right:1px solid rgba(255,255,255,.06);
+      border-left:1px solid rgba(255,255,255,.06);
+    }
+
+    .screen{display:none}
+    .screen.show{display:block}
+
+    /* ===== Instructions swipe ===== */
+    .swipe{
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+    }
+    .swipe::-webkit-scrollbar{display:none}
+    .instCard{
+      flex: 0 0 86%;
+      scroll-snap-align: start;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+      padding: 14px;
+      min-height: 150px;
+    }
+    .instCard h3{margin:0;font-size:14px;font-weight:950}
+    .instCard p{margin:10px 0 0;font-size:13px;color:rgba(243,246,255,.65);line-height:1.45}
+    .dots{display:flex;justify-content:center;gap:8px;margin-top: 8px}
+    .dots span{width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.18)}
+    .dots span.on{background:rgba(255,255,255,.65);border-color:rgba(255,255,255,.55)}
+
+    /* ===== Modal (НЕ прозрачная, фикс. высота, не режет текст) ===== */
     .modal{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.58);
       display:none;
       align-items:flex-end;
       justify-content:center;
-      padding: 16px 14px;
-      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+      padding: 14px 14px;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+      background: rgba(0,0,0,.62);
       z-index: 50;
     }
     .modal.show{display:flex}
-
-    /* FIXED modal sheet: does NOT auto-shrink weirdly */
     .sheet{
       width:100%;
       max-width:520px;
-      height: min(74vh, 560px); /* фикс по сути — не режет текст, скролл внутри */
+      height: min(78vh, 580px);
       border-radius: 22px;
       border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(10,15,24,.94), rgba(7,9,13,.96));
-      box-shadow: 0 26px 90px rgba(0,0,0,.7);
+      background: linear-gradient(180deg, rgba(10,14,22,.96), rgba(6,8,12,.98));
+      box-shadow: 0 28px 90px rgba(0,0,0,.75);
       overflow:hidden;
       display:flex;
       flex-direction:column;
     }
     .sheetHead{
-      padding: 14px 14px 10px;
+      padding: 12px 14px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
       flex:0 0 auto;
     }
-    .sheetTitle{margin:0;font-size:14px;font-weight:950}
+    .sheetTitle{margin:0;font-weight:950;font-size:14px}
     .xbtn{
       width:38px;height:38px;border-radius: 14px;
-      border:1px solid var(--stroke);
+      border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
-      color:var(--text);
+      color:rgba(243,246,255,.9);
       display:grid;place-items:center;
       cursor:pointer;
     }
@@ -273,36 +428,30 @@
       overflow:auto;
       flex:1 1 auto;
     }
-
     .row{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-end;
-      gap:12px;
+      display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
       margin-bottom:10px;
     }
-    .row h4{margin:0;font-size:12px;color:var(--muted);font-weight:900}
-    .hint{font-size:12px;color:rgba(243,246,255,.50)}
+    .row h4{margin:0;font-size:12px;color:rgba(243,246,255,.62);font-weight:950}
     .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
-
     .chipBtn{
-      border:1px solid var(--stroke);
+      border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
-      color: rgba(243,246,255,.85);
+      color: rgba(243,246,255,.86);
       padding: 10px 12px;
       border-radius: 999px;
       font-size:13px;
-      font-weight:900;
+      font-weight: 950;
       cursor:pointer;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-      user-select:none;
+      transition: transform .12s ease;
       -webkit-tap-highlight-color: transparent;
       position:relative;
       white-space:nowrap;
+      user-select:none;
     }
     .chipBtn:active{transform: scale(.985)}
     .chipBtn.selected{
-      background: rgba(20,38,74,.34);
+      background: rgba(45,105,255,.14);
       border-color: rgba(255,255,255,.18);
       color: rgba(243,246,255,.96);
     }
@@ -319,20 +468,18 @@
     }
 
     .choiceCard{
-      margin-top: 14px;
+      margin-top: 12px;
       border-radius: 18px;
       border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      background: rgba(255,255,255,.06);
       padding: 14px;
-      position:relative;
-      overflow:hidden;
     }
     .choiceTop{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .choiceName{margin:0;font-weight:950;font-size:14px}
-    .price{margin:0;font-weight:950;font-size:14px;color:rgba(243,246,255,.95)}
-    .choiceDesc{margin:8px 0 0;font-size:12px;color:rgba(243,246,255,.70);line-height:1.35}
+    .choicePrice{margin:0;font-weight:950;font-size:14px}
+    .choiceDesc{margin:8px 0 0;font-size:12px;color:rgba(243,246,255,.62);line-height:1.35}
 
-    .payGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    .payGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
     .payBtn{
       border-radius: 16px;
       border:1px solid rgba(255,255,255,.12);
@@ -341,14 +488,13 @@
       text-align:left;
       cursor:pointer;
       transition: transform .12s ease;
-      user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
     .payBtn:active{transform: scale(.985)}
     .payBtn strong{display:block;font-size:13px;font-weight:950}
-    .payBtn span{display:block;font-size:12px;color:rgba(243,246,255,.60);margin-top:4px}
+    .payBtn span{display:block;font-size:12px;color:rgba(243,246,255,.58);margin-top:4px}
     .payBtn.primary{
-      background: linear-gradient(180deg, rgba(20,38,74,.72), rgba(10,20,45,.86));
+      background: linear-gradient(180deg, rgba(44,103,255,.35), rgba(33,78,224,.35));
       border-color: rgba(255,255,255,.14);
     }
 
@@ -371,84 +517,6 @@
     .spin.show{display:inline-block}
     @keyframes rot{to{transform:rotate(360deg)}}
 
-    /* Instructions screen — swipe */
-    .instWrap{margin-top:10px}
-    .swipe{
-      display:flex;
-      gap:12px;
-      overflow:auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 10px;
-    }
-    .swipe::-webkit-scrollbar{display:none}
-    .instCard{
-      flex: 0 0 86%;
-      scroll-snap-align: start;
-      border-radius: 18px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.06);
-      padding: 14px;
-      min-height: 140px;
-    }
-    .instCard h3{margin:0;font-size:13px;font-weight:950;letter-spacing:.2px}
-    .instCard p{margin:10px 0 0;font-size:12px;color:rgba(243,246,255,.70);line-height:1.45}
-    .dots{display:flex;justify-content:center;gap:8px;margin: 2px 0 0}
-    .dots span{width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.18)}
-    .dots span.on{background:rgba(255,255,255,.62);border-color:rgba(255,255,255,.55)}
-
-    /* bottom nav */
-    .nav{
-      position:sticky;
-      bottom: 12px;
-      margin-top: 16px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(10,15,24,.55);
-      backdrop-filter: blur(14px);
-      display:flex;
-      overflow:hidden;
-    }
-    .tab{
-      flex:1;
-      padding: 12px 10px;
-      text-align:center;
-      font-size:12px;
-      font-weight:950;
-      color: rgba(243,246,255,.62);
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .tab.active{color: rgba(243,246,255,.95);background: rgba(255,255,255,.06)}
-
-    .screen{display:none}
-    .screen.show{display:block}
-    .fadeSlideIn{animation: fsi .22s ease both}
-    @keyframes fsi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom: 20px;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.72);
-      color: rgba(243,246,255,.92);
-      border:1px solid rgba(255,255,255,.12);
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-size:12px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.55);
-      display:none;
-      z-index: 99;
-      max-width: 92vw;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .toast.show{display:block}
-
-    /* debug error block inside modal */
     .errBox{
       margin-top: 12px;
       border-radius: 14px;
@@ -464,63 +532,121 @@
     }
     .errBox.show{display:block}
     .errTitle{font-weight:950;margin-bottom:6px;color:rgba(255,220,220,.96)}
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom: 88px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.72);
+      color: rgba(243,246,255,.92);
+      border:1px solid rgba(255,255,255,.12);
+      padding: 10px 12px;
+      border-radius: 999px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.55);
+      display:none;
+      z-index: 99;
+      max-width: 92vw;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      font-size:12px;
+    }
+    .toast.show{display:block}
+
+    .logoRow{
+      display:flex; align-items:center; gap:10px;
+      margin-top: 10px;
+    }
+    .logoBox{
+      width:44px;height:44px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      overflow:hidden;
+      box-shadow: 0 14px 38px rgba(0,0,0,.35);
+      flex:0 0 auto;
+    }
+    .logoBox img{width:100%;height:100%;object-fit:cover}
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="top">
+
+    <!-- Header pill -->
+    <div class="headerPill">
       <div class="brand">
-        <div class="logo"><img id="logoImg" alt="ZEUSVPN"></div>
-        <div class="titlebox">
-          <p class="title">ZEUSVPN</p>
-          <p class="subtitle" id="subtitle">Премиум доступ • стабильное подключение</p>
+        <div class="bolt" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M13 2L3 14h8l-1 8 11-14h-8l0-6z" fill="rgba(243,246,255,.92)"/>
+          </svg>
+        </div>
+        <div class="btxt">
+          <p class="btitle">ZEUSVPN</p>
+          <p class="bsub">Minimal • Dark • Fast</p>
         </div>
       </div>
 
-      <div class="chip">
+      <div class="statusChip">
         <span class="dot warn" id="apiDot"></span>
-        <span id="apiText">API проверка…</span>
+        <span id="apiText">offline</span>
       </div>
     </div>
 
-    <!-- HOME -->
-    <div class="screen show fadeSlideIn" id="screenHome">
+    <!-- Screens -->
+    <div class="screen show" id="home">
       <div class="card">
-        <div class="cardHead">
-          <p class="cardTitle">Главная</p>
-          <span class="pill none" id="subPill">Подписки нет</span>
-        </div>
-        <div class="divider"></div>
         <div class="cardBody">
+          <h1 class="h1">Премиум без лишнего.</h1>
+          <p class="lead" id="leadText">
+            Нажми “Получить конфиг” → выбери тариф → оплата → конфиг + Copy.
+          </p>
 
-          <div class="profileRow">
-            <div class="avatar"><img id="avatarImg" alt="avatar"></div>
-            <div class="pmeta">
-              <p class="pname" id="pName">—</p>
-              <p class="pid" id="pId">TG ID: —</p>
+          <div class="stats">
+            <div class="stat">
+              <p class="k">Подписка</p>
+              <p class="v" id="subText">не оплачено</p>
+            </div>
+            <div class="stat">
+              <p class="k">Устройства</p>
+              <p class="v" id="devText">—</p>
+            </div>
+            <div class="stat">
+              <p class="k">API</p>
+              <p class="v" id="apiMini">offline</p>
             </div>
           </div>
 
-          <!-- ONLY HERE "Активна до" -->
-          <div class="subStatus">
-            <div class="subLeft">
-              <p class="subLabel">Подписка активна до</p>
-              <p class="subValue" id="activeUntilText">—</p>
+          <div class="section">
+            <div class="secHead">
+              <p class="secTitle">КОНФИГ</p>
+              <p class="secRight">после оплаты</p>
             </div>
-            <div class="pill" id="planMini">—</div>
+            <div class="secBody">
+              <p class="label">ID пользователя (позже Telegram ID)</p>
+              <input class="input" id="userIdInput" value="" />
+              <p class="hint">Если пусто — создадим автоматически.</p>
+
+              <button class="primaryBtn" id="btnGetConfig">Получить конфиг</button>
+
+              <div class="configBox" id="configBox">
+                <p class="label" style="margin-top:12px">Ваш конфиг</p>
+                <textarea class="ta" id="configText" readonly></textarea>
+                <div class="rowBtns">
+                  <button class="ghostBtn" id="btnCopy">Copy</button>
+                  <button class="ghostBtn" id="btnHide">Скрыть</button>
+                </div>
+              </div>
+
+            </div>
           </div>
 
-          <div class="btnRow">
-            <button class="btn" id="btnSubscribe">Приобрести подписку</button>
-          </div>
-
-          <div class="configBox" id="configBox">
-            <p class="label">Ваш конфиг</p>
-            <textarea id="configText" readonly></textarea>
-            <div class="btnRow" style="margin-top:10px">
-              <button class="btn" id="btnCopy">Скопировать</button>
-              <button class="btn secondary" id="btnCloseConfig">Скрыть</button>
+          <!-- Logo small (optional, based on your logo) -->
+          <div class="logoRow">
+            <div class="logoBox"><img id="logoImg" alt="logo"></div>
+            <div style="min-width:0">
+              <div style="font-weight:950;letter-spacing:.2px">ZEUSVPN</div>
+              <div style="color:rgba(243,246,255,.55);font-size:12px">Профиль берём из Telegram</div>
             </div>
           </div>
 
@@ -528,107 +654,102 @@
       </div>
     </div>
 
-    <!-- PROFILE -->
-    <div class="screen" id="screenProfile">
+    <div class="screen" id="instructions">
       <div class="card">
-        <div class="cardHead">
-          <p class="cardTitle">Профиль</p>
-          <span class="small">только нужное</span>
-        </div>
-        <div class="divider"></div>
         <div class="cardBody">
+          <h1 class="h1" style="font-size:22px">Инструкции</h1>
+          <p class="lead">Свайпни карточки →</p>
 
-          <div class="profileRow">
-            <div class="avatar"><img id="avatarImg2" alt="avatar2"></div>
-            <div class="pmeta">
-              <p class="pname" id="pName2">—</p>
-              <p class="pid" id="pId2">TG ID: —</p>
-            </div>
-          </div>
-
-          <!-- вернул кнопку Инструкции -->
-          <div class="btnRow">
-            <button class="btn secondary" id="btnGoInstructions">Инструкции</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- INSTRUCTIONS -->
-    <div class="screen" id="screenInstructions">
-      <div class="card">
-        <div class="cardHead">
-          <p class="cardTitle">Инструкции</p>
-          <span class="small">свайпни →</span>
-        </div>
-        <div class="divider"></div>
-        <div class="cardBody instWrap">
           <div class="swipe" id="swipe">
             <div class="instCard">
               <h3>iOS (V2Box / Streisand)</h3>
-              <p>1) Установи клиент из App Store.<br>
-                 2) Нажми “Добавить конфиг”.<br>
-                 3) Вставь ссылку VLESS.<br>
-                 4) Сохрани и подключи.</p>
+              <p>
+                1) Установи клиент из App Store.<br>
+                2) Нажми “Add / Import”.<br>
+                3) Вставь VLESS-ссылку из ZEUSVPN.<br>
+                4) Сохрани и включи.
+              </p>
             </div>
             <div class="instCard">
               <h3>Android (v2rayNG)</h3>
-              <p>1) Установи v2rayNG.<br>
-                 2) Нажми “+” → Import from clipboard.<br>
-                 3) Вставь ссылку и включи.</p>
+              <p>
+                1) Установи v2rayNG.<br>
+                2) Нажми “+” → Import from clipboard.<br>
+                3) Вставь ссылку → включи.
+              </p>
             </div>
             <div class="instCard">
               <h3>Desktop (Windows/macOS)</h3>
-              <p>1) Установи Nekoray / v2rayN.<br>
-                 2) Импортируй ссылку VLESS.<br>
-                 3) Выбери профиль и включи.</p>
+              <p>
+                1) Установи Nekoray / v2rayN.<br>
+                2) Импортируй ссылку VLESS.<br>
+                3) Выбери профиль и включи.
+              </p>
             </div>
           </div>
-          <div class="dots" id="dots">
-            <span class="on"></span><span></span><span></span>
-          </div>
 
-          <div class="btnRow">
-            <button class="btn secondary" id="btnBackFromInstructions">Назад</button>
+          <div class="dots" id="dots"><span class="on"></span><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" id="profile">
+      <div class="card">
+        <div class="cardBody">
+          <h1 class="h1" style="font-size:22px">Профиль</h1>
+          <p class="lead" id="pLine">—</p>
+          <div class="section" style="margin-top:12px">
+            <div class="secHead">
+              <p class="secTitle">Данные</p>
+              <p class="secRight">Telegram</p>
+            </div>
+            <div class="secBody">
+              <p class="label">Telegram ID</p>
+              <input class="input" id="tgId" readonly>
+              <p class="label" style="margin-top:10px">Username</p>
+              <input class="input" id="tgUser" readonly>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- NAV -->
+  </div>
+
+  <!-- Bottom nav -->
+  <div class="navWrap">
     <div class="nav">
       <div class="tab active" data-tab="home">Главная</div>
+      <div class="tab" data-tab="instructions">Инструкции</div>
       <div class="tab" data-tab="profile">Профиль</div>
     </div>
   </div>
 
-  <!-- MODAL -->
+  <!-- Modal тарифы -->
   <div class="modal" id="modal">
     <div class="sheet">
       <div class="sheetHead">
-        <p class="sheetTitle">Подписка</p>
+        <p class="sheetTitle">Выбор тарифа</p>
         <div class="xbtn" id="closeModal">✕</div>
       </div>
-      <div class="divider"></div>
-
       <div class="sheetBody">
 
         <div class="row">
           <h4>Устройства</h4>
-          <div class="hint">выбери слот</div>
+          <div style="font-size:12px;color:rgba(243,246,255,.5)">слоты</div>
         </div>
-        <div class="chips" id="deviceChips">
+        <div class="chips" id="devChips">
           <div class="chipBtn selected" data-dev="1">1</div>
           <div class="chipBtn" data-dev="3">3</div>
           <div class="chipBtn" data-dev="5">5</div>
           <div class="chipBtn" data-dev="10">10</div>
         </div>
 
-        <div style="height:12px"></div>
+        <div style="height:10px"></div>
 
         <div class="row">
           <h4>Срок</h4>
-          <div class="hint">дней</div>
+          <div style="font-size:12px;color:rgba(243,246,255,.5)">дней</div>
         </div>
         <div class="chips" id="dayChips">
           <div class="chipBtn selected" data-days="30">30 <span class="badge">Популярно</span></div>
@@ -639,10 +760,10 @@
         <div class="choiceCard">
           <div class="choiceTop">
             <p class="choiceName" id="choiceName">30 дней • 1 устройство</p>
-            <p class="price" id="choicePrice">199</p>
+            <p class="choicePrice" id="choicePrice">199 XTR</p>
           </div>
-          <p class="choiceDesc" id="choiceDesc">
-            После оплаты статус изменится на “активна”, появится дата и конфиг.
+          <p class="choiceDesc">
+            После оплаты статус обновится, затем можно получить конфиг.
           </p>
         </div>
 
@@ -651,9 +772,9 @@
             <strong>Оплатить Stars</strong>
             <span>в Telegram</span>
           </button>
-          <button class="payBtn" id="payCrypto">
+          <button class="payBtn" id="payUSDT">
             <strong>Оплатить USDT</strong>
-            <span>Crypto Bot</span>
+            <span>[Crypto Bot](chatgpt://generic-entity?number=1)</span>
           </button>
         </div>
 
@@ -662,7 +783,7 @@
             <span class="spin" id="spin"></span>
             <span id="statusText">Выбери параметры и способ оплаты</span>
           </div>
-          <span class="small" id="orderHint"></span>
+          <span style="font-size:12px;color:rgba(243,246,255,.5)" id="orderHint"></span>
         </div>
 
         <div class="errBox" id="errBox">
@@ -677,103 +798,58 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ===== CONFIG =====
-    const API_BASE = "https://api.45.133.251.210.nip.io:8443";
+    // ==== НАСТРОЙКИ ====
+    const API_BASE = "https://api.45.133.251.210.nip.io:8443"; // твой API
     const LOGO_URL = "./logo.png"; // положи logo.png рядом с index.html
+    const DEFAULT_INBOUND_ID = 1;
 
-    // ===== STATE =====
-    const state = {
-      user_key: "site-guest",
-      tg: { id:null, username:null, name:"Гость", photo:null },
+    // ==== STATE ====
+    const S = {
+      tg: { id:null, username:"", name:"", photo:null },
+      user_key: "zeus-guest",
       devices: 1,
       days: 30,
-      pollTimer: null,
-      paidActiveUntil: null
+      order_id: null,
+      poll: null,
+      paid: false
     };
 
-    // ===== DOM =====
+    // ==== DOM short ====
     const $ = (id)=>document.getElementById(id);
-    $("logoImg").src = LOGO_URL;
 
-    const apiDot = $("apiDot");
-    const apiText = $("apiText");
+    const apiDot = $("apiDot"), apiText = $("apiText"), apiMini = $("apiMini");
+    const subText = $("subText"), devText = $("devText");
+    const userIdInput = $("userIdInput");
 
-    const pName = $("pName"), pId = $("pId"), avatarImg = $("avatarImg");
-    const pName2 = $("pName2"), pId2 = $("pId2"), avatarImg2 = $("avatarImg2");
-
-    const subPill = $("subPill");
-    const activeUntilText = $("activeUntilText");
-    const planMini = $("planMini");
-
-    const btnSubscribe = $("btnSubscribe");
-
-    const modal = $("modal");
-    const closeModal = $("closeModal");
-
-    const deviceChips = $("deviceChips");
-    const dayChips = $("dayChips");
-
-    const choiceName = $("choiceName");
-    const choicePrice = $("choicePrice");
-
-    const payStars = $("payStars");
-    const payCrypto = $("payCrypto");
-
-    const statusText = $("statusText");
-    const orderHint = $("orderHint");
-    const spin = $("spin");
-
-    const errBox = $("errBox");
-    const errText = $("errText");
-
-    const configBox = $("configBox");
-    const configText = $("configText");
-    const btnCopy = $("btnCopy");
-    const btnCloseConfig = $("btnCloseConfig");
-
+    const configBox = $("configBox"), configText = $("configText");
     const toast = $("toast");
 
-    // nav screens
-    const screenHome = $("screenHome");
-    const screenProfile = $("screenProfile");
-    const screenInstructions = $("screenInstructions");
+    const modal = $("modal"), closeModal = $("closeModal");
+    const devChips = $("devChips"), dayChips = $("dayChips");
+    const choiceName = $("choiceName"), choicePrice = $("choicePrice");
+    const payStars = $("payStars"), payUSDT = $("payUSDT");
+    const spin = $("spin"), statusText = $("statusText"), orderHint = $("orderHint");
 
+    const errBox = $("errBox"), errText = $("errText");
+
+    // logo
+    $("logoImg").src = LOGO_URL;
+
+    // ==== UX helpers ====
     function showToast(msg){
       toast.textContent = msg;
       toast.classList.add("show");
       setTimeout(()=>toast.classList.remove("show"), 2200);
     }
 
-    function hapticLight(){
+    function haptic(type="light"){
       try{
-        if(window.Telegram?.WebApp?.HapticFeedback){
-          window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
-        }
+        const t = window.Telegram?.WebApp;
+        if(!t?.HapticFeedback) return;
+        if(type==="light") t.HapticFeedback.impactOccurred("light");
+        if(type==="success") t.HapticFeedback.notificationOccurred("success");
+        if(type==="error") t.HapticFeedback.notificationOccurred("error");
       }catch(e){}
-    }
-    function hapticSuccess(){
-      try{
-        if(window.Telegram?.WebApp?.HapticFeedback){
-          window.Telegram.WebApp.HapticFeedback.notificationOccurred("success");
-        }
-      }catch(e){}
-    }
-    function hapticError(){
-      try{
-        if(window.Telegram?.WebApp?.HapticFeedback){
-          window.Telegram.WebApp.HapticFeedback.notificationOccurred("error");
-        }
-      }catch(e){}
-    }
-
-    function fmtDate(iso){
-      if(!iso) return "—";
-      const d = new Date(iso);
-      if(isNaN(d)) return "—";
-      const dd = String(d.getDate()).padStart(2,"0");
-      const mm = String(d.getMonth()+1).padStart(2,"0");
-      const yy = d.getFullYear();
-      return `${dd}.${mm}.${yy}`;
     }
 
     function priceFor(days){
@@ -789,45 +865,16 @@
     }
     function showError(err, url){
       errBox.classList.add("show");
-      const msg = (err && err.message) ? err.message : String(err);
+      const msg = err?.message ? err.message : String(err);
       errText.textContent =
         `URL: ${url}\n` +
         `Ошибка: ${msg}\n\n` +
-        `Если это "Failed to fetch" — значит браузер/Telegram не доверяет SSL на API:8443.`;
-    }
-
-    async function apiHealth(){
-      try{
-        const r = await fetch(`${API_BASE}/health`, { method:"GET", mode:"cors" });
-        if(!r.ok) throw new Error("health not ok");
-        apiDot.className = "dot ok";
-        apiText.textContent = "API online";
-        return true;
-      }catch(e){
-        apiDot.className = "dot bad";
-        apiText.textContent = "API/SSL ошибка";
-        return false;
-      }
-    }
-
-    async function apiPost(path, body){
-      const url = `${API_BASE}${path}`;
-      const r = await fetch(url,{
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify(body),
-        mode:"cors"
-      });
-      if(!r.ok){
-        const t = await r.text().catch(()=> "");
-        throw new Error(`HTTP ${r.status}: ${t}`);
-      }
-      return r.json();
+        `Если тут "Load failed/Failed to fetch" — это SSL на API:8443.`;
     }
 
     async function apiGet(path){
-      const url = `${API_BASE}${path}`;
-      const r = await fetch(url,{ method:"GET", mode:"cors" });
+      const url = API_BASE + path;
+      const r = await fetch(url, { method:"GET", mode:"cors" });
       if(!r.ok){
         const t = await r.text().catch(()=> "");
         throw new Error(`HTTP ${r.status}: ${t}`);
@@ -835,45 +882,51 @@
       return r.json();
     }
 
-    function setSubUI(order){
-      const isActive = order?.active_until && (order.status==="paid" || order.status==="active");
-      if(isActive){
-        subPill.classList.remove("none");
-        subPill.classList.add("active");
-        subPill.textContent = "Подписка активна";
-        activeUntilText.textContent = fmtDate(order.active_until);
-        planMini.textContent = `${order.plan_days}д • ${order.devices}устр`;
-        state.paidActiveUntil = order.active_until;
-        btnSubscribe.textContent = "Продлить";
-      }else{
-        subPill.classList.remove("active");
-        subPill.classList.add("none");
-        subPill.textContent = "Подписки нет";
-        activeUntilText.textContent = "—";
-        planMini.textContent = "—";
-        state.paidActiveUntil = null;
-        btnSubscribe.textContent = "Приобрести подписку";
+    async function apiPost(path, body){
+      const url = API_BASE + path;
+      const r = await fetch(url, {
+        method:"POST",
+        mode:"cors",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+      if(!r.ok){
+        const t = await r.text().catch(()=> "");
+        throw new Error(`HTTP ${r.status}: ${t}`);
+      }
+      return r.json();
+    }
+
+    async function health(){
+      try{
+        await apiGet("/health");
+        apiDot.className = "dot ok";
+        apiText.textContent = "online";
+        apiMini.textContent = "online";
+      }catch(e){
+        apiDot.className = "dot bad";
+        apiText.textContent = "offline";
+        apiMini.textContent = "offline";
       }
     }
 
-    function updateChoiceUI(){
-      [...deviceChips.querySelectorAll(".chipBtn")].forEach(b=>{
-        b.classList.toggle("selected", Number(b.dataset.dev)===state.devices);
+    function updateChoice(){
+      [...devChips.querySelectorAll(".chipBtn")].forEach(b=>{
+        b.classList.toggle("selected", Number(b.dataset.dev)===S.devices);
       });
       [...dayChips.querySelectorAll(".chipBtn")].forEach(b=>{
-        b.classList.toggle("selected", Number(b.dataset.days)===state.days);
+        b.classList.toggle("selected", Number(b.dataset.days)===S.days);
       });
-
-      choiceName.textContent = `${state.days} дней • ${state.devices} устройство${state.devices===1?'':'(а)'}`;
-      const p = priceFor(state.days);
+      choiceName.textContent = `${S.days} дней • ${S.devices} устройство${S.devices===1?"":"(а)"}`;
+      const p = priceFor(S.days);
       choicePrice.textContent = p ? `${p} XTR` : "—";
     }
 
-    function showModal(){
+    function openModal(){
       clearError();
       modal.classList.add("show");
       document.body.style.overflow = "hidden";
-      updateChoiceUI();
+      updateChoice();
     }
     function hideModal(){
       modal.classList.remove("show");
@@ -881,11 +934,64 @@
       spin.classList.remove("show");
       statusText.textContent = "Выбери параметры и способ оплаты";
       orderHint.textContent = "";
+      clearInterval(S.poll);
       clearError();
-      clearInterval(state.pollTimer);
     }
 
-    function openInvoiceTG(url){
+    function bindSwipeDots(){
+      const swipe = $("swipe");
+      const dots = [...$("dots").children];
+      function update(){
+        const cards = swipe.children;
+        let best = 0, bestDist = Infinity;
+        for(let i=0;i<cards.length;i++){
+          const rect = cards[i].getBoundingClientRect();
+          const dist = Math.abs(rect.left - 14);
+          if(dist < bestDist){ bestDist = dist; best = i; }
+        }
+        dots.forEach((d,i)=>d.classList.toggle("on", i===best));
+      }
+      swipe.addEventListener("scroll", ()=>requestAnimationFrame(update), {passive:true});
+      update();
+    }
+
+    function navTo(id){
+      document.querySelectorAll(".screen").forEach(s=>s.classList.remove("show"));
+      $(id).classList.add("show");
+      document.querySelectorAll(".tab").forEach(t=>{
+        t.classList.toggle("active", t.dataset.tab===id);
+      });
+      haptic("light");
+    }
+
+    // ==== Telegram user ====
+    function loadTG(){
+      const tg = window.Telegram?.WebApp;
+      try{ tg?.ready(); tg?.expand(); }catch(e){}
+      const u = tg?.initDataUnsafe?.user;
+
+      if(u){
+        S.tg.id = u.id;
+        S.tg.username = u.username ? "@"+u.username : "";
+        S.tg.name = [u.first_name, u.last_name].filter(Boolean).join(" ").trim() || "Пользователь";
+        S.user_key = String(u.id);
+      }else{
+        // browser
+        S.tg.name = "Гость (browser)";
+        S.user_key = "zeus-guest";
+      }
+
+      // Home input default
+      userIdInput.value = S.user_key;
+
+      // Profile fill
+      $("pLine").textContent = `${S.tg.name}${S.tg.username ? " • "+S.tg.username : ""}`;
+      $("tgId").value = S.tg.id ?? "—";
+      $("tgUser").value = S.tg.username || "—";
+    }
+
+    // ==== Payment ====
+    function openInvoice(url){
       if(window.Telegram?.WebApp?.openInvoice){
         return new Promise((resolve)=>{
           window.Telegram.WebApp.openInvoice(url, (status)=> resolve(status));
@@ -896,239 +1002,148 @@
       return Promise.resolve("opened");
     }
 
-    function startPolling(order_id){
-      clearInterval(state.pollTimer);
-      state.pollTimer = setInterval(async ()=>{
+    function startPoll(order_id){
+      clearInterval(S.poll);
+      S.poll = setInterval(async ()=>{
         try{
           const o = await apiGet(`/pay/order/${order_id}`);
-          if(o.status === "paid" || o.status === "active"){
-            clearInterval(state.pollTimer);
+          if(o.status==="paid" || o.status==="active"){
+            clearInterval(S.poll);
             spin.classList.remove("show");
             statusText.textContent = "Оплата подтверждена ✅";
-            orderHint.textContent = "";
+            haptic("success");
 
-            setSubUI(o);
+            // UI on home
+            subText.textContent = o.active_until ? `активна до ${o.active_until}` : "оплачено";
+            devText.textContent = String(o.devices ?? S.devices);
 
-            if(o.config_link){
-              configText.value = o.config_link;
+            // сразу выдаем конфиг после оплаты
+            try{
+              const issue = await apiPost("/issue-config", {
+                inbound_id: DEFAULT_INBOUND_ID,
+                user_key: userIdInput.value || S.user_key,
+                days: S.days,
+                limit_ip: 0
+              });
+              configText.value = issue.link || "";
               configBox.classList.add("show");
-              hapticSuccess();
-            }else{
-              showToast("Оплата ок. Конфиг появится после выдачи.");
-              hapticSuccess();
+              showToast("Конфиг готов");
+              hideModal();
+            }catch(e2){
+              showToast("Оплата ок, но конфиг не выдался");
             }
           }else{
             statusText.textContent = `Ожидаю оплату… (${o.status})`;
           }
         }catch(e){
-          // не убиваем polling из-за временной ошибки
-          statusText.textContent = "Проверяю оплату…";
+          // тихо
         }
       }, 1200);
     }
 
-    function loadTelegramUser(){
-      const tg = window.Telegram?.WebApp;
-      if(tg){
-        try{ tg.ready(); }catch(e){}
-        try{ tg.expand(); }catch(e){}
+    // ==== Actions ====
+    $("btnGetConfig").addEventListener("click", ()=>{
+      // логика как в твоем тексте: нажал → тарифы → оплата → конфиг
+      openModal();
+    });
+
+    $("btnCopy").addEventListener("click", async ()=>{
+      try{
+        await navigator.clipboard.writeText(configText.value || "");
+        showToast("Скопировано");
+        haptic("success");
+      }catch(e){
+        showToast("Не удалось скопировать");
+        haptic("error");
       }
-      const u = tg?.initDataUnsafe?.user;
+    });
+    $("btnHide").addEventListener("click", ()=>configBox.classList.remove("show"));
 
-      if(u){
-        state.tg.id = u.id;
-        state.tg.username = u.username ? "@"+u.username : "";
-        state.tg.name = [u.first_name, u.last_name].filter(Boolean).join(" ").trim() || "Пользователь";
-        state.tg.photo = u.photo_url || null;
-        state.user_key = String(u.id);
-      }else{
-        state.user_key = "site-guest";
-        state.tg = { id:null, username:"", name:"Гость (browser)", photo:null };
-      }
+    closeModal.addEventListener("click", hideModal);
+    modal.addEventListener("click", (e)=>{ if(e.target===modal) hideModal(); });
 
-      const nameLine = state.tg.name + (state.tg.username ? ` • ${state.tg.username}` : "");
-      pName.textContent = nameLine;
-      pId.textContent = `TG ID: ${state.tg.id ?? "—"}`;
+    devChips.addEventListener("click",(e)=>{
+      const b = e.target.closest(".chipBtn"); if(!b) return;
+      S.devices = Number(b.dataset.dev);
+      updateChoice(); haptic("light");
+    });
+    dayChips.addEventListener("click",(e)=>{
+      const b = e.target.closest(".chipBtn"); if(!b) return;
+      S.days = Number(b.dataset.days);
+      updateChoice(); haptic("light");
+    });
 
-      pName2.textContent = nameLine;
-      pId2.textContent = `TG ID: ${state.tg.id ?? "—"}`;
+    payStars.addEventListener("click", async ()=>{
+      clearError();
+      spin.classList.add("show");
+      statusText.textContent = "Создаю заказ (Stars)…";
+      orderHint.textContent = "";
 
-      const img = state.tg.photo || "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(`
-        <svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'>
-          <rect width='100%' height='100%' fill='rgba(255,255,255,.08)'/>
-          <circle cx='60' cy='52' r='22' fill='rgba(255,255,255,.22)'/>
-          <rect x='24' y='80' width='72' height='24' rx='12' fill='rgba(255,255,255,.16)'/>
-        </svg>
-      `);
-      avatarImg.src = img;
-      avatarImg2.src = img;
-    }
-
-    function bindSwipeDots(){
-      const swipe = $("swipe");
-      const dots = [...$("dots").children];
-      function update(){
-        const cards = swipe.children;
-        let best = 0;
-        let bestDist = Infinity;
-        for(let i=0;i<cards.length;i++){
-          const rect = cards[i].getBoundingClientRect();
-          const dist = Math.abs(rect.left - 16);
-          if(dist < bestDist){ bestDist = dist; best = i; }
-        }
-        dots.forEach((d,i)=>d.classList.toggle("on", i===best));
-      }
-      swipe.addEventListener("scroll", ()=>requestAnimationFrame(update), {passive:true});
-      update();
-    }
-
-    function showScreen(name){
-      [screenHome, screenProfile, screenInstructions].forEach(s=>s.classList.remove("show","fadeSlideIn"));
-      if(name==="home") screenHome.classList.add("show","fadeSlideIn");
-      if(name==="profile") screenProfile.classList.add("show","fadeSlideIn");
-      if(name==="instructions") screenInstructions.classList.add("show","fadeSlideIn");
-
-      document.querySelectorAll(".tab").forEach(t=>{
-        t.classList.toggle("active", t.dataset.tab===name);
-      });
-      // instructions screen is not in bottom tabs; keep last active tab
-      if(name==="instructions"){
-        document.querySelectorAll(".tab").forEach(t=>{
-          if(t.dataset.tab==="home") t.classList.add("active");
-          if(t.dataset.tab==="profile") t.classList.remove("active");
+      const url = API_BASE + "/pay/stars/create";
+      try{
+        const res = await apiPost("/pay/stars/create", {
+          user_key: userIdInput.value || S.user_key,
+          days: S.days,
+          devices: S.devices
         });
+        orderHint.textContent = `#${res.order_id}`;
+        statusText.textContent = "Открываю оплату…";
+
+        await openInvoice(res.invoice_link);
+
+        statusText.textContent = "Ожидаю оплату…";
+        startPoll(res.order_id);
+      }catch(err){
+        spin.classList.remove("show");
+        statusText.textContent = "Не удалось создать заказ";
+        showError(err, url);
+        haptic("error");
       }
-    }
+    });
 
-    // ===== INIT =====
-    (function init(){
-      loadTelegramUser();
-      bindSwipeDots();
-      apiHealth();
+    payUSDT.addEventListener("click", async ()=>{
+      clearError();
+      spin.classList.add("show");
+      statusText.textContent = "Создаю инвойс (USDT)…";
+      orderHint.textContent = "";
 
-      // default sub ui
-      setSubUI(null);
-
-      // nav
-      document.querySelectorAll(".tab").forEach(t=>{
-        t.addEventListener("click", ()=>{
-          hapticLight();
-          showScreen(t.dataset.tab);
+      const url = API_BASE + "/pay/crypto/create";
+      try{
+        const res = await apiPost("/pay/crypto/create", {
+          user_key: userIdInput.value || S.user_key,
+          days: S.days,
+          devices: S.devices
         });
-      });
 
-      // instructions button in profile
-      $("btnGoInstructions").addEventListener("click", ()=>{
-        hapticLight();
-        showScreen("instructions");
-      });
-      $("btnBackFromInstructions").addEventListener("click", ()=>{
-        hapticLight();
-        showScreen("profile");
-      });
+        orderHint.textContent = `#${res.order_id}`;
+        statusText.textContent = "Открываю оплату…";
 
-      // modal open/close
-      btnSubscribe.addEventListener("click", ()=>{
-        hapticLight();
-        showModal();
-      });
-      closeModal.addEventListener("click", hideModal);
-      modal.addEventListener("click", (e)=>{ if(e.target===modal) hideModal(); });
+        const invUrl = res.invoice_url || res.invoice_link || res.url;
+        if(!invUrl) throw new Error("invoice_url missing");
 
-      // chips select
-      deviceChips.addEventListener("click", (e)=>{
-        const b = e.target.closest(".chipBtn"); if(!b) return;
-        state.devices = Number(b.dataset.dev);
-        updateChoiceUI();
-        hapticLight();
-      });
-      dayChips.addEventListener("click", (e)=>{
-        const b = e.target.closest(".chipBtn"); if(!b) return;
-        state.days = Number(b.dataset.days);
-        updateChoiceUI();
-        hapticLight();
-      });
+        window.open(invUrl, "_blank");
 
-      // config actions
-      btnCopy.addEventListener("click", async ()=>{
-        try{
-          await navigator.clipboard.writeText(configText.value || "");
-          showToast("Скопировано");
-          hapticSuccess();
-        }catch(e){
-          showToast("Не удалось скопировать");
-          hapticError();
-        }
-      });
-      btnCloseConfig.addEventListener("click", ()=>configBox.classList.remove("show"));
+        statusText.textContent = "Ожидаю оплату…";
+        startPoll(res.order_id);
+      }catch(err){
+        spin.classList.remove("show");
+        statusText.textContent = "Не удалось создать инвойс";
+        showError(err, url);
+        haptic("error");
+      }
+    });
 
-      // PAY STARS
-      payStars.addEventListener("click", async ()=>{
-        clearError();
-        spin.classList.add("show");
-        statusText.textContent = "Создаю заказ (Stars)…";
-        orderHint.textContent = "";
+    // bottom nav
+    document.querySelectorAll(".tab").forEach(t=>{
+      t.addEventListener("click", ()=>navTo(t.dataset.tab));
+    });
 
-        const url = `${API_BASE}/pay/stars/create`;
-        try{
-          const res = await apiPost("/pay/stars/create", {
-            user_key: state.user_key,
-            days: state.days,
-            devices: state.devices
-          });
-
-          orderHint.textContent = `#${res.order_id}`;
-          statusText.textContent = "Открываю оплату…";
-
-          await openInvoiceTG(res.invoice_link);
-
-          statusText.textContent = "Ожидаю оплату…";
-          spin.classList.add("show");
-          startPolling(res.order_id);
-        }catch(err){
-          spin.classList.remove("show");
-          statusText.textContent = "Не удалось создать заказ";
-          showError(err, url);
-          hapticError();
-        }
-      });
-
-      // PAY USDT
-      payCrypto.addEventListener("click", async ()=>{
-        clearError();
-        spin.classList.add("show");
-        statusText.textContent = "Создаю инвойс (USDT)…";
-        orderHint.textContent = "";
-
-        const url = `${API_BASE}/pay/crypto/create`;
-        try{
-          const res = await apiPost("/pay/crypto/create", {
-            user_key: state.user_key,
-            days: state.days,
-            devices: state.devices
-          });
-
-          orderHint.textContent = `#${res.order_id}`;
-          statusText.textContent = "Открываю оплату USDT…";
-
-          const invUrl = res.invoice_url || res.invoice_link || res.url;
-          if(!invUrl) throw new Error("invoice_url missing in response");
-
-          window.open(invUrl, "_blank");
-
-          statusText.textContent = "Ожидаю оплату…";
-          spin.classList.add("show");
-          startPolling(res.order_id);
-        }catch(err){
-          spin.classList.remove("show");
-          statusText.textContent = "Не удалось создать инвойс";
-          showError(err, url);
-          hapticError();
-        }
-      });
-
-      updateChoiceUI();
-    })();
+    // init
+    loadTG();
+    bindSwipeDots();
+    updateChoice();
+    health();
+    setInterval(health, 8000);
   </script>
 </body>
 </html>
