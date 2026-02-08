@@ -1,1149 +1,1204 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="color-scheme" content="dark"/>
   <title>ZEUSVPN</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     :root{
-      --bg:#05070C;
-      --bg2:#070B12;
-
-      /* тот самый “темно-сине/черный” как на скрине */
-      --glow: rgba(40, 90, 255, .18);
-      --glow2: rgba(60, 120, 255, .12);
-
-      --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.085);
-      --stroke: rgba(255,255,255,.12);
-      --stroke2: rgba(255,255,255,.16);
-
-      --text:#F3F6FF;
-      --muted: rgba(243,246,255,.62);
-
-      --blue1:#2C67FF;
-      --blue2:#214EE0;
-
-      --ok:#22c55e;
+      --bg0:#07090D;
+      --bg1:#0B0F17;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.08);
+      --stroke:rgba(255,255,255,.10);
+      --stroke2:rgba(255,255,255,.14);
+      --text:#EAF0FF;
+      --muted:rgba(234,240,255,.62);
+      --muted2:rgba(234,240,255,.44);
+      --blue:#2B66FF;
+      --blue2:#0D2C86;
+      --accent:#3A7BFF;
+      --good:#22c55e;
       --warn:#fbbf24;
       --bad:#ef4444;
-
-      --r:18px;
-      --shadow: 0 22px 70px rgba(0,0,0,.55);
-      --shadow2: 0 18px 60px rgba(0,0,0,.45);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --r14:14px;
+      --r18:18px;
+      --r22:22px;
+      --ease: cubic-bezier(.2,.8,.2,1);
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display","SF Pro Text", Inter, Segoe UI, Roboto, Arial;
       color:var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       background:
-        radial-gradient(900px 520px at 75% -10%, var(--glow), transparent 60%),
-        radial-gradient(780px 520px at -20% 10%, var(--glow2), transparent 60%),
-        linear-gradient(180deg, var(--bg2), var(--bg));
+        radial-gradient(900px 500px at 50% -60px, rgba(43,102,255,.28), transparent 60%),
+        radial-gradient(700px 420px at 20% 8%, rgba(13,44,134,.25), transparent 55%),
+        radial-gradient(800px 520px at 80% 15%, rgba(43,102,255,.18), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg0));
       overflow-x:hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    .wrap{
-      max-width:520px;
-      margin:0 auto;
-      padding: 16px 14px 22px;
-      padding-bottom: calc(22px + 74px + env(safe-area-inset-bottom));
-    }
-
-    /* ===== Header pill (как на скрине) ===== */
-    .headerPill{
-      margin-top: 6px;
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.045));
-      box-shadow: var(--shadow2);
-      padding: 12px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      position:relative;
-      overflow:hidden;
-    }
-    .headerPill:before{
+    /* subtle grain */
+    body:before{
       content:"";
-      position:absolute; inset:-1px;
-      background:
-        radial-gradient(800px 220px at 25% 0%, rgba(45,105,255,.18), transparent 55%),
-        radial-gradient(700px 260px at 90% 20%, rgba(255,255,255,.06), transparent 55%);
-      opacity:.9;
+      position:fixed; inset:0;
       pointer-events:none;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="140" height="140" filter="url(%23n)" opacity=".18"/></svg>');
+      mix-blend-mode: overlay;
+      opacity:.12;
     }
-    .headerPill > *{position:relative}
 
+    .app{
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 18px 16px 92px;
+    }
+
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 10px 2px 14px;
+    }
     .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:0;
+      display:flex; align-items:center; gap:10px;
     }
-    .bolt{
-      width:42px;height:42px;border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
+    .logo{
+      width:40px; height:40px; border-radius:14px;
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
+      border:1px solid var(--stroke);
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
       display:grid; place-items:center;
-      box-shadow: 0 14px 38px rgba(0,0,0,.35);
-      flex:0 0 auto;
-    }
-    .bolt svg{width:18px;height:18px;opacity:.95}
-    .btxt{min-width:0}
-    .btitle{
-      margin:0;
-      font-weight:900;
-      font-size:14px;
-      letter-spacing:.2px;
-      white-space:nowrap;
       overflow:hidden;
-      text-overflow:ellipsis;
+      position:relative;
     }
-    .bsub{
-      margin:4px 0 0;
+    .logo img{
+      width: 78%;
+      height: 78%;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 12px rgba(0,0,0,.35));
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: linear-gradient(90deg, transparent, rgba(58,123,255,.25), transparent);
+      transform: rotate(25deg);
+      animation: shine 4.8s var(--ease) infinite;
+    }
+    @keyframes shine{
+      0%{transform: translateX(-40%) rotate(25deg)}
+      45%{transform: translateX(60%) rotate(25deg)}
+      100%{transform: translateX(60%) rotate(25deg)}
+    }
+
+    .brand h1{
+      font-size:16px; margin:0; letter-spacing:.6px;
+      font-weight: 760;
+    }
+    .brand p{
+      margin:2px 0 0;
       font-size:12px;
       color:var(--muted);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      letter-spacing:.2px;
     }
 
-    .statusChip{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 12px;
+    .pill{
+      padding:8px 10px;
       border-radius: 999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.24);
-      color: rgba(243,246,255,.7);
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.05);
+      color:var(--muted);
       font-size:12px;
-      flex:0 0 auto;
-      user-select:none;
+      display:flex; align-items:center; gap:6px;
     }
     .dot{
-      width:10px;height:10px;border-radius: 99px;
-      background: rgba(255,255,255,.18);
-      border:1px solid rgba(255,255,255,.20);
+      width:8px; height:8px; border-radius:50%;
+      background: rgba(255,255,255,.22);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.06);
     }
-    .dot.ok{background:rgba(34,197,94,.85);border-color:rgba(34,197,94,.9)}
-    .dot.warn{background:rgba(251,191,36,.85);border-color:rgba(251,191,36,.9)}
-    .dot.bad{background:rgba(239,68,68,.85);border-color:rgba(239,68,68,.9)}
+    .dot.ok{ background: rgba(34,197,94,.95); box-shadow: 0 0 0 4px rgba(34,197,94,.12); }
+    .dot.off{ background: rgba(239,68,68,.95); box-shadow: 0 0 0 4px rgba(239,68,68,.12); }
 
-    /* ===== Main card (как на скрине) ===== */
-    .card{
-      margin-top: 12px;
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.045));
+    .hero{
+      border-radius: var(--r22);
+      border:1px solid var(--stroke);
+      background:
+        radial-gradient(700px 360px at 30% 0%, rgba(43,102,255,.18), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
       box-shadow: var(--shadow);
+      padding: 16px 14px;
+      position:relative;
       overflow:hidden;
+    }
+    .hero:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background: linear-gradient(135deg, rgba(58,123,255,.18), transparent 35%, rgba(255,255,255,.06));
+      opacity:.55;
+      pointer-events:none;
+    }
+    .heroRow{ position:relative; display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+    .heroLeft{ flex:1; min-width:0; }
+    .heroTitle{ margin:0; font-size:17px; font-weight:780; letter-spacing:.2px; }
+    .heroSub{ margin:6px 0 0; font-size:12.5px; color: var(--muted); line-height:1.35; }
+    .statusBox{
+      min-width: 140px;
+      border-radius: 16px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+      padding:10px 10px;
+      text-align:left;
+    }
+    .statusBox .k{ font-size:11px; color:var(--muted2); }
+    .statusBox .v{ margin-top:4px; font-size:12.5px; font-weight:700; }
+    .statusBox .v span{ color:var(--muted); font-weight:650; }
+
+    .dividerLine{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent);
+      margin: 12px 0;
+    }
+
+    .cta{
+      display:flex; gap:10px; align-items:center;
       position:relative;
     }
-    .card:before{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(800px 220px at 18% 0%, rgba(45,105,255,.16), transparent 55%),
-        radial-gradient(700px 260px at 90% 15%, rgba(255,255,255,.06), transparent 55%);
-      pointer-events:none;
-      opacity:.95;
-    }
-    .card > *{position:relative}
-
-    .cardBody{
-      padding: 16px 16px 16px;
-    }
-
-    .h1{
-      margin:0;
-      font-size: 28px;
-      font-weight: 950;
-      letter-spacing: -.2px;
-    }
-    .lead{
-      margin:10px 0 0;
-      color: rgba(243,246,255,.62);
-      font-size:14px;
-      line-height:1.35;
-    }
-
-    .stats{
-      margin-top: 14px;
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
-    }
-    .stat{
+    .btn{
+      border:0;
+      color: var(--text);
       border-radius: 18px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.20);
-      padding: 12px 12px;
-      min-height: 68px;
-    }
-    .stat .k{
-      margin:0;
-      font-size:14px;
-      font-weight: 900;
+      padding: 12px 14px;
+      font-weight: 760;
       letter-spacing:.2px;
-      color: rgba(243,246,255,.92);
+      background: rgba(255,255,255,.08);
+      border:1px solid var(--stroke);
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+      width: 100%;
+      display:flex; justify-content:center; align-items:center; gap:10px;
+      transition: transform .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease);
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
-    .stat .v{
-      margin:8px 0 0;
-      font-size:14px;
-      color: rgba(243,246,255,.58);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+    .btn:active{ transform: scale(.985); }
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(58,123,255,.95), rgba(43,102,255,.70));
+      border-color: rgba(58,123,255,.55);
+    }
+    .btn.primary:hover{ filter: brightness(1.03); }
+    .btn .priceTag{
+      margin-left:auto;
+      padding:7px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.14);
+      font-size:12px;
+      color: rgba(255,255,255,.86);
     }
 
     .section{
       margin-top: 14px;
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      overflow:hidden;
     }
-    .secHead{
-      padding: 12px 14px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
+    .sectionHead{
+      display:flex; align-items:center; justify-content:space-between;
+      margin: 8px 2px 10px;
     }
-    .secTitle{
+    .sectionHead h2{
       margin:0;
-      font-weight: 950;
-      font-size: 16px;
-      letter-spacing:.18px;
+      font-size:13px;
+      letter-spacing:.4px;
+      color: rgba(234,240,255,.82);
+      font-weight: 780;
       text-transform: uppercase;
-      opacity:.9;
     }
-    .secRight{
-      margin:0;
-      font-size:12px;
-      color: rgba(243,246,255,.55);
-    }
-    .secBody{
-      padding: 14px;
+    .sectionHead .mini{
+      font-size:12px; color: var(--muted2);
     }
 
-    .label{
-      margin:0 0 8px;
-      font-size:12px;
-      color: rgba(243,246,255,.58);
-      font-weight: 850;
-      letter-spacing:.2px;
-    }
-
-    .input{
-      width:100%;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
+    .card{
+      border-radius: var(--r22);
+      border:1px solid var(--stroke);
       background: rgba(255,255,255,.05);
-      padding: 14px 14px;
-      color: rgba(243,246,255,.9);
-      font-size:14px;
-      outline:none;
-    }
-
-    .hint{
-      margin: 10px 0 0;
-      font-size:12px;
-      color: rgba(243,246,255,.50);
-    }
-
-    .primaryBtn{
-      width:100%;
-      margin-top: 14px;
-      border:0;
-      border-radius: 18px;
-      padding: 14px 14px;
-      font-size: 16px;
-      font-weight: 950;
-      letter-spacing:.2px;
-      color:#fff;
-      background: linear-gradient(180deg, var(--blue1), var(--blue2));
-      box-shadow: 0 18px 50px rgba(33, 78, 224, .28);
-      cursor:pointer;
-      transition: transform .12s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .primaryBtn:active{transform: scale(.985)}
-
-    /* ===== Config shown after paid ===== */
-    .configBox{
-      margin-top: 12px;
-      display:none;
-    }
-    .configBox.show{display:block}
-    .ta{
-      width:100%;
-      min-height: 96px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      color: rgba(243,246,255,.92);
-      padding: 12px 12px;
-      font-size:12px;
-      line-height:1.45;
-      outline:none;
-      resize:none;
-    }
-    .rowBtns{
-      display:flex;
-      gap:10px;
-      margin-top: 10px;
-    }
-    .ghostBtn{
-      flex:1;
-      border-radius: 18px;
-      padding: 12px 12px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color: rgba(243,246,255,.88);
-      font-weight: 900;
-      cursor:pointer;
-      transition: transform .12s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .ghostBtn:active{transform: scale(.985)}
-
-    /* ===== Bottom nav (как на скрине) ===== */
-    .navWrap{
-      position:fixed;
-      left:0; right:0;
-      bottom: 14px;
-      padding: 0 14px;
-      padding-bottom: calc(0px + env(safe-area-inset-bottom));
-      z-index: 20;
-    }
-    .nav{
-      max-width:520px;
-      margin: 0 auto;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.28);
-      backdrop-filter: blur(18px);
-      display:flex;
+      box-shadow: 0 18px 60px rgba(0,0,0,.38);
       overflow:hidden;
+    }
+    .cardInner{ padding: 14px; }
+
+    /* bottom nav */
+    .nav{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      padding: 10px 12px 16px;
+      background: linear-gradient(180deg, rgba(7,9,13,0), rgba(7,9,13,.80) 30%, rgba(7,9,13,.92));
+      backdrop-filter: blur(10px);
+    }
+    .navWrap{
+      max-width:460px; margin:0 auto;
+      display:flex; gap:10px;
     }
     .tab{
       flex:1;
-      text-align:center;
-      padding: 12px 10px;
-      font-weight: 950;
+      padding: 12px 12px;
+      border-radius: 18px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-weight: 750;
       font-size: 13px;
-      color: rgba(243,246,255,.55);
-      cursor:pointer;
+      letter-spacing:.2px;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      transition: background .18s var(--ease), transform .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease);
       user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
+    .tab:active{ transform: scale(.99); }
     .tab.active{
-      color: rgba(243,246,255,.92);
-      background: rgba(45,105,255,.12);
-      border-right:1px solid rgba(255,255,255,.06);
-      border-left:1px solid rgba(255,255,255,.06);
+      color: rgba(255,255,255,.92);
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.16);
     }
 
-    .screen{display:none}
-    .screen.show{display:block}
+    /* pages + transitions */
+    .page{
+      transform: translateX(0);
+      opacity:1;
+      transition: transform .26s var(--ease), opacity .26s var(--ease);
+    }
+    .page.hidden{
+      transform: translateX(18px);
+      opacity:0;
+      pointer-events:none;
+      position:absolute;
+      left:-9999px;
+    }
 
-    /* ===== Instructions swipe ===== */
-    .swipe{
+    /* profile rows */
+    .row{
+      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
+      padding: 10px 0;
+      border-bottom:1px solid rgba(255,255,255,.07);
+    }
+    .row:last-child{ border-bottom:0; }
+    .row .k{ font-size:12px; color: var(--muted2); }
+    .row .v{ font-size:13px; color: rgba(255,255,255,.88); font-weight:700; text-align:right; }
+    .row .v.small{ font-size:12px; color: var(--muted); font-weight:650; }
+
+    /* instructions slider */
+    .slider{
+      position:relative;
+      overflow:hidden;
+    }
+    .slides{
       display:flex;
-      gap:12px;
-      overflow:auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 8px;
+      will-change: transform;
+      transition: transform .28s var(--ease);
+      touch-action: pan-y;
     }
-    .swipe::-webkit-scrollbar{display:none}
-    .instCard{
-      flex: 0 0 86%;
-      scroll-snap-align: start;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
+    .slide{
+      min-width:100%;
       padding: 14px;
-      min-height: 150px;
     }
-    .instCard h3{margin:0;font-size:14px;font-weight:950}
-    .instCard p{margin:10px 0 0;font-size:13px;color:rgba(243,246,255,.65);line-height:1.45}
-    .dots{display:flex;justify-content:center;gap:8px;margin-top: 8px}
-    .dots span{width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.18)}
-    .dots span.on{background:rgba(255,255,255,.65);border-color:rgba(255,255,255,.55)}
+    .instCard{
+      border-radius: 22px;
+      border:1px solid var(--stroke);
+      background:
+        radial-gradient(420px 240px at 25% 0%, rgba(58,123,255,.18), transparent 60%),
+        rgba(255,255,255,.05);
+      box-shadow: 0 18px 60px rgba(0,0,0,.38);
+      padding: 14px;
+      overflow:hidden;
+      position:relative;
+    }
+    .instCard:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background: linear-gradient(135deg, rgba(58,123,255,.14), transparent 45%);
+      opacity:.7;
+      pointer-events:none;
+    }
+    .instTitle{
+      position:relative;
+      margin:0;
+      font-size:14px;
+      font-weight: 800;
+      letter-spacing:.2px;
+    }
+    .instText{
+      position:relative;
+      margin:8px 0 0;
+      color: var(--muted);
+      font-size:12.5px;
+      line-height:1.45;
+    }
+    .bullets{ margin:10px 0 0; padding-left:16px; color: var(--muted); font-size:12.5px; line-height:1.45; }
+    .dots{
+      display:flex; gap:8px; justify-content:center; margin-top: 10px;
+    }
+    .dots button{
+      width:8px; height:8px; border-radius:999px;
+      border:0; background: rgba(255,255,255,.18);
+      transition: width .22s var(--ease), background .22s var(--ease);
+    }
+    .dots button.active{ width: 20px; background: rgba(58,123,255,.8); }
 
-    /* ===== Modal (НЕ прозрачная, фикс. высота, не режет текст) ===== */
-    .modal{
+    /* modal */
+    .backdrop{
       position:fixed; inset:0;
+      background: rgba(0,0,0,.62);
       display:none;
       align-items:flex-end;
       justify-content:center;
-      padding: 14px 14px;
-      padding-bottom: calc(14px + env(safe-area-inset-bottom));
-      background: rgba(0,0,0,.62);
-      z-index: 50;
-    }
-    .modal.show{display:flex}
-    .sheet{
-      width:100%;
-      max-width:520px;
-      height: min(78vh, 580px);
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(10,14,22,.96), rgba(6,8,12,.98));
-      box-shadow: 0 28px 90px rgba(0,0,0,.75);
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-    }
-    .sheetHead{
-      padding: 12px 14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      flex:0 0 auto;
-    }
-    .sheetTitle{margin:0;font-weight:950;font-size:14px}
-    .xbtn{
-      width:38px;height:38px;border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color:rgba(243,246,255,.9);
-      display:grid;place-items:center;
-      cursor:pointer;
-    }
-    .sheetBody{
-      padding: 12px 14px 14px;
-      overflow:auto;
-      flex:1 1 auto;
-    }
-    .row{
-      display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
-      margin-bottom:10px;
-    }
-    .row h4{margin:0;font-size:12px;color:rgba(243,246,255,.62);font-weight:950}
-    .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
-    .chipBtn{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      color: rgba(243,246,255,.86);
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-size:13px;
-      font-weight: 950;
-      cursor:pointer;
-      transition: transform .12s ease;
-      -webkit-tap-highlight-color: transparent;
-      position:relative;
-      white-space:nowrap;
-      user-select:none;
-    }
-    .chipBtn:active{transform: scale(.985)}
-    .chipBtn.selected{
-      background: rgba(45,105,255,.14);
-      border-color: rgba(255,255,255,.18);
-      color: rgba(243,246,255,.96);
-    }
-    .badge{
-      position:absolute;
-      top:-8px; right:-6px;
-      font-size:10px;
-      padding:4px 7px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.16);
-      color: rgba(243,246,255,.9);
+      padding: 12px 12px 18px;
+      z-index: 100;
       backdrop-filter: blur(10px);
     }
+    .backdrop.show{ display:flex; }
 
-    .choiceCard{
-      margin-top: 12px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      padding: 14px;
-    }
-    .choiceTop{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .choiceName{margin:0;font-weight:950;font-size:14px}
-    .choicePrice{margin:0;font-weight:950;font-size:14px}
-    .choiceDesc{margin:8px 0 0;font-size:12px;color:rgba(243,246,255,.62);line-height:1.35}
-
-    .payGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-    .payBtn{
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      padding: 13px 12px;
-      text-align:left;
-      cursor:pointer;
-      transition: transform .12s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .payBtn:active{transform: scale(.985)}
-    .payBtn strong{display:block;font-size:13px;font-weight:950}
-    .payBtn span{display:block;font-size:12px;color:rgba(243,246,255,.58);margin-top:4px}
-    .payBtn.primary{
-      background: linear-gradient(180deg, rgba(44,103,255,.35), rgba(33,78,224,.35));
-      border-color: rgba(255,255,255,.14);
-    }
-
-    .statusLine{
-      margin-top: 12px;
-      font-size:12px;
-      color: rgba(243,246,255,.62);
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-    }
-    .spin{
-      width:14px;height:14px;border-radius:50%;
-      border:2px solid rgba(255,255,255,.18);
-      border-top-color: rgba(255,255,255,.75);
-      animation: rot .85s linear infinite;
-      display:none;
-    }
-    .spin.show{display:inline-block}
-    @keyframes rot{to{transform:rotate(360deg)}}
-
-    .errBox{
-      margin-top: 12px;
-      border-radius: 14px;
-      border:1px solid rgba(239,68,68,.25);
-      background: rgba(239,68,68,.08);
-      padding: 10px 10px;
-      color: rgba(255,210,210,.92);
-      font-size:12px;
-      line-height:1.35;
-      display:none;
-      white-space:pre-wrap;
-      word-break:break-word;
-    }
-    .errBox.show{display:block}
-    .errTitle{font-weight:950;margin-bottom:6px;color:rgba(255,220,220,.96)}
-
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom: 88px;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.72);
-      color: rgba(243,246,255,.92);
-      border:1px solid rgba(255,255,255,.12);
-      padding: 10px 12px;
-      border-radius: 999px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.55);
-      display:none;
-      z-index: 99;
-      max-width: 92vw;
-      white-space:nowrap;
+    .sheet{
+      width: min(460px, 100%);
+      border-radius: 24px;
+      border:1px solid rgba(255,255,255,.14);
+      background:
+        radial-gradient(900px 520px at 50% -160px, rgba(58,123,255,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      box-shadow: 0 24px 80px rgba(0,0,0,.65);
       overflow:hidden;
-      text-overflow:ellipsis;
-      font-size:12px;
+      transform: translateY(14px);
+      opacity:0;
+      transition: transform .22s var(--ease), opacity .22s var(--ease);
     }
-    .toast.show{display:block}
+    .backdrop.show .sheet{ transform: translateY(0); opacity:1; }
 
-    .logoRow{
-      display:flex; align-items:center; gap:10px;
+    .sheetHead{
+      padding: 14px 14px 10px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+    }
+    .sheetTitle{ margin:0; font-size:14px; font-weight: 860; letter-spacing:.2px; }
+    .sheetSub{ margin:6px 0 0; font-size:12px; color: var(--muted); line-height:1.35; }
+    .xbtn{
+      width:36px; height:36px; border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      color: rgba(255,255,255,.85);
+      font-weight: 900;
+    }
+    .sheetBody{ padding: 0 14px 14px; }
+
+    .chips{
+      display:flex; flex-wrap:wrap; gap:10px;
       margin-top: 10px;
     }
-    .logoBox{
-      width:44px;height:44px;border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      overflow:hidden;
-      box-shadow: 0 14px 38px rgba(0,0,0,.35);
-      flex:0 0 auto;
+    .chip{
+      padding: 10px 12px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.82);
+      font-size: 13px;
+      font-weight: 760;
+      letter-spacing:.2px;
+      transition: transform .16s var(--ease), background .16s var(--ease), border-color .16s var(--ease);
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
-    .logoBox img{width:100%;height:100%;object-fit:cover}
+    .chip:active{ transform: scale(.98); }
+    .chip.sel{
+      background: rgba(58,123,255,.18);
+      border-color: rgba(58,123,255,.55);
+      color: rgba(255,255,255,.92);
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      font-size:11px;
+      color: rgba(255,255,255,.70);
+      margin-left:8px;
+      vertical-align:middle;
+    }
+    .badge.pop{ border-color: rgba(58,123,255,.55); background: rgba(58,123,255,.14); }
+    .badge.best{ border-color: rgba(34,197,94,.45); background: rgba(34,197,94,.10); }
+
+    .choice3d{
+      margin-top: 12px;
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.14);
+      background:
+        radial-gradient(800px 380px at 20% -30%, rgba(58,123,255,.22), transparent 60%),
+        rgba(0,0,0,.18);
+      padding: 14px;
+      position:relative;
+      overflow:hidden;
+      box-shadow: 0 20px 70px rgba(0,0,0,.52);
+      transform-style: preserve-3d;
+    }
+    .choice3d:before{
+      content:"";
+      position:absolute; inset:-40%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent);
+      transform: rotate(20deg) translateX(-40%);
+      animation: shimmer 5.5s var(--ease) infinite;
+      opacity:.35;
+    }
+    @keyframes shimmer{
+      0%{transform: rotate(20deg) translateX(-55%)}
+      55%{transform: rotate(20deg) translateX(65%)}
+      100%{transform: rotate(20deg) translateX(65%)}
+    }
+    .choiceTop{
+      position:relative;
+      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+    }
+    .choiceTop .left{
+      min-width:0;
+    }
+    .choiceTop .t{
+      margin:0;
+      font-weight: 900;
+      letter-spacing:.2px;
+      font-size: 14px;
+    }
+    .choiceTop .s{
+      margin:6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.35;
+    }
+    .choicePrice{
+      position:relative;
+      font-weight: 900;
+      letter-spacing:.2px;
+      font-size: 14px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.22);
+      white-space:nowrap;
+    }
+
+    .payRow{
+      display:flex; gap:10px; margin-top: 12px;
+    }
+    .payBtn{
+      flex:1;
+      padding: 12px 12px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.9);
+      font-weight: 860;
+      letter-spacing:.2px;
+      transition: transform .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease);
+    }
+    .payBtn:active{ transform: scale(.985); }
+    .payBtn.primary{
+      background: linear-gradient(180deg, rgba(58,123,255,.95), rgba(43,102,255,.70));
+      border-color: rgba(58,123,255,.55);
+    }
+    .payBtn[disabled]{
+      opacity:.45;
+      filter: grayscale(1);
+    }
+
+    .hint{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted2);
+      line-height:1.35;
+    }
+
+    .resultBox{
+      margin-top: 12px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.20);
+      padding: 12px;
+    }
+    .code{
+      margin:0;
+      color: rgba(255,255,255,.9);
+      font-size: 12px;
+      line-height: 1.35;
+      word-break: break-all;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+    .copyBtn{
+      margin-top: 10px;
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.92);
+      font-weight: 860;
+    }
+    .toast{
+      position:fixed;
+      left:50%; bottom: 84px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.92);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s var(--ease), transform .18s var(--ease);
+      backdrop-filter: blur(10px);
+      z-index: 150;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-6px);
+    }
   </style>
 </head>
-
 <body>
-  <div class="wrap">
-
-    <!-- Header pill -->
-    <div class="headerPill">
+  <div class="app">
+    <!-- TOP BAR -->
+    <div class="topbar">
       <div class="brand">
-        <div class="bolt" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M13 2L3 14h8l-1 8 11-14h-8l0-6z" fill="rgba(243,246,255,.92)"/>
-          </svg>
+        <div class="logo" aria-label="ZEUSVPN logo">
+          <!-- вставь сюда логотип: положи файл рядом как logo.png -->
+          <img id="logoImg" src="logo.png" alt="ZEUSVPN"/>
         </div>
-        <div class="btxt">
-          <p class="btitle">ZEUSVPN</p>
-          <p class="bsub">Minimal • Dark • Fast</p>
+        <div>
+          <h1>ZEUSVPN</h1>
+          <p>Премиум VLESS • быстрый старт</p>
         </div>
       </div>
-
-      <div class="statusChip">
-        <span class="dot warn" id="apiDot"></span>
-        <span id="apiText">offline</span>
+      <div class="pill">
+        <span id="apiDot" class="dot off"></span>
+        <span id="apiText">API</span>
       </div>
     </div>
 
-    <!-- Screens -->
-    <div class="screen show" id="home">
-      <div class="card">
-        <div class="cardBody">
-          <h1 class="h1">Премиум без лишнего.</h1>
-          <p class="lead" id="leadText">
-            Нажми “Получить конфиг” → выбери тариф → оплата → конфиг + Copy.
-          </p>
-
-          <div class="stats">
-            <div class="stat">
-              <p class="k">Подписка</p>
-              <p class="v" id="subText">не оплачено</p>
-            </div>
-            <div class="stat">
-              <p class="k">Устройства</p>
-              <p class="v" id="devText">—</p>
-            </div>
-            <div class="stat">
-              <p class="k">API</p>
-              <p class="v" id="apiMini">offline</p>
-            </div>
+    <!-- PAGES -->
+    <div id="pageHome" class="page">
+      <div class="hero">
+        <div class="heroRow">
+          <div class="heroLeft">
+            <p class="heroTitle">Подписка</p>
+            <p class="heroSub">
+              Выбери устройства и срок → оплати → получи конфиг.  
+              Всё адаптировано под телефон.
+            </p>
           </div>
 
-          <div class="section">
-            <div class="secHead">
-              <p class="secTitle">КОНФИГ</p>
-              <p class="secRight">после оплаты</p>
+          <div class="statusBox">
+            <div class="k">Активна до</div>
+            <div class="v" id="activeUntil">—</div>
+            <div class="k" style="margin-top:8px">Статус</div>
+            <div class="v"><span id="subStatus">нет подписки</span></div>
+          </div>
+        </div>
+
+        <div class="dividerLine"></div>
+
+        <div class="cta">
+          <button id="buyBtn" class="btn primary">
+            <span id="buyBtnText">Приобрести подписку</span>
+            <span class="priceTag" id="buyPrice">от 199</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sectionHead">
+          <h2>Быстрые плюсы</h2>
+          <div class="mini">минимализм • премиум</div>
+        </div>
+
+        <div class="card">
+          <div class="cardInner">
+            <div class="row">
+              <div class="k">Лимит устройств</div>
+              <div class="v" id="slotsText">выбираешь при покупке</div>
             </div>
-            <div class="secBody">
-              <p class="label">ID пользователя (позже Telegram ID)</p>
-              <input class="input" id="userIdInput" value="" />
-              <p class="hint">Если пусто — создадим автоматически.</p>
+            <div class="row">
+              <div class="k">Стабильность</div>
+              <div class="v">VLESS • TCP</div>
+            </div>
+            <div class="row">
+              <div class="k">Выдача</div>
+              <div class="v">сразу после оплаты</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-              <button class="primaryBtn" id="btnGetConfig">Получить конфиг</button>
+    <div id="pageInstructions" class="page hidden">
+      <div class="section">
+        <div class="sectionHead">
+          <h2>Инструкция</h2>
+          <div class="mini">свайпай карточки</div>
+        </div>
 
-              <div class="configBox" id="configBox">
-                <p class="label" style="margin-top:12px">Ваш конфиг</p>
-                <textarea class="ta" id="configText" readonly></textarea>
-                <div class="rowBtns">
-                  <button class="ghostBtn" id="btnCopy">Copy</button>
-                  <button class="ghostBtn" id="btnHide">Скрыть</button>
-                </div>
+        <div class="slider" id="slider">
+          <div class="slides" id="slides">
+            <div class="slide">
+              <div class="instCard">
+                <h3 class="instTitle">iOS (V2Box / Streisand)</h3>
+                <p class="instText">Скопируй VLESS-ссылку → импортируй в приложение.</p>
+                <ul class="bullets">
+                  <li>Нажми “Скопировать конфиг”</li>
+                  <li>Открой V2Box → Import → From Clipboard</li>
+                  <li>Подключи профиль</li>
+                </ul>
               </div>
+            </div>
 
+            <div class="slide">
+              <div class="instCard">
+                <h3 class="instTitle">Android (v2rayNG)</h3>
+                <p class="instText">Импорт из буфера — самый быстрый вариант.</p>
+                <ul class="bullets">
+                  <li>Нажми “Скопировать конфиг”</li>
+                  <li>v2rayNG → + → Import from Clipboard</li>
+                  <li>Подключить</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="slide">
+              <div class="instCard">
+                <h3 class="instTitle">Desktop (Windows / macOS)</h3>
+                <p class="instText">Подойдёт v2rayN / Nekoray / Hiddify.</p>
+                <ul class="bullets">
+                  <li>Скопируй конфиг</li>
+                  <li>Импорт по ссылке или из буфера</li>
+                  <li>Подключи профиль</li>
+                </ul>
+              </div>
             </div>
           </div>
-
-          <!-- Logo small (optional, based on your logo) -->
-          <div class="logoRow">
-            <div class="logoBox"><img id="logoImg" alt="logo"></div>
-            <div style="min-width:0">
-              <div style="font-weight:950;letter-spacing:.2px">ZEUSVPN</div>
-              <div style="color:rgba(243,246,255,.55);font-size:12px">Профиль берём из Telegram</div>
-            </div>
-          </div>
-
+          <div class="dots" id="dots"></div>
         </div>
       </div>
     </div>
 
-    <div class="screen" id="instructions">
-      <div class="card">
-        <div class="cardBody">
-          <h1 class="h1" style="font-size:22px">Инструкции</h1>
-          <p class="lead">Свайпни карточки →</p>
-
-          <div class="swipe" id="swipe">
-            <div class="instCard">
-              <h3>iOS (V2Box / Streisand)</h3>
-              <p>
-                1) Установи клиент из App Store.<br>
-                2) Нажми “Add / Import”.<br>
-                3) Вставь VLESS-ссылку из ZEUSVPN.<br>
-                4) Сохрани и включи.
-              </p>
-            </div>
-            <div class="instCard">
-              <h3>Android (v2rayNG)</h3>
-              <p>
-                1) Установи v2rayNG.<br>
-                2) Нажми “+” → Import from clipboard.<br>
-                3) Вставь ссылку → включи.
-              </p>
-            </div>
-            <div class="instCard">
-              <h3>Desktop (Windows/macOS)</h3>
-              <p>
-                1) Установи Nekoray / v2rayN.<br>
-                2) Импортируй ссылку VLESS.<br>
-                3) Выбери профиль и включи.
-              </p>
-            </div>
-          </div>
-
-          <div class="dots" id="dots"><span class="on"></span><span></span><span></span></div>
+    <div id="pageProfile" class="page hidden">
+      <div class="section">
+        <div class="sectionHead">
+          <h2>Профиль</h2>
+          <div class="mini">Telegram данные</div>
         </div>
-      </div>
-    </div>
 
-    <div class="screen" id="profile">
-      <div class="card">
-        <div class="cardBody">
-          <h1 class="h1" style="font-size:22px">Профиль</h1>
-          <p class="lead" id="pLine">—</p>
-          <div class="section" style="margin-top:12px">
-            <div class="secHead">
-              <p class="secTitle">Данные</p>
-              <p class="secRight">Telegram</p>
+        <div class="card">
+          <div class="cardInner">
+            <div class="row">
+              <div class="k">Telegram ID</div>
+              <div class="v" id="tgId">—</div>
             </div>
-            <div class="secBody">
-              <p class="label">Telegram ID</p>
-              <input class="input" id="tgId" readonly>
-              <p class="label" style="margin-top:10px">Username</p>
-              <input class="input" id="tgUser" readonly>
+            <div class="row">
+              <div class="k">Ник</div>
+              <div class="v small" id="tgName">—</div>
+            </div>
+            <div class="row">
+              <div class="k">Твой ключ</div>
+              <div class="v small" id="userKey">—</div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-  </div>
-
-  <!-- Bottom nav -->
-  <div class="navWrap">
-    <div class="nav">
-      <div class="tab active" data-tab="home">Главная</div>
-      <div class="tab" data-tab="instructions">Инструкции</div>
-      <div class="tab" data-tab="profile">Профиль</div>
     </div>
   </div>
 
-  <!-- Modal тарифы -->
-  <div class="modal" id="modal">
-    <div class="sheet">
+  <!-- NAV -->
+  <div class="nav">
+    <div class="navWrap">
+      <div class="tab active" id="tabHome">Главная</div>
+      <div class="tab" id="tabInstructions">Инструкция</div>
+      <div class="tab" id="tabProfile">Профиль</div>
+    </div>
+  </div>
+
+  <!-- BUY MODAL -->
+  <div class="backdrop" id="backdrop" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true">
       <div class="sheetHead">
-        <p class="sheetTitle">Выбор тарифа</p>
-        <div class="xbtn" id="closeModal">✕</div>
+        <div>
+          <p class="sheetTitle">Выбор подписки</p>
+          <p class="sheetSub">Выбери устройства и срок. После оплаты мы покажем конфиг.</p>
+        </div>
+        <button class="xbtn" id="closeModal" aria-label="Закрыть">✕</button>
       </div>
+
       <div class="sheetBody">
-
-        <div class="row">
-          <h4>Устройства</h4>
-          <div style="font-size:12px;color:rgba(243,246,255,.5)">слоты</div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div style="font-size:12px; color:var(--muted2); font-weight:750;">Устройства</div>
         </div>
-        <div class="chips" id="devChips">
-          <div class="chipBtn selected" data-dev="1">1</div>
-          <div class="chipBtn" data-dev="3">3</div>
-          <div class="chipBtn" data-dev="5">5</div>
-          <div class="chipBtn" data-dev="10">10</div>
-        </div>
+        <div class="chips" id="chipsDevices"></div>
 
-        <div style="height:10px"></div>
-
-        <div class="row">
-          <h4>Срок</h4>
-          <div style="font-size:12px;color:rgba(243,246,255,.5)">дней</div>
+        <div style="margin-top:14px; display:flex; align-items:center; justify-content:space-between;">
+          <div style="font-size:12px; color:var(--muted2); font-weight:750;">Срок</div>
+          <div style="font-size:12px; color:var(--muted2);">дней</div>
         </div>
-        <div class="chips" id="dayChips">
-          <div class="chipBtn selected" data-days="30">30 <span class="badge">Популярно</span></div>
-          <div class="chipBtn" data-days="90">90</div>
-          <div class="chipBtn" data-days="180">180 <span class="badge">Выгоднее</span></div>
-        </div>
+        <div class="chips" id="chipsDays"></div>
 
-        <div class="choiceCard">
+        <div class="choice3d" id="choiceCard">
           <div class="choiceTop">
-            <p class="choiceName" id="choiceName">30 дней • 1 устройство</p>
-            <p class="choicePrice" id="choicePrice">199 XTR</p>
+            <div class="left">
+              <p class="t" id="choiceTitle">—</p>
+              <p class="s" id="choiceSub">Выбери параметры выше</p>
+            </div>
+            <div class="choicePrice" id="choicePrice">—</div>
           </div>
-          <p class="choiceDesc">
-            После оплаты статус обновится, затем можно получить конфиг.
-          </p>
         </div>
 
-        <div class="payGrid">
-          <button class="payBtn primary" id="payStars">
-            <strong>Оплатить Stars</strong>
-            <span>в Telegram</span>
-          </button>
-          <button class="payBtn" id="payUSDT">
-            <strong>Оплатить USDT</strong>
-            <span>[Crypto Bot](chatgpt://generic-entity?number=1)</span>
-          </button>
+        <div class="payRow">
+          <button class="payBtn primary" id="payStars">Оплатить Stars</button>
+          <button class="payBtn" id="payUSDT">USDT (CryptoPay)</button>
         </div>
 
-        <div class="statusLine">
-          <div style="display:flex;gap:10px;align-items:center;min-width:0">
-            <span class="spin" id="spin"></span>
-            <span id="statusText">Выбери параметры и способ оплаты</span>
-          </div>
-          <span style="font-size:12px;color:rgba(243,246,255,.5)" id="orderHint"></span>
+        <div class="hint" id="payHint">
+          Stars откроется как invoice в Telegram. В браузере откроется ссылкой.
         </div>
 
-        <div class="errBox" id="errBox">
-          <div class="errTitle">Ошибка запроса</div>
-          <div id="errText"></div>
+        <div class="resultBox" id="resultBox" style="display:none;">
+          <p class="code" id="configText"></p>
+          <button class="copyBtn" id="copyBtn">Скопировать конфиг</button>
         </div>
-
       </div>
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast">Скопировано</div>
 
   <script>
-    // ==== НАСТРОЙКИ ====
-    const API_BASE = "https://api.45.133.251.210.nip.io:8443"; // твой API
-    const LOGO_URL = "./logo.png"; // положи logo.png рядом с index.html
+    // ====== CONFIG ======
+    const API_BASE = "https://api.45.133.251.210.nip.io:8443"; // твой nginx:8443
     const DEFAULT_INBOUND_ID = 1;
 
-    // ==== STATE ====
-    const S = {
-      tg: { id:null, username:"", name:"", photo:null },
-      user_key: "zeus-guest",
-      devices: 1,
-      days: 30,
-      order_id: null,
-      poll: null,
-      paid: false
-    };
+    // ====== UTIL ======
+    const $ = (id) => document.getElementById(id);
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-    // ==== DOM short ====
-    const $ = (id)=>document.getElementById(id);
-
-    const apiDot = $("apiDot"), apiText = $("apiText"), apiMini = $("apiMini");
-    const subText = $("subText"), devText = $("devText");
-    const userIdInput = $("userIdInput");
-
-    const configBox = $("configBox"), configText = $("configText");
-    const toast = $("toast");
-
-    const modal = $("modal"), closeModal = $("closeModal");
-    const devChips = $("devChips"), dayChips = $("dayChips");
-    const choiceName = $("choiceName"), choicePrice = $("choicePrice");
-    const payStars = $("payStars"), payUSDT = $("payUSDT");
-    const spin = $("spin"), statusText = $("statusText"), orderHint = $("orderHint");
-
-    const errBox = $("errBox"), errText = $("errText");
-
-    // logo
-    $("logoImg").src = LOGO_URL;
-
-    // ==== UX helpers ====
-    function showToast(msg){
-      toast.textContent = msg;
-      toast.classList.add("show");
-      setTimeout(()=>toast.classList.remove("show"), 2200);
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1200);
     }
 
-    function haptic(type="light"){
+    function haptic(){
       try{
-        const t = window.Telegram?.WebApp;
-        if(!t?.HapticFeedback) return;
-        if(type==="light") t.HapticFeedback.impactOccurred("light");
-        if(type==="success") t.HapticFeedback.notificationOccurred("success");
-        if(type==="error") t.HapticFeedback.notificationOccurred("error");
+        if(window.Telegram?.WebApp?.HapticFeedback){
+          Telegram.WebApp.HapticFeedback.impactOccurred("light");
+        }
       }catch(e){}
     }
 
-    function priceFor(days){
-      if(days==30) return 199;
-      if(days==90) return 399;
-      if(days==180) return 599;
-      return 0;
-    }
-
-    function clearError(){
-      errBox.classList.remove("show");
-      errText.textContent = "";
-    }
-    function showError(err, url){
-      errBox.classList.add("show");
-      const msg = err?.message ? err.message : String(err);
-      errText.textContent =
-        `URL: ${url}\n` +
-        `Ошибка: ${msg}\n\n` +
-        `Если тут "Load failed/Failed to fetch" — это SSL на API:8443.`;
-    }
-
-    async function apiGet(path){
-      const url = API_BASE + path;
-      const r = await fetch(url, { method:"GET", mode:"cors" });
-      if(!r.ok){
-        const t = await r.text().catch(()=> "");
-        throw new Error(`HTTP ${r.status}: ${t}`);
-      }
-      return r.json();
-    }
-
-    async function apiPost(path, body){
-      const url = API_BASE + path;
-      const r = await fetch(url, {
-        method:"POST",
-        mode:"cors",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify(body)
-      });
-      if(!r.ok){
-        const t = await r.text().catch(()=> "");
-        throw new Error(`HTTP ${r.status}: ${t}`);
-      }
-      return r.json();
-    }
-
-    async function health(){
+    // ====== TELEGRAM USER ======
+    function getTgUser(){
       try{
-        await apiGet("/health");
-        apiDot.className = "dot ok";
-        apiText.textContent = "online";
-        apiMini.textContent = "online";
-      }catch(e){
-        apiDot.className = "dot bad";
-        apiText.textContent = "offline";
-        apiMini.textContent = "offline";
+        const tg = window.Telegram?.WebApp;
+        if(!tg) return null;
+        tg.ready();
+        const u = tg.initDataUnsafe?.user;
+        if(!u) return null;
+        return u; // {id, first_name, last_name, username, photo_url}
+      }catch(e){ return null; }
+    }
+
+    function buildUserKey(){
+      const u = getTgUser();
+      if(u?.id) return `tg_${u.id}`;
+      // fallback for browser
+      let key = localStorage.getItem("zeus_user_key");
+      if(!key){
+        key = "web_" + Math.random().toString(16).slice(2,10);
+        localStorage.setItem("zeus_user_key", key);
       }
+      return key;
+    }
+
+    // ====== PAGES ======
+    const pages = {
+      home: $("pageHome"),
+      inst: $("pageInstructions"),
+      prof: $("pageProfile"),
+    };
+    const tabs = {
+      home: $("tabHome"),
+      inst: $("tabInstructions"),
+      prof: $("tabProfile"),
+    };
+
+    function setPage(name){
+      for(const k of Object.keys(pages)){
+        const is = (k===name);
+        pages[k].classList.toggle("hidden", !is);
+        tabs[k].classList.toggle("active", is);
+      }
+      haptic();
+    }
+
+    tabs.home.onclick = ()=>setPage("home");
+    tabs.inst.onclick = ()=>setPage("inst");
+    tabs.prof.onclick = ()=>setPage("prof");
+
+    // ====== INSTRUCTIONS SLIDER (SWIPE) ======
+    const slidesEl = $("slides");
+    const dotsEl = $("dots");
+    const totalSlides = 3;
+    let currentSlide = 0;
+
+    function renderDots(){
+      dotsEl.innerHTML = "";
+      for(let i=0;i<totalSlides;i++){
+        const b = document.createElement("button");
+        b.className = (i===currentSlide) ? "active" : "";
+        b.onclick = ()=>goSlide(i);
+        dotsEl.appendChild(b);
+      }
+    }
+    function goSlide(i){
+      currentSlide = Math.max(0, Math.min(totalSlides-1, i));
+      slidesEl.style.transform = `translateX(${-currentSlide*100}%)`;
+      renderDots();
+      haptic();
+    }
+    renderDots();
+
+    let startX = null, dx = 0;
+    $("slider").addEventListener("touchstart", (e)=>{
+      startX = e.touches[0].clientX;
+      dx = 0;
+    }, {passive:true});
+    $("slider").addEventListener("touchmove", (e)=>{
+      if(startX===null) return;
+      dx = e.touches[0].clientX - startX;
+    }, {passive:true});
+    $("slider").addEventListener("touchend", ()=>{
+      if(startX===null) return;
+      if(dx > 55) goSlide(currentSlide-1);
+      else if(dx < -55) goSlide(currentSlide+1);
+      startX=null; dx=0;
+    });
+
+    // ====== MODAL ======
+    const backdrop = $("backdrop");
+    function openModal(){
+      backdrop.classList.add("show");
+      backdrop.setAttribute("aria-hidden","false");
+      haptic();
+    }
+    function closeModal(){
+      backdrop.classList.remove("show");
+      backdrop.setAttribute("aria-hidden","true");
+      haptic();
+    }
+    $("buyBtn").onclick = openModal;
+    $("closeModal").onclick = closeModal;
+    backdrop.addEventListener("click", (e)=>{
+      if(e.target === backdrop) closeModal();
+    });
+
+    // ====== CHOICES ======
+    const devicesOptions = [1,3,5,10];
+    const daysOptions = [30,90,180];
+
+    let selectedDevices = 1;
+    let selectedDays = 30;
+
+    // pricing: можно поменять под твои планы
+    // пример: цены зависят только от срока (как у тебя в systemd)
+    function priceFor(days){
+      if(days===30) return 199;
+      if(days===90) return 399;
+      if(days===180) return 599;
+      return 199;
+    }
+
+    function labelForDays(days){
+      if(days===30) return `30 дней`;
+      if(days===90) return `90 дней`;
+      if(days===180) return `180 дней`;
+      return `${days} дней`;
+    }
+
+    function renderChips(){
+      const cd = $("chipsDevices");
+      const cy = $("chipsDays");
+      cd.innerHTML = "";
+      cy.innerHTML = "";
+
+      devicesOptions.forEach(v=>{
+        const b = document.createElement("div");
+        b.className = "chip" + (v===selectedDevices ? " sel":"");
+        b.textContent = v + " устройство" + (v===1? "":"(а)");
+        b.onclick = ()=>{ selectedDevices=v; renderChips(); updateChoice(); haptic(); };
+        cd.appendChild(b);
+      });
+
+      daysOptions.forEach(v=>{
+        const b = document.createElement("div");
+        b.className = "chip" + (v===selectedDays ? " sel":"");
+        // badges
+        if(v===30){
+          b.innerHTML = `${labelForDays(v)} <span class="badge pop">Популярно</span>`;
+        } else if(v===180){
+          b.innerHTML = `${labelForDays(v)} <span class="badge best">Выгоднее</span>`;
+        } else {
+          b.textContent = labelForDays(v);
+        }
+        b.onclick = ()=>{ selectedDays=v; renderChips(); updateChoice(); haptic(); };
+        cy.appendChild(b);
+      });
     }
 
     function updateChoice(){
-      [...devChips.querySelectorAll(".chipBtn")].forEach(b=>{
-        b.classList.toggle("selected", Number(b.dataset.dev)===S.devices);
-      });
-      [...dayChips.querySelectorAll(".chipBtn")].forEach(b=>{
-        b.classList.toggle("selected", Number(b.dataset.days)===S.days);
-      });
-      choiceName.textContent = `${S.days} дней • ${S.devices} устройство${S.devices===1?"":"(а)"}`;
-      const p = priceFor(S.days);
-      choicePrice.textContent = p ? `${p} XTR` : "—";
+      const p = priceFor(selectedDays);
+      $("choiceTitle").textContent = `${selectedDevices} устройств • ${labelForDays(selectedDays)}`;
+      $("choiceSub").textContent = `Стабильный доступ, выдача конфигурации сразу после оплаты.`;
+      $("choicePrice").textContent = `${p} Stars`;
+      $("buyPrice").textContent = `от ${priceFor(30)}`;
     }
 
-    function openModal(){
-      clearError();
-      modal.classList.add("show");
-      document.body.style.overflow = "hidden";
-      updateChoice();
-    }
-    function hideModal(){
-      modal.classList.remove("show");
-      document.body.style.overflow = "";
-      spin.classList.remove("show");
-      statusText.textContent = "Выбери параметры и способ оплаты";
-      orderHint.textContent = "";
-      clearInterval(S.poll);
-      clearError();
-    }
+    renderChips();
+    updateChoice();
 
-    function bindSwipeDots(){
-      const swipe = $("swipe");
-      const dots = [...$("dots").children];
-      function update(){
-        const cards = swipe.children;
-        let best = 0, bestDist = Infinity;
-        for(let i=0;i<cards.length;i++){
-          const rect = cards[i].getBoundingClientRect();
-          const dist = Math.abs(rect.left - 14);
-          if(dist < bestDist){ bestDist = dist; best = i; }
-        }
-        dots.forEach((d,i)=>d.classList.toggle("on", i===best));
+    // ====== API HEALTH ======
+    async function apiHealth(){
+      try{
+        const r = await fetch(API_BASE + "/health", {method:"GET"});
+        const ok = r.ok;
+        $("apiDot").className = "dot " + (ok ? "ok":"off");
+        $("apiText").textContent = ok ? "API OK" : "API OFF";
+      }catch(e){
+        $("apiDot").className = "dot off";
+        $("apiText").textContent = "API OFF";
       }
-      swipe.addEventListener("scroll", ()=>requestAnimationFrame(update), {passive:true});
-      update();
     }
 
-    function navTo(id){
-      document.querySelectorAll(".screen").forEach(s=>s.classList.remove("show"));
-      $(id).classList.add("show");
-      document.querySelectorAll(".tab").forEach(t=>{
-        t.classList.toggle("active", t.dataset.tab===id);
-      });
-      haptic("light");
-    }
+    // ====== ORDERS + SUBSCRIPTION UI ======
+    const userKey = buildUserKey();
 
-    // ==== Telegram user ====
-    function loadTG(){
-      const tg = window.Telegram?.WebApp;
-      try{ tg?.ready(); tg?.expand(); }catch(e){}
-      const u = tg?.initDataUnsafe?.user;
-
-      if(u){
-        S.tg.id = u.id;
-        S.tg.username = u.username ? "@"+u.username : "";
-        S.tg.name = [u.first_name, u.last_name].filter(Boolean).join(" ").trim() || "Пользователь";
-        S.user_key = String(u.id);
+    function renderProfile(){
+      const u = getTgUser();
+      $("userKey").textContent = userKey;
+      if(u?.id){
+        $("tgId").textContent = String(u.id);
+        const name = (u.username ? "@"+u.username : [u.first_name,u.last_name].filter(Boolean).join(" "));
+        $("tgName").textContent = name || "—";
       }else{
-        // browser
-        S.tg.name = "Гость (browser)";
-        S.user_key = "zeus-guest";
+        $("tgId").textContent = "—";
+        $("tgName").textContent = "Открой внутри Telegram";
       }
-
-      // Home input default
-      userIdInput.value = S.user_key;
-
-      // Profile fill
-      $("pLine").textContent = `${S.tg.name}${S.tg.username ? " • "+S.tg.username : ""}`;
-      $("tgId").value = S.tg.id ?? "—";
-      $("tgUser").value = S.tg.username || "—";
     }
 
-    // ==== Payment ====
+    function setSubscriptionUI(activeUntilStr){
+      if(activeUntilStr){
+        $("activeUntil").textContent = activeUntilStr;
+        $("subStatus").textContent = "активна";
+        $("buyBtnText").textContent = "Продлить";
+      }else{
+        $("activeUntil").textContent = "—";
+        $("subStatus").textContent = "нет подписки";
+        $("buyBtnText").textContent = "Приобрести подписку";
+      }
+    }
+
+    // local "last known active_until" — пока без отдельного профиля на бэке, берём из последнего оплаченного order
+    function getSavedActiveUntil(){
+      return localStorage.getItem("zeus_active_until") || "";
+    }
+    function saveActiveUntil(v){
+      if(v) localStorage.setItem("zeus_active_until", v);
+    }
+
+    // ====== PAY FLOW ======
+    let pollTimer = null;
+    let currentOrderId = null;
+
+    function stopPolling(){
+      if(pollTimer){
+        clearInterval(pollTimer);
+        pollTimer = null;
+      }
+    }
+
+    async function createStarsOrder(){
+      const body = { user_key: userKey, days: selectedDays, devices: selectedDevices };
+      const r = await fetch(API_BASE + "/pay/stars/create", {
+        method:"POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+
+      const data = await r.json().catch(()=> ({}));
+      if(!r.ok){
+        throw new Error(data?.detail || "Ошибка создания Stars invoice");
+      }
+      return data; // {order_id, invoice_link}
+    }
+
+    async function createCryptoOrder(){
+      const body = { user_key: userKey, days: selectedDays, devices: selectedDevices };
+      const r = await fetch(API_BASE + "/pay/crypto/create", {
+        method:"POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await r.json().catch(()=> ({}));
+      if(!r.ok){
+        throw new Error(data?.detail || "Ошибка создания Crypto invoice");
+      }
+      return data; // {order_id, invoice_url}
+    }
+
+    async function getOrder(orderId){
+      const r = await fetch(API_BASE + "/pay/order/" + encodeURIComponent(orderId), { method:"GET" });
+      const data = await r.json().catch(()=> ({}));
+      if(!r.ok) throw new Error(data?.detail || "Ошибка статуса заказа");
+      return data;
+    }
+
+    function showConfig(link){
+      $("resultBox").style.display = "block";
+      $("configText").textContent = link || "";
+    }
+
+    async function copyText(txt){
+      try{
+        await navigator.clipboard.writeText(txt);
+        toast("Скопировано");
+      }catch(e){
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        toast("Скопировано");
+      }
+      haptic();
+    }
+
+    $("copyBtn").onclick = async ()=>{
+      const txt = $("configText").textContent || "";
+      if(!txt) return;
+      await copyText(txt);
+    };
+
     function openInvoice(url){
-      if(window.Telegram?.WebApp?.openInvoice){
-        return new Promise((resolve)=>{
-          window.Telegram.WebApp.openInvoice(url, (status)=> resolve(status));
-        });
+      // TG WebApp: open link
+      const tg = window.Telegram?.WebApp;
+      if(tg?.openLink){
+        tg.openLink(url);
+      }else{
+        window.open(url, "_blank", "noopener,noreferrer");
       }
-      // browser fallback
-      window.open(url, "_blank");
-      return Promise.resolve("opened");
     }
 
-    function startPoll(order_id){
-      clearInterval(S.poll);
-      S.poll = setInterval(async ()=>{
+    async function startPolling(orderId){
+      stopPolling();
+      pollTimer = setInterval(async ()=>{
         try{
-          const o = await apiGet(`/pay/order/${order_id}`);
-          if(o.status==="paid" || o.status==="active"){
-            clearInterval(S.poll);
-            spin.classList.remove("show");
-            statusText.textContent = "Оплата подтверждена ✅";
-            haptic("success");
-
-            // UI on home
-            subText.textContent = o.active_until ? `активна до ${o.active_until}` : "оплачено";
-            devText.textContent = String(o.devices ?? S.devices);
-
-            // сразу выдаем конфиг после оплаты
-            try{
-              const issue = await apiPost("/issue-config", {
-                inbound_id: DEFAULT_INBOUND_ID,
-                user_key: userIdInput.value || S.user_key,
-                days: S.days,
-                limit_ip: 0
-              });
-              configText.value = issue.link || "";
-              configBox.classList.add("show");
-              showToast("Конфиг готов");
-              hideModal();
-            }catch(e2){
-              showToast("Оплата ок, но конфиг не выдался");
+          const o = await getOrder(orderId);
+          // статус: pending/paid/...
+          if(o?.active_until){
+            saveActiveUntil(o.active_until);
+            setSubscriptionUI(o.active_until);
+          }
+          if(String(o?.status).toLowerCase() === "paid"){
+            stopPolling();
+            if(o?.config_link){
+              showConfig(o.config_link);
+              toast("Оплата прошла");
+            }else{
+              // если бэкенд выдаст config_link позже — продолжаем коротко доп. попытки
+              toast("Оплата прошла, ждём конфиг…");
+              let tries = 8;
+              while(tries--){
+                await sleep(900);
+                const o2 = await getOrder(orderId);
+                if(o2?.config_link){
+                  showConfig(o2.config_link);
+                  break;
+                }
+              }
             }
-          }else{
-            statusText.textContent = `Ожидаю оплату… (${o.status})`;
           }
         }catch(e){
           // тихо
         }
-      }, 1200);
+      }, 1400);
     }
 
-    // ==== Actions ====
-    $("btnGetConfig").addEventListener("click", ()=>{
-      // логика как в твоем тексте: нажал → тарифы → оплата → конфиг
-      openModal();
-    });
-
-    $("btnCopy").addEventListener("click", async ()=>{
+    $("payStars").onclick = async ()=>{
       try{
-        await navigator.clipboard.writeText(configText.value || "");
-        showToast("Скопировано");
-        haptic("success");
+        $("payHint").textContent = "Создаём invoice…";
+        const data = await createStarsOrder();
+        currentOrderId = data.order_id;
+        $("payHint").textContent = "Открываем оплату…";
+        openInvoice(data.invoice_link);
+        $("payHint").textContent = "Ожидаем оплату…";
+        await startPolling(currentOrderId);
+        haptic();
       }catch(e){
-        showToast("Не удалось скопировать");
-        haptic("error");
+        $("payHint").textContent = "Ошибка: " + (e.message || "Load failed");
+        toast("Ошибка оплаты");
       }
-    });
-    $("btnHide").addEventListener("click", ()=>configBox.classList.remove("show"));
+    };
 
-    closeModal.addEventListener("click", hideModal);
-    modal.addEventListener("click", (e)=>{ if(e.target===modal) hideModal(); });
-
-    devChips.addEventListener("click",(e)=>{
-      const b = e.target.closest(".chipBtn"); if(!b) return;
-      S.devices = Number(b.dataset.dev);
-      updateChoice(); haptic("light");
-    });
-    dayChips.addEventListener("click",(e)=>{
-      const b = e.target.closest(".chipBtn"); if(!b) return;
-      S.days = Number(b.dataset.days);
-      updateChoice(); haptic("light");
-    });
-
-    payStars.addEventListener("click", async ()=>{
-      clearError();
-      spin.classList.add("show");
-      statusText.textContent = "Создаю заказ (Stars)…";
-      orderHint.textContent = "";
-
-      const url = API_BASE + "/pay/stars/create";
+    $("payUSDT").onclick = async ()=>{
       try{
-        const res = await apiPost("/pay/stars/create", {
-          user_key: userIdInput.value || S.user_key,
-          days: S.days,
-          devices: S.devices
-        });
-        orderHint.textContent = `#${res.order_id}`;
-        statusText.textContent = "Открываю оплату…";
-
-        await openInvoice(res.invoice_link);
-
-        statusText.textContent = "Ожидаю оплату…";
-        startPoll(res.order_id);
-      }catch(err){
-        spin.classList.remove("show");
-        statusText.textContent = "Не удалось создать заказ";
-        showError(err, url);
-        haptic("error");
+        $("payHint").textContent = "Создаём USDT invoice…";
+        const data = await createCryptoOrder();
+        currentOrderId = data.order_id;
+        $("payHint").textContent = "Открываем оплату USDT…";
+        // у тебя в ответе может быть invoice_url
+        const url = data.invoice_url || data.invoice_link || data.pay_url;
+        if(url) openInvoice(url);
+        $("payHint").textContent = "Ожидаем оплату…";
+        await startPolling(currentOrderId);
+        haptic();
+      }catch(e){
+        $("payHint").textContent = "Ошибка: " + (e.message || "Load failed");
+        toast("Ошибка USDT");
       }
-    });
+    };
 
-    payUSDT.addEventListener("click", async ()=>{
-      clearError();
-      spin.classList.add("show");
-      statusText.textContent = "Создаю инвойс (USDT)…";
-      orderHint.textContent = "";
+    // ====== INIT ======
+    (async function init(){
+      renderProfile();
+      await apiHealth();
 
-      const url = API_BASE + "/pay/crypto/create";
+      const saved = getSavedActiveUntil();
+      if(saved) setSubscriptionUI(saved);
+      else setSubscriptionUI("");
+
+      // if inside Telegram, set some UI preferences
       try{
-        const res = await apiPost("/pay/crypto/create", {
-          user_key: userIdInput.value || S.user_key,
-          days: S.days,
-          devices: S.devices
-        });
+        const tg = window.Telegram?.WebApp;
+        if(tg){
+          tg.expand();
+          tg.ready();
+          tg.setHeaderColor?.("#0B0F17");
+          tg.setBackgroundColor?.("#07090D");
+        }
+      }catch(e){}
 
-        orderHint.textContent = `#${res.order_id}`;
-        statusText.textContent = "Открываю оплату…";
-
-        const invUrl = res.invoice_url || res.invoice_link || res.url;
-        if(!invUrl) throw new Error("invoice_url missing");
-
-        window.open(invUrl, "_blank");
-
-        statusText.textContent = "Ожидаю оплату…";
-        startPoll(res.order_id);
-      }catch(err){
-        spin.classList.remove("show");
-        statusText.textContent = "Не удалось создать инвойс";
-        showError(err, url);
-        haptic("error");
-      }
-    });
-
-    // bottom nav
-    document.querySelectorAll(".tab").forEach(t=>{
-      t.addEventListener("click", ()=>navTo(t.dataset.tab));
-    });
-
-    // init
-    loadTG();
-    bindSwipeDots();
-    updateChoice();
-    health();
-    setInterval(health, 8000);
+      // close modal on ESC
+      window.addEventListener("keydown", (e)=>{
+        if(e.key === "Escape") closeModal();
+      });
+    })();
   </script>
 </body>
 </html>
