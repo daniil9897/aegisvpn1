@@ -2,1165 +2,1164 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ZEUSVPN</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     :root{
-      --bg:#000000;
-      --bg2:#0B0B0D;
-      --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.08);
-      --stroke: rgba(255,255,255,.10);
-      --stroke2: rgba(255,255,255,.16);
+      /* ===== iOS Light palette ===== */
+      --bg: #F2F2F7;                 /* iOS grouped background */
+      --card: rgba(255,255,255,.78); /* glass */
+      --stroke: rgba(0,0,0,.08);
+      --stroke2: rgba(0,0,0,.12);
+      --text: #0B0B0F;
+      --muted: rgba(60,60,67,.60);   /* iOS secondary label */
+      --muted2: rgba(60,60,67,.36);  /* iOS tertiary label */
+      --blue: #007AFF;               /* iOS system blue */
+      --green:#34C759;
+      --red:#FF3B30;
+      --shadow: 0 18px 50px rgba(0,0,0,.12);
+      --shadow2: 0 10px 24px rgba(0,0,0,.10);
+      --r: 20px;
+      --r2: 26px;
 
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.62);
-      --muted2: rgba(255,255,255,.42);
-
-      --shadow: 0 18px 60px rgba(0,0,0,.65);
-      --shadow2: 0 10px 28px rgba(0,0,0,.55);
-
-      --radius: 18px;
-      --radius2: 24px;
-
-      --ok:#25D366;
-      --warn:#FFB020;
-
-      --safeTop: env(safe-area-inset-top, 0px);
-      --safeBottom: env(safe-area-inset-bottom, 0px);
+      /* spring-ish timings */
+      --ease: cubic-bezier(.2,.9,.2,1);
+      --ease2: cubic-bezier(.16,1,.3,1);
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display","SF Pro Text", Inter, system-ui, Segoe UI, Roboto, Arial;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display","SF Pro Text", Inter, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--text);
       background:
-        radial-gradient(900px 700px at 20% -10%, rgba(255,255,255,.06), transparent 60%),
-        radial-gradient(800px 600px at 110% 10%, rgba(255,255,255,.04), transparent 55%),
-        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+        radial-gradient(1200px 600px at 50% -10%, rgba(0,122,255,.14), rgba(0,122,255,0) 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(52,199,89,.10), rgba(52,199,89,0) 65%),
+        linear-gradient(180deg, var(--bg), #fff);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
       overflow-x:hidden;
     }
 
-    /* subtle grain */
-    body::before{
-      content:"";
-      position:fixed; inset:0;
-      pointer-events:none;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
-      mix-blend-mode:overlay;
-      opacity:.22;
+    .wrap{
+      max-width:520px;
+      margin:0 auto;
+      padding:
+        calc(14px + env(safe-area-inset-top))
+        14px
+        calc(18px + env(safe-area-inset-bottom))
+        14px;
     }
 
-    .app{
-      max-width: 440px;
-      margin: 0 auto;
-      padding: calc(16px + var(--safeTop)) 16px calc(16px + var(--safeBottom)) 16px;
-    }
-
-    /* top */
+    /* ===== Top bar (iOS-like) ===== */
     .topbar{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      padding: 8px 2px 14px;
+      margin-bottom:12px;
     }
     .brand{
       display:flex; align-items:center; gap:10px;
       min-width:0;
     }
     .logo{
-      width:40px; height:40px;
-      border-radius: 14px;
-      background:
-        radial-gradient(18px 18px at 30% 25%, rgba(255,255,255,.18), transparent 70%),
-        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow: 0 12px 30px rgba(0,0,0,.55);
+      width:40px;height:40px;border-radius:14px;
+      background: rgba(255,255,255,.85);
+      border:1px solid var(--stroke);
+      box-shadow: var(--shadow2);
       overflow:hidden;
+      display:grid; place-items:center;
+      flex:0 0 auto;
     }
-    .logo img{
-      width:100%; height:100%;
-      object-fit:cover;
-      display:block;
+    .logo img{width:100%;height:100%;object-fit:cover;display:block}
+    .logo .fallback{
+      font-weight:900;
+      color: rgba(0,0,0,.55);
     }
     .brandText{min-width:0}
     .brandTitle{
-      font-weight: 800;
-      letter-spacing: .2px;
-      font-size: 16px;
-      line-height: 1.1;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      font-weight:900;
+      font-size:15px;
+      line-height:1.1;
+      letter-spacing:.2px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
     .brandSub{
       margin-top:2px;
-      font-size: 12px;
+      font-size:12.5px;
       color: var(--muted);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    .apiPill{
       display:flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.70);
+      border:1px solid var(--stroke);
+      box-shadow: var(--shadow2);
+      font-size:12.5px;
+      color: rgba(60,60,67,.82);
+      user-select:none;
     }
     .dot{
-      width:6px; height:6px; border-radius:99px;
-      background: rgba(255,255,255,.25);
+      width:8px;height:8px;border-radius:99px;
+      background: rgba(0,0,0,.25);
     }
 
-    .pill{
-      display:flex; align-items:center; gap:8px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
+    /* ===== iOS Segmented control ===== */
+    .seg{
+      background: rgba(255,255,255,.82);
+      border:1px solid var(--stroke);
+      border-radius: 14px;
+      padding:4px;
+      display:flex;
+      gap:4px;
+      box-shadow: var(--shadow2);
+      margin-bottom:12px;
+      position:sticky;
+      top: calc(10px + env(safe-area-inset-top));
+      z-index:10;
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 10px 24px rgba(0,0,0,.35);
-      cursor:pointer;
-      user-select:none;
-      transition: transform .15s ease, background .15s ease;
     }
-    .pill:active{transform: scale(.98)}
-    .pill small{color:var(--muted); font-size:12px}
-
-    /* tabs */
-    .tabs{
-      position: sticky;
-      bottom: calc(10px + var(--safeBottom));
-      z-index: 20;
-      margin-top: 18px;
-      border-radius: 999px;
-      padding: 8px;
-      background: rgba(10,10,12,.62);
-      border: 1px solid rgba(255,255,255,.12);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow: var(--shadow2);
-      display:flex; gap:8px;
-    }
-    .tab{
+    .seg button{
       flex:1;
-      display:flex; align-items:center; justify-content:center;
-      gap:8px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      color: var(--muted);
-      font-weight: 750;
-      font-size: 13px;
+      border:0;
+      background:transparent;
+      padding:10px 10px;
+      border-radius: 11px;
+      font-weight:800;
+      font-size:12.5px;
+      color: rgba(60,60,67,.78);
       cursor:pointer;
-      user-select:none;
-      transition: background .2s ease, color .2s ease, transform .15s ease;
+      transition: transform .12s var(--ease), background .2s var(--ease), color .2s var(--ease);
+      -webkit-tap-highlight-color: transparent;
     }
-    .tab:active{transform: scale(.985)}
-    .tab.active{
-      color: rgba(255,255,255,.92);
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.14);
-    }
-
-    /* screens */
-    .screen{
-      opacity:0;
-      transform: translateY(10px);
-      pointer-events:none;
-      transition: opacity .22s ease, transform .22s ease;
-    }
-    .screen.active{
-      opacity:1;
-      transform: translateY(0);
-      pointer-events:auto;
+    .seg button:active{transform: scale(.99)}
+    .seg button.active{
+      background: rgba(255,255,255,.95);
+      color: var(--text);
+      box-shadow: 0 6px 16px rgba(0,0,0,.10);
     }
 
-    /* cards */
+    /* ===== iOS card (glass) ===== */
     .card{
-      border-radius: var(--radius2);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
-      border: 1px solid rgba(255,255,255,.12);
+      background: var(--card);
+      border:1px solid var(--stroke);
+      border-radius: var(--r2);
       box-shadow: var(--shadow);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       overflow:hidden;
+      margin-bottom:12px;
     }
-    .cardInner{padding:14px}
-
+    .cardInner{padding:16px}
+    .row{display:flex; align-items:center; justify-content:space-between; gap:12px}
     .title{
-      font-size: 20px;
-      font-weight: 850;
-      letter-spacing: .2px;
-      margin: 2px 0 10px;
+      font-weight:950;
+      font-size:16px;
+      letter-spacing:.2px;
     }
-    .hint{
-      font-size: 12px;
+    .muted{color:var(--muted); font-size:13px; line-height:1.45}
+    .divider{
+      height:1px;
+      background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.10), rgba(0,0,0,0));
+      margin:12px 0;
+    }
+
+    /* ===== Profile line ===== */
+    .userBox{display:flex; align-items:center; gap:12px; min-width:0}
+    .avatar{
+      width:46px;height:46px;border-radius:16px;
+      background: rgba(255,255,255,.90);
+      border:1px solid var(--stroke);
+      overflow:hidden;
+      box-shadow: var(--shadow2);
+      flex:0 0 auto;
+      display:grid; place-items:center;
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+    .avatar .fallback{
+      font-weight:900;
+      color: rgba(0,0,0,.45);
+    }
+    .userMeta{min-width:0}
+    .userName{
+      font-weight:900;
+      font-size:14px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .userId{
+      margin-top:2px;
+      font-size:12px;
       color: var(--muted);
-      line-height: 1.45;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
     }
 
-    .sep{height:1px; background: rgba(255,255,255,.10); margin: 12px 0}
-
-    .row{display:flex; gap:12px; align-items:center; justify-content:space-between}
-    .stack{display:flex; flex-direction:column; gap:6px}
-
-    .activeBox{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-      padding: 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-    }
-    .activeTitle{font-weight: 780}
-    .activeValue{font-size: 12px; color: var(--muted); margin-top:2px}
-    .badge{
-      display:inline-flex; align-items:center; gap:6px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      font-weight: 800;
-      font-size: 12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color: rgba(255,255,255,.92);
-      white-space:nowrap;
-    }
-    .badge.ok{border-color: rgba(37,211,102,.28); background: rgba(37,211,102,.12)}
-    .badge.warn{border-color: rgba(255,176,32,.28); background: rgba(255,176,32,.12)}
-    .badge.off{border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.06); color: var(--muted)}
-
-    /* primary button (iOS black/white) */
-    .btnPrimary{
-      width:100%;
-      margin-top: 12px;
-      border:none;
-      cursor:pointer;
-      user-select:none;
-      border-radius: 18px;
-      padding: 14px 14px;
-      font-weight: 850;
-      font-size: 15px;
-      color: rgba(0,0,0,.92);
-      background:
-        radial-gradient(60% 140% at 18% 20%, rgba(255,255,255,.80), rgba(255,255,255,.55)),
-        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.88));
-      box-shadow: 0 18px 45px rgba(0,0,0,.40);
-      transition: transform .15s ease, filter .2s ease;
-    }
-    .btnPrimary:active{transform: scale(.985)}
-    .btnPrimary[disabled]{opacity:.55; cursor:not-allowed}
-
+    /* ===== iOS Buttons ===== */
     .btn{
       width:100%;
-      border:none;
+      border:0;
+      border-radius: 16px;
+      padding:14px 14px;
+      font-weight:900;
+      letter-spacing:.15px;
+      font-size:15px;
       cursor:pointer;
       user-select:none;
-      border-radius: 16px;
-      padding: 12px 12px;
-      font-weight: 780;
-      font-size: 14px;
-      color: rgba(255,255,255,.92);
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      transition: transform .15s ease, background .15s ease;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s var(--ease), filter .2s var(--ease), opacity .2s var(--ease);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
     }
     .btn:active{transform: scale(.985)}
-    .btn.secondary{
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.86);
+    .btnPrimary{
+      background: var(--blue);
+      color: white;
+      box-shadow: 0 12px 26px rgba(0,122,255,.25);
     }
-    .btnRow{display:flex; gap:10px}
-    .btnRow .btn{flex:1}
+    .btnSecondary{
+      background: rgba(255,255,255,.92);
+      border:1px solid var(--stroke);
+      color: var(--text);
+      box-shadow: 0 10px 22px rgba(0,0,0,.10);
+    }
+    .btnGhost{
+      background: rgba(255,255,255,.0);
+      border:1px solid var(--stroke);
+      color: var(--text);
+    }
+    .btnSmallRow{display:flex; gap:10px}
+    .btnSmallRow .btn{flex:1; padding:12px 12px; font-size:14px}
 
-    /* chips */
-    .chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px}
+    /* ===== selection chips (iOS pill) ===== */
+    .chips{display:flex; flex-wrap:wrap; gap:10px}
     .chip{
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.86);
-      font-weight: 780;
-      font-size: 13px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.86);
+      border-radius:999px;
+      padding:10px 12px;
+      font-size:13px;
+      font-weight:900;
       cursor:pointer;
       user-select:none;
-      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
     }
-    .chip:active{transform: scale(.985)}
-    .chip.active{
-      background: rgba(255,255,255,.14);
-      border-color: rgba(255,255,255,.22);
-      color: rgba(255,255,255,.95);
+    .chip:active{transform: scale(.99)}
+    .chip.selected{
+      border-color: rgba(0,122,255,.40);
+      box-shadow: 0 0 0 6px rgba(0,122,255,.10);
+    }
+    .chipTag{
+      font-size:11px;
+      font-weight:950;
+      background: rgba(0,122,255,.12);
+      color: rgba(0,122,255,.95);
+      padding:3px 8px;
+      border-radius:999px;
     }
 
-    /* plan cards */
-    .planGrid{display:grid; grid-template-columns:1fr; gap:10px; margin-top:12px}
-    .planCard{
-      border-radius: 18px;
-      padding: 12px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
-      cursor:pointer;
-      transition: transform .15s ease;
-    }
-    .planCard:active{transform: scale(.99)}
-    .planTitle{font-weight: 860; font-size: 14px}
-    .planSub{color:var(--muted); font-size:12px; margin-top:3px; line-height:1.35}
-    .tag{
-      display:inline-flex; align-items:center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-weight: 900;
-      font-size: 11px;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.08);
-      color: rgba(255,255,255,.92);
-      white-space:nowrap;
-    }
-    .tag.pop{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.22)}
-    .tag.best{background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.22)}
-    .tag.off{color: var(--muted); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12)}
+    /* ===== screens (iOS transitions) ===== */
+    .screen{display:none}
+    .screen.active{display:block}
+    .in{animation: in .34s var(--ease2) both}
+    .out{animation: out .22s var(--ease) both}
+    @keyframes in{from{opacity:0; transform: translateY(10px)} to{opacity:1; transform: translateY(0)}}
+    @keyframes out{from{opacity:1; transform: translateY(0)} to{opacity:0; transform: translateY(8px)}}
 
-    /* selection 3D card */
-    .selected3d{
-      margin-top: 12px;
-      border-radius: 20px;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(140% 140% at 18% 14%, rgba(255,255,255,.12), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
-      box-shadow: 0 18px 55px rgba(0,0,0,.55);
-      position:relative;
-      overflow:hidden;
-      transform: translateZ(0);
-    }
-    .selected3d::after{
-      content:"";
-      position:absolute;
-      inset:-40% -60%;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.12) 35%, transparent 70%);
-      transform: rotate(12deg) translateX(-30%);
-      animation: shimmer 3.1s ease-in-out infinite;
-      opacity:.55;
-      pointer-events:none;
-    }
-    @keyframes shimmer{
-      0%{transform: rotate(12deg) translateX(-45%)}
-      50%{transform: rotate(12deg) translateX(25%)}
-      100%{transform: rotate(12deg) translateX(-45%)}
-    }
-    .selTop{display:flex; justify-content:space-between; align-items:center; gap:10px}
-    .selTitle{font-weight: 900}
-    .selPrice{font-weight: 900}
-    .selMeta{margin-top:6px; color: var(--muted); font-size:12px}
-
-    /* modal */
-    .overlay{
+    /* ===== bottom sheet modal (iOS) ===== */
+    .backdrop{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.56);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(0,0,0,.32);
       display:none;
-      align-items:flex-end;
       justify-content:center;
-      z-index: 50;
-      padding: 10px 10px calc(10px + var(--safeBottom));
+      align-items:flex-end;
+      padding: 12px 12px calc(12px + env(safe-area-inset-bottom)) 12px;
+      z-index:50;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-    .overlay.show{display:flex}
-    .modal{
-      width: min(440px, 100%);
-      height: 76vh;                 /* фикс-высота */
-      border-radius: 26px;
-      background: rgba(12,12,14,.96);  /* НЕ прозрачная */
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: var(--shadow);
+    .backdrop.show{display:flex}
+
+    .sheet{
+      width:min(520px, 100%);
+      background: rgba(255,255,255,.88);
+      border:1px solid var(--stroke);
+      border-radius: 28px;
+      box-shadow: 0 40px 120px rgba(0,0,0,.24);
       overflow:hidden;
-      transform: translateY(14px);
+      transform: translateY(18px);
       opacity:0;
-      transition: transform .22s cubic-bezier(.2,.8,.2,1), opacity .22s ease;
     }
-    .overlay.show .modal{transform: translateY(0); opacity:1}
-    .modalHeader{
-      padding: 14px 14px 10px;
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
+    .sheet.show{
+      animation: sheetIn .42s var(--ease2) forwards;
     }
-    .modalTitle{font-weight: 900}
+    @keyframes sheetIn{
+      0%{transform: translateY(26px); opacity:0}
+      60%{transform: translateY(-2px); opacity:1}
+      100%{transform: translateY(0); opacity:1}
+    }
+    .sheetHeader{
+      padding:12px 14px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border-bottom:1px solid rgba(0,0,0,.08);
+    }
+    .grab{
+      width:40px;height:5px;border-radius:99px;
+      background: rgba(60,60,67,.22);
+      margin: 8px auto 0 auto;
+    }
+    .sheetTitle{font-weight:950; font-size:15px}
     .close{
-      width:36px; height:36px; border-radius: 12px;
-      display:flex; align-items:center; justify-content:center;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      cursor:pointer; user-select:none;
-      transition: transform .15s ease;
+      width:36px;height:36px;border-radius:12px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.85);
+      cursor:pointer;
+      display:grid; place-items:center;
+      font-weight:950;
+      transition: transform .12s var(--ease);
+      -webkit-tap-highlight-color: transparent;
     }
     .close:active{transform: scale(.98)}
-    .modalBody{
-      padding: 14px;
+    .sheetBody{
+      padding:14px;
+      max-height: 74vh;
       overflow:auto;
-      height: calc(76vh - 56px);
-      -webkit-overflow-scrolling: touch;
     }
 
-    /* instruction slider */
-    .slider{
-      display:flex;
-      gap:12px;
-      overflow-x:auto;
-      scroll-snap-type: x mandatory;
-      padding-bottom: 6px;
-      -webkit-overflow-scrolling: touch;
-    }
-    .slide{
-      min-width: calc(100% - 24px);
-      scroll-snap-align: center;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      padding: 14px;
-    }
-    .slide h3{margin:0 0 6px; font-size: 14px; font-weight: 900;}
-    .slide p{margin:0; color: var(--muted); font-size: 13px; line-height: 1.45;}
-
-    /* KV */
-    .kv{
-      display:flex; justify-content:space-between; gap:12px;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      font-size: 13px;
-    }
-    .kv:last-child{border-bottom:none}
-    .kv b{font-weight: 850}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
-
-    /* tiny toast */
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: calc(84px + var(--safeBottom));
-      transform: translateX(-50%);
-      z-index: 90;
-      background: rgba(12,12,14,.92);
-      border: 1px solid rgba(255,255,255,.14);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      color: rgba(255,255,255,.92);
-      padding: 10px 12px;
-      border-radius: 999px;
-      box-shadow: var(--shadow2);
-      font-size: 12px;
-      display:none;
-      max-width: calc(100% - 32px);
-      white-space: nowrap;
+    /* ===== price card ===== */
+    .priceCard{
+      border-radius: 22px;
+      border:1px solid rgba(0,0,0,.08);
+      background:
+        radial-gradient(900px 260px at 20% 0%, rgba(0,122,255,.14), rgba(0,122,255,0) 58%),
+        linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
+      box-shadow: 0 16px 40px rgba(0,0,0,.14);
+      padding:14px;
+      position:relative;
       overflow:hidden;
-      text-overflow: ellipsis;
     }
-    .toast.show{display:block}
+    .priceTop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+    .pName{font-weight:950; font-size:14px}
+    .pMeta{margin-top:3px; color:var(--muted); font-size:12.5px}
+    .pPrice{
+      font-weight:1000;
+      font-size:20px;
+      letter-spacing:.2px;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .pPrice small{font-size:12px; color:var(--muted); font-weight:900}
+
+    /* subtle shimmer */
+    .priceCard::after{
+      content:"";
+      position:absolute; inset:-50% -70%;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.55) 50%, rgba(255,255,255,0) 100%);
+      transform: translateX(-40%);
+      animation: shimmer 1.6s infinite;
+      opacity:.20;
+      pointer-events:none;
+    }
+    @keyframes shimmer { to{ transform: translateX(60%);} }
+
+    /* ===== toast ===== */
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      transform: translateX(-50%) translateY(8px);
+      background: rgba(255,255,255,.92);
+      border:1px solid var(--stroke);
+      box-shadow: 0 18px 46px rgba(0,0,0,.18);
+      padding:10px 12px;
+      border-radius: 999px;
+      font-size:12.5px;
+      color: rgba(60,60,67,.90);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s var(--ease), transform .18s var(--ease);
+      z-index:100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .toast.show{opacity:1; transform: translateX(-50%) translateY(0)}
+
+    /* ===== instruction swipe ===== */
+    .swipeWrap{overflow:hidden}
+    .track{
+      display:flex; gap:12px;
+      transform: translateX(0);
+      transition: transform .34s var(--ease2);
+      will-change: transform;
+    }
+    .miniCard{
+      min-width:100%;
+      background: rgba(255,255,255,.78);
+      border:1px solid var(--stroke);
+      border-radius: var(--r2);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      overflow:hidden;
+    }
+    .miniCard .cardInner{padding:16px}
   </style>
 </head>
-<body>
-  <div class="toast" id="toast">—</div>
 
-  <div class="app">
+<body>
+  <div class="toast" id="toast">Скопировано</div>
+
+  <div class="wrap">
+    <!-- Topbar -->
     <div class="topbar">
       <div class="brand">
-        <div class="logo">
-          <img src="logo.png" alt="ZEUSVPN" onerror="this.style.display='none'">
+        <div class="logo" id="logoBox">
+          <img src="logo.png" alt="ZEUSVPN" onerror="this.remove(); const s=document.createElement('div'); s.className='fallback'; s.textContent='Z'; document.getElementById('logoBox').appendChild(s);">
         </div>
         <div class="brandText">
           <div class="brandTitle">ZEUSVPN</div>
-          <div class="brandSub">
-            <span id="netDot" class="dot"></span>
-            <span id="netText">Проверка API…</span>
-          </div>
+          <div class="brandSub">iOS Premium • Minimal</div>
         </div>
       </div>
-      <div class="pill" id="pillUser">
-        <small id="pillUserText">Гость</small>
+      <div class="apiPill">
+        <span class="dot" id="apiDot"></span>
+        <span id="apiText">API</span>
       </div>
+    </div>
+
+    <!-- Segmented -->
+    <div class="seg">
+      <button class="active" data-screen="home">Главная</button>
+      <button data-screen="profile">Профиль</button>
+      <button data-screen="instructions">Инструкция</button>
     </div>
 
     <!-- HOME -->
-    <section class="screen active" id="screenHome">
+    <div class="screen active in" id="screen-home">
       <div class="card">
         <div class="cardInner">
-          <div class="title">Подписка</div>
-
-          <div class="activeBox">
-            <div class="stack">
-              <div class="activeTitle">Активна до</div>
-              <div class="activeValue" id="activeText">—</div>
+          <div class="row">
+            <div class="userBox">
+              <div class="avatar" id="avatar"><div class="fallback" id="avatarFallback">Z</div></div>
+              <div class="userMeta">
+                <div class="userName" id="userName">Гость</div>
+                <div class="userId" id="tgLine">tg_id: —</div>
+              </div>
             </div>
-            <div class="badge off" id="statusBadge">—</div>
+            <div style="text-align:right">
+              <div class="muted" style="font-weight:900; color:rgba(60,60,67,.70)">Подписка</div>
+              <div style="font-weight:950" id="activeUntil">нет</div>
+            </div>
           </div>
 
-          <button class="btnPrimary" id="btnMain">Приобрести подписку</button>
+          <div class="divider"></div>
 
-          <div class="hint" id="smartHint" style="margin-top:10px">
-            Выберите устройства и срок — затем оплатите Stars или USDT.
+          <div class="muted" style="margin-bottom:12px">
+            Выбери срок и устройства → оплати Stars или USDT → получишь конфиг.
           </div>
 
-          <div class="sep"></div>
-
-          <div class="btnRow">
-            <button class="btn secondary" id="btnShowConfig" disabled>Показать конфиг</button>
-            <button class="btn secondary" id="btnHow">Инструкция</button>
-          </div>
+          <button class="btn btnPrimary" id="btnSubscribe">Приобрести подписку</button>
         </div>
       </div>
 
-      <div style="height:12px"></div>
-
       <div class="card">
         <div class="cardInner">
-          <div class="title" style="font-size:16px;margin:0 0 8px;">Данные</div>
-          <div class="kv"><span>Ваш ID</span><b class="mono" id="userKeyText">—</b></div>
-          <div class="kv"><span>Telegram ID</span><b class="mono" id="tgIdText">—</b></div>
-          <div class="kv"><span>Username</span><b class="mono" id="tgUserText">—</b></div>
-          <div class="kv"><span>Последний заказ</span><b class="mono" id="lastOrderText">—</b></div>
+          <div class="title">Быстрые действия</div>
+          <div class="muted" style="margin-top:6px">Инвойс и конфиг появятся в модальном окне.</div>
+
+          <div class="divider"></div>
+
+          <button class="btn btnSecondary" id="btnOpenSheet">Открыть выбор подписки</button>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- HOW -->
-    <section class="screen" id="screenHow">
-      <div class="card">
-        <div class="cardInner">
-          <div class="title">Инструкция</div>
-          <div class="hint" style="margin-top:0">Свайпай карточки влево/вправо.</div>
-
-          <div style="height:10px"></div>
-
-          <div class="slider">
-            <div class="slide">
-              <h3>iOS</h3>
-              <p>1) Установи V2Box / Streisand.<br>
-                 2) Нажми “Скопировать конфиг”.<br>
-                 3) В приложении: Import → From Clipboard.</p>
-            </div>
-            <div class="slide">
-              <h3>Android</h3>
-              <p>1) Установи v2rayNG.<br>
-                 2) Нажми “Скопировать конфиг”.<br>
-                 3) Import from clipboard / вставь ссылку.</p>
-            </div>
-            <div class="slide">
-              <h3>Desktop</h3>
-              <p>1) Nekoray / v2rayN.<br>
-                 2) Импортируй VLESS ссылку.<br>
-                 3) Подключись и проверь.</p>
-            </div>
-          </div>
-
-          <div style="height:12px"></div>
-          <button class="btn" id="btnBackFromHow">Назад</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROFILE (MINIMAL) -->
-    <section class="screen" id="screenProfile">
+    <!-- PROFILE (минимально как ты просил) -->
+    <div class="screen" id="screen-profile">
       <div class="card">
         <div class="cardInner">
           <div class="title">Профиль</div>
-          <div class="hint" style="margin-top:0">Минимум. Подписка показывается только на главной.</div>
-          <div class="sep"></div>
-          <div class="kv"><span>Ваш ID</span><b class="mono" id="profileUserKey">—</b></div>
-          <div style="height:12px"></div>
-          <button class="btn secondary" id="btnResetId">Сбросить ID</button>
+          <div class="muted" style="margin-top:6px">Минимум: Telegram + твой ID.</div>
+
+          <div class="divider"></div>
+
+          <div class="row" style="align-items:flex-start">
+            <div style="flex:1; min-width:0">
+              <div class="muted" style="font-weight:900">Telegram</div>
+              <div style="margin-top:6px; font-weight:950" id="profileName">—</div>
+              <div class="userId" style="margin-top:6px" id="profileTgId">tg_id: —</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="muted" style="font-weight:900">user_key</div>
+          <div class="userId" style="margin-top:6px; font-size:13px" id="profileUserKey">—</div>
+
+          <div style="height:10px"></div>
+          <button class="btn btnSecondary" id="btnNewKey">Сбросить / новый ID</button>
         </div>
       </div>
-    </section>
+    </div>
 
-    <div class="tabs">
-      <div class="tab active" data-tab="home">Главная</div>
-      <div class="tab" data-tab="how">Инструкция</div>
-      <div class="tab" data-tab="profile">Профиль</div>
+    <!-- INSTRUCTIONS -->
+    <div class="screen" id="screen-instructions">
+      <div class="card">
+        <div class="cardInner">
+          <div class="title">Инструкция</div>
+          <div class="muted" style="margin-top:6px">Свайпай карточки (как iOS).</div>
+
+          <div class="divider"></div>
+
+          <div class="swipeWrap">
+            <div class="track" id="track">
+              <div class="miniCard">
+                <div class="cardInner">
+                  <div class="title">iOS (V2Box / Streisand)</div>
+                  <div class="muted" style="margin-top:8px; line-height:1.6">
+                    1) Скопируй конфиг<br>
+                    2) Import from Clipboard / Add Profile<br>
+                    3) Connect
+                  </div>
+                </div>
+              </div>
+
+              <div class="miniCard">
+                <div class="cardInner">
+                  <div class="title">Android (v2rayNG)</div>
+                  <div class="muted" style="margin-top:8px; line-height:1.6">
+                    1) Скопируй конфиг<br>
+                    2) + → Import from Clipboard<br>
+                    3) Подключись
+                  </div>
+                </div>
+              </div>
+
+              <div class="miniCard">
+                <div class="cardInner">
+                  <div class="title">Desktop</div>
+                  <div class="muted" style="margin-top:8px; line-height:1.6">
+                    1) Скопируй VLESS ссылку<br>
+                    2) Import / Add profile<br>
+                    3) Connect
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:12px"></div>
+          <div class="btnSmallRow">
+            <button class="btn btnSecondary" id="prev">Назад</button>
+            <button class="btn btnSecondary" id="next">Далее</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- MODAL: subscribe -->
-  <div class="overlay" id="overlay">
-    <div class="modal">
-      <div class="modalHeader">
-        <div class="modalTitle">Подписка</div>
-        <div class="close" id="btnClose">✕</div>
+  <!-- Bottom Sheet -->
+  <div class="backdrop" id="backdrop">
+    <div class="sheet" id="sheet">
+      <div class="grab"></div>
+      <div class="sheetHeader">
+        <div class="sheetTitle">Подписка ZEUSVPN</div>
+        <div class="close" id="close">✕</div>
       </div>
-      <div class="modalBody">
 
-        <div class="hint" style="margin-top:0">
-          Выбери устройства и срок → появится карточка выбора → оплата.
-        </div>
+      <div class="sheetBody">
+        <div class="muted">Выбери срок и устройства. Цена и кнопка оплаты обновятся.</div>
 
-        <div style="height:10px"></div>
+        <div class="divider"></div>
 
-        <div class="title" style="font-size:14px;margin:0 0 6px;">Устройства</div>
+        <div class="muted" style="font-weight:900">Срок</div>
+        <div style="height:8px"></div>
+        <div class="chips" id="chipsDays"></div>
+
+        <div style="height:14px"></div>
+
+        <div class="muted" style="font-weight:900">Устройства</div>
+        <div style="height:8px"></div>
         <div class="chips" id="chipsDevices"></div>
 
-        <div style="height:10px"></div>
-        <div class="title" style="font-size:14px;margin:0 0 6px;">Срок</div>
-        <div class="planGrid" id="planGrid"></div>
+        <div class="divider"></div>
 
-        <div class="selected3d" id="selectedCard" style="display:none">
-          <div class="selTop">
-            <div class="selTitle" id="selTitle">—</div>
-            <div class="selPrice" id="selPrice">—</div>
-          </div>
-          <div class="selMeta" id="selMeta">—</div>
-        </div>
-
-        <div style="height:12px"></div>
-
-        <div class="btnRow">
-          <button class="btn" id="btnPayStars" disabled>Оплатить Stars</button>
-          <button class="btn" id="btnPayUSDT" disabled>Оплатить USDT</button>
-        </div>
-
-        <div class="hint" id="payHint" style="margin-top:10px">
-          После оплаты мы будем проверять статус заказа и покажем конфиг.
-        </div>
-
-        <div id="orderBox" style="display:none; margin-top:12px">
-          <div class="sep"></div>
-          <div class="title" style="font-size:14px;margin:0 0 8px;">Оплата</div>
-
-          <div class="activeBox">
-            <div class="stack">
-              <div class="activeTitle">Статус</div>
-              <div class="activeValue" id="orderStatusText">—</div>
+        <div class="priceCard" id="priceCard">
+          <div class="priceTop">
+            <div>
+              <div class="pName" id="choiceTitle">Выбор</div>
+              <div class="pMeta" id="choiceMeta">—</div>
             </div>
-            <div class="badge off" id="orderBadge">—</div>
+            <div class="pPrice" id="priceText">—</div>
           </div>
 
-          <div style="height:10px"></div>
-          <button class="btn secondary" id="btnOpenInvoice">Открыть invoice</button>
+          <div style="height:12px"></div>
 
+          <button class="btn btnPrimary" id="payStars">Оплатить Stars</button>
           <div style="height:10px"></div>
-          <button class="btn" id="btnCopyConfig" disabled>Скопировать конфиг</button>
+          <button class="btn btnSecondary" id="payUsdt">Оплатить USDT (CryptoPay)</button>
         </div>
 
+        <div class="divider"></div>
+
+        <div class="muted" style="font-weight:900">Статус</div>
+        <div class="muted" id="orderLine" style="margin-top:6px">Нет активного заказа</div>
+
+        <div style="height:10px"></div>
+        <button class="btn btnSecondary" id="copyBtn" style="display:none">Скопировать конфиг</button>
       </div>
     </div>
   </div>
 
-<script>
-/***************
- * CONFIG
- ***************/
-const API_BASE = "https://api.45.133.251.210.nip.io:8443"; // твой API
-const DEFAULT_INBOUND_ID = 1;
-const PRICES = { 30:199, 90:399, 180:599 };
-const DEVICES_OPTIONS = [1,3,5,10];
+  <script>
+    /* =========================
+       CONFIG
+    ========================= */
+    const API_BASE = "https://api.45.133.251.210.nip.io:8443";
+    const DEFAULT_INBOUND_ID = 1;
 
-const LS = {
-  userKey: "zeusvpn_user_key",
-  lastOrder: "zeusvpn_last_order",
-  activeUntil: "zeusvpn_active_until",
-  lastConfig: "zeusvpn_last_config"
-};
+    const PRICES = { 30:199, 90:399, 180:599 };
+    const DEVICE_CHOICES = [1,3,5,10];
 
-let state = {
-  userKey: localStorage.getItem(LS.userKey) || makeUserKey(),
-  lastOrderId: localStorage.getItem(LS.lastOrder) || "",
-  activeUntil: localStorage.getItem(LS.activeUntil) || "",
-  lastConfig: localStorage.getItem(LS.lastConfig) || "",
-  selection: { devices: 1, days: 30 },
-  polling: null,
-  lastInvoiceLink: ""
-};
-localStorage.setItem(LS.userKey, state.userKey);
-
-const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
-try { tg && tg.ready && tg.ready(); } catch(e){}
-
-/***************
- * DOM
- ***************/
-const $ = (id)=>document.getElementById(id);
-const toast = $("toast");
-
-const screens = { home:$("screenHome"), how:$("screenHow"), profile:$("screenProfile") };
-const tabs = document.querySelectorAll(".tab");
-
-const netDot = $("netDot");
-const netText = $("netText");
-const pillUserText = $("pillUserText");
-
-const activeText = $("activeText");
-const statusBadge = $("statusBadge");
-const btnMain = $("btnMain");
-const smartHint = $("smartHint");
-
-const btnHow = $("btnHow");
-const btnBackFromHow = $("btnBackFromHow");
-const btnShowConfig = $("btnShowConfig");
-
-const userKeyText = $("userKeyText");
-const profileUserKey = $("profileUserKey");
-const lastOrderText = $("lastOrderText");
-
-const tgIdText = $("tgIdText");
-const tgUserText = $("tgUserText");
-
-const overlay = $("overlay");
-const btnClose = $("btnClose");
-
-const chipsDevices = $("chipsDevices");
-const planGrid = $("planGrid");
-const selectedCard = $("selectedCard");
-const selTitle = $("selTitle");
-const selPrice = $("selPrice");
-const selMeta = $("selMeta");
-
-const btnPayStars = $("btnPayStars");
-const btnPayUSDT = $("btnPayUSDT");
-const payHint = $("payHint");
-
-const orderBox = $("orderBox");
-const orderStatusText = $("orderStatusText");
-const orderBadge = $("orderBadge");
-const btnOpenInvoice = $("btnOpenInvoice");
-const btnCopyConfig = $("btnCopyConfig");
-
-const btnResetId = $("btnResetId");
-
-/***************
- * helpers
- ***************/
-function showToast(msg){
-  toast.textContent = msg;
-  toast.classList.add("show");
-  setTimeout(()=>toast.classList.remove("show"), 1200);
-}
-
-function makeUserKey(){
-  const chars="abcdefghijklmnopqrstuvwxyz0123456789";
-  let out="";
-  for(let i=0;i<8;i++) out+=chars[Math.floor(Math.random()*chars.length)];
-  return out;
-}
-
-function hapticSoft(){
-  try{
-    if(tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred("soft");
-  }catch(e){}
-}
-
-function fmtDate(iso){
-  try{
-    const d = new Date(iso);
-    if(isNaN(d.getTime())) return "—";
-    return d.toLocaleDateString("ru-RU",{year:"numeric",month:"2-digit",day:"2-digit"})+" "+
-           d.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
-  }catch(e){ return "—"; }
-}
-
-function daysLeft(iso){
-  if(!iso) return null;
-  const d = new Date(iso);
-  if(isNaN(d.getTime())) return null;
-  const diff = d.getTime() - Date.now();
-  return Math.floor(diff / (1000*60*60*24));
-}
-
-async function api(path, {method="GET", body=null} = {}){
-  const opts = { method, headers: {} };
-  if(body){
-    opts.headers["Content-Type"]="application/json";
-    opts.body = JSON.stringify(body);
-  }
-  const res = await fetch(API_BASE + path, opts);
-  const txt = await res.text().catch(()=> "");
-  if(!res.ok){
-    throw new Error(txt || ("HTTP "+res.status));
-  }
-  return txt ? JSON.parse(txt) : {};
-}
-
-function setScreen(name){
-  Object.keys(screens).forEach(k => screens[k].classList.toggle("active", k===name));
-  tabs.forEach(t => t.classList.toggle("active", t.dataset.tab===name));
-  hapticSoft();
-}
-
-function openModal(){
-  overlay.classList.add("show");
-  document.body.style.overflow="hidden";
-  hapticSoft();
-}
-
-function closeModal(){
-  overlay.classList.remove("show");
-  document.body.style.overflow="";
-  stopPolling();
-}
-
-function stopPolling(){
-  if(state.polling){
-    clearInterval(state.polling);
-    state.polling=null;
-  }
-}
-
-async function checkHealth(){
-  try{
-    const t0 = performance.now();
-    await api("/health");
-    const ms = Math.round(performance.now()-t0);
-    netDot.style.background="rgba(37,211,102,.9)";
-    netText.textContent=`Онлайн • ${ms} ms`;
-  }catch(e){
-    netDot.style.background="rgba(255,176,32,.9)";
-    netText.textContent="Нет связи с API";
-  }
-}
-
-function setTGUser(){
-  if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user){
-    const u = tg.initDataUnsafe.user;
-    pillUserText.textContent = u.username ? "@"+u.username : (u.first_name || "Пользователь");
-    tgIdText.textContent = u.id ? String(u.id) : "—";
-    tgUserText.textContent = u.username ? "@"+u.username : "—";
-  }else{
-    pillUserText.textContent="Гость";
-    tgIdText.textContent="—";
-    tgUserText.textContent="—";
-  }
-}
-
-function updateMainSubscriptionUI(){
-  const left = daysLeft(state.activeUntil);
-  const hasDate = !!state.activeUntil;
-
-  if(!hasDate){
-    statusBadge.className="badge off";
-    statusBadge.textContent="нет";
-    activeText.textContent="Нет активной подписки";
-    btnMain.textContent="Приобрести подписку";
-    btnShowConfig.disabled = !state.lastConfig;
-    smartHint.textContent="Выберите устройства и срок — затем оплатите Stars или USDT.";
-    return;
-  }
-
-  if(left !== null && left < 0){
-    statusBadge.className="badge off";
-    statusBadge.textContent="истекла";
-    activeText.textContent="Истекла: "+fmtDate(state.activeUntil);
-    btnMain.textContent="Продлить подписку";
-    btnShowConfig.disabled = !state.lastConfig;
-    smartHint.textContent="Подписка истекла — продлите, затем получите новый конфиг.";
-    return;
-  }
-
-  // active
-  if(left !== null && left <= 3){
-    statusBadge.className="badge warn";
-    statusBadge.textContent="скоро";
-  }else{
-    statusBadge.className="badge ok";
-    statusBadge.textContent="активна";
-  }
-
-  activeText.textContent = "До: "+fmtDate(state.activeUntil) + (left!==null ? ` • осталось ~${left} дн.` : "");
-  btnMain.textContent="Продлить подписку";
-  btnShowConfig.disabled = !state.lastConfig;
-  smartHint.textContent = "Можно продлить заранее — не потеряете дни.";
-}
-
-function setUserUI(){
-  userKeyText.textContent = state.userKey;
-  profileUserKey.textContent = state.userKey;
-  lastOrderText.textContent = state.lastOrderId || "—";
-}
-
-function enablePayButtons(){ btnPayStars.disabled=false; btnPayUSDT.disabled=false; }
-function disablePayButtons(){ btnPayStars.disabled=true; btnPayUSDT.disabled=true; }
-
-function renderDevicesChips(){
-  chipsDevices.innerHTML="";
-  DEVICES_OPTIONS.forEach(n=>{
-    const el=document.createElement("div");
-    el.className="chip"+(state.selection.devices===n?" active":"");
-    el.textContent = n+" устр.";
-    el.onclick=()=>{
-      state.selection.devices=n;
-      renderDevicesChips();
-      updateSelectedCard();
-      hapticSoft();
+    const state = {
+      screen: "home",
+      slide: 0,
+      user: { tg_id:null, name:"Гость", photo_url:null, user_key:null },
+      plan: { days:30, devices:1, price:PRICES[30] },
+      orderId: null,
+      config: null,
+      pollTimer: null
     };
-    chipsDevices.appendChild(el);
-  });
-}
 
-function renderPlanCards(){
-  planGrid.innerHTML="";
-  const plans=[
-    {days:30, tag:"pop", tagText:"Популярно", sub:"Лучший старт"},
-    {days:90, tag:"off", tagText:"", sub:"Оптимально"},
-    {days:180, tag:"best", tagText:"Выгоднее", sub:"Максимальная экономия"}
-  ];
-
-  plans.forEach(p=>{
-    const price = PRICES[p.days];
-    const card=document.createElement("div");
-    card.className="planCard";
-
-    if(state.selection.days===p.days){
-      card.style.borderColor="rgba(255,255,255,.22)";
-      card.style.background="rgba(255,255,255,.10)";
+    /* =========================
+       HAPTIC
+    ========================= */
+    function haptic(type="light"){
+      try{
+        if (window.Telegram?.WebApp?.HapticFeedback){
+          Telegram.WebApp.HapticFeedback.impactOccurred(type);
+        } else if (navigator.vibrate) {
+          navigator.vibrate(8);
+        }
+      }catch(e){}
     }
 
-    card.onclick=()=>{
-      state.selection.days=p.days;
-      renderPlanCards();
-      updateSelectedCard();
-      hapticSoft();
-    };
+    /* =========================
+       Toast
+    ========================= */
+    const toastEl = document.getElementById("toast");
+    let toastT=null;
+    function toast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastT);
+      toastT=setTimeout(()=>toastEl.classList.remove("show"), 1400);
+    }
 
-    const left=document.createElement("div");
-    const t=document.createElement("div");
-    t.className="planTitle";
-    t.textContent=`${p.days} дней — ${price} Stars`;
-    const s=document.createElement("div");
-    s.className="planSub";
-    s.textContent=p.sub;
-    left.appendChild(t); left.appendChild(s);
+    /* =========================
+       Utils
+    ========================= */
+    function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+    function formatDate(ts){
+      if(!ts) return null;
+      const d = new Date(ts);
+      if(Number.isNaN(d.getTime())) return null;
+      const dd=String(d.getDate()).padStart(2,"0");
+      const mm=String(d.getMonth()+1).padStart(2,"0");
+      const yy=d.getFullYear();
+      return `${dd}.${mm}.${yy}`;
+    }
+    function randKey(){
+      const c="abcdefghjkmnpqrstuvwxyz23456789";
+      let s="";
+      for(let i=0;i<8;i++) s+=c[Math.floor(Math.random()*c.length)];
+      return s;
+    }
 
-    const right=document.createElement("div");
-    const tag=document.createElement("div");
-    tag.className="tag "+(p.tag||"off");
-    tag.textContent = (p.tagText || (state.selection.days===p.days ? "Выбрано" : ""));
-    right.appendChild(tag);
-
-    card.appendChild(left);
-    card.appendChild(right);
-    planGrid.appendChild(card);
-  });
-}
-
-function updateSelectedCard(){
-  const {days, devices} = state.selection;
-  const price = PRICES[days] ?? "—";
-  selectedCard.style.display="block";
-  selTitle.textContent = `${days} дней • ${devices} устр.`;
-  selPrice.textContent = `${price} Stars`;
-  selMeta.textContent = `ID: ${state.userKey} • После оплаты появится конфиг`;
-  enablePayButtons();
-}
-
-/***************
- * order flow
- ***************/
-function showOrderUI(order){
-  orderBox.style.display="block";
-
-  orderBadge.textContent = order.status || "pending";
-  orderBadge.className = (order.status==="paid") ? "badge ok" : "badge off";
-
-  if(order.status==="paid"){
-    orderStatusText.textContent = "Оплачено ✅";
-  }else{
-    orderStatusText.textContent = "Ожидаем оплату…";
-  }
-
-  if(order.active_until){
-    state.activeUntil = order.active_until;
-    localStorage.setItem(LS.activeUntil, state.activeUntil);
-    updateMainSubscriptionUI();
-  }
-
-  if(order.config_link){
-    state.lastConfig = order.config_link;
-    localStorage.setItem(LS.lastConfig, state.lastConfig);
-    btnCopyConfig.disabled=false;
-  }
-
-  if(order.invoice_link) state.lastInvoiceLink = order.invoice_link;
-  if(order.invoice_url) state.lastInvoiceLink = order.invoice_url;
-}
-
-function pollOrder(orderId){
-  stopPolling();
-  state.polling = setInterval(async ()=>{
-    try{
-      const order = await api(`/pay/order/${orderId}`);
-      showOrderUI(order);
-
-      if(order.status==="paid" && !order.config_link){
-        // запросить выдачу конфига (пока так)
-        try{
-          const cfg = await api("/issue-config", {
-            method:"POST",
-            body:{
-              inbound_id: DEFAULT_INBOUND_ID,
-              user_key: state.userKey,
-              days: state.selection.days,
-              limit_ip: 0
-            }
-          });
-          if(cfg && cfg.link){
-            state.lastConfig = cfg.link;
-            localStorage.setItem(LS.lastConfig, state.lastConfig);
-            btnCopyConfig.disabled=false;
-          }
-        }catch(e){}
+    /* =========================
+       Telegram user
+    ========================= */
+    function initTelegram(){
+      const tg = window.Telegram?.WebApp;
+      if(!tg) return;
+      try{ tg.expand(); }catch(e){}
+      const u = tg.initDataUnsafe?.user;
+      if(u){
+        state.user.tg_id = u.id ?? null;
+        const name = [u.first_name, u.last_name].filter(Boolean).join(" ").trim();
+        state.user.name = name || (u.username ? "@"+u.username : "Пользователь");
+        state.user.photo_url = u.photo_url || null;
       }
-    }catch(e){}
-  }, 1500);
-}
+    }
 
-async function createStarsInvoice(){
-  const body = { user_key: state.userKey, days: state.selection.days, devices: state.selection.devices };
-  const res = await api("/pay/stars/create",{method:"POST", body});
-  const {order_id, invoice_link} = res;
+    /* =========================
+       Local storage
+    ========================= */
+    function loadLocal(){
+      const k = localStorage.getItem("zeus_user_key");
+      state.user.user_key = k || randKey();
+      if(!k) localStorage.setItem("zeus_user_key", state.user.user_key);
 
-  state.lastOrderId = order_id;
-  localStorage.setItem(LS.lastOrder, state.lastOrderId);
-  setUserUI();
+      const oid = localStorage.getItem("zeus_last_order");
+      if(oid) state.orderId = oid;
+    }
+    function saveKey(){ localStorage.setItem("zeus_user_key", state.user.user_key); }
+    function saveOrder(id){ state.orderId=id; localStorage.setItem("zeus_last_order", id); }
 
-  state.lastInvoiceLink = invoice_link || "";
-  showOrderUI({id:order_id, status:"pending", provider:"stars", invoice_link});
-  pollOrder(order_id);
+    /* =========================
+       UI refs
+    ========================= */
+    const apiDot=document.getElementById("apiDot");
+    const apiText=document.getElementById("apiText");
 
-  if(invoice_link){
-    if(tg && tg.openTelegramLink) tg.openTelegramLink(invoice_link);
-    else window.open(invoice_link, "_blank");
-  }
-}
+    const userName=document.getElementById("userName");
+    const tgLine=document.getElementById("tgLine");
+    const avatar=document.getElementById("avatar");
 
-async function createCryptoInvoice(){
-  const body = { user_key: state.userKey, days: state.selection.days, devices: state.selection.devices };
-  const res = await api("/pay/crypto/create",{method:"POST", body});
-  const {order_id, invoice_url} = res;
+    const activeUntil=document.getElementById("activeUntil");
+    const btnSubscribe=document.getElementById("btnSubscribe");
+    const btnOpenSheet=document.getElementById("btnOpenSheet");
 
-  state.lastOrderId = order_id;
-  localStorage.setItem(LS.lastOrder, state.lastOrderId);
-  setUserUI();
+    const profileName=document.getElementById("profileName");
+    const profileTgId=document.getElementById("profileTgId");
+    const profileUserKey=document.getElementById("profileUserKey");
+    const btnNewKey=document.getElementById("btnNewKey");
 
-  state.lastInvoiceLink = invoice_url || "";
-  showOrderUI({id:order_id, status:"pending", provider:"crypto", invoice_url});
-  pollOrder(order_id);
+    const backdrop=document.getElementById("backdrop");
+    const sheet=document.getElementById("sheet");
+    const close=document.getElementById("close");
 
-  if(invoice_url) window.open(invoice_url, "_blank");
-}
+    const chipsDays=document.getElementById("chipsDays");
+    const chipsDevices=document.getElementById("chipsDevices");
+    const choiceTitle=document.getElementById("choiceTitle");
+    const choiceMeta=document.getElementById("choiceMeta");
+    const priceText=document.getElementById("priceText");
 
-async function copyText(text){
-  try{
-    await navigator.clipboard.writeText(text);
-    return true;
-  }catch(e){
-    try{
-      const ta=document.createElement("textarea");
-      ta.value=text; document.body.appendChild(ta);
-      ta.select(); document.execCommand("copy"); ta.remove();
-      return true;
-    }catch(err){ return false; }
-  }
-}
+    const payStars=document.getElementById("payStars");
+    const payUsdt=document.getElementById("payUsdt");
+    const orderLine=document.getElementById("orderLine");
+    const copyBtn=document.getElementById("copyBtn");
 
-/***************
- * events
- ***************/
-tabs.forEach(t=>t.addEventListener("click",()=>setScreen(t.dataset.tab)));
+    const track=document.getElementById("track");
+    const prev=document.getElementById("prev");
+    const next=document.getElementById("next");
 
-$("btnHow").addEventListener("click",()=>setScreen("how"));
-$("btnBackFromHow").addEventListener("click",()=>setScreen("home"));
+    /* =========================
+       Screen switching
+    ========================= */
+    function setScreen(name){
+      if(state.screen===name) return;
+      const old=document.getElementById("screen-"+state.screen);
+      const neu=document.getElementById("screen-"+name);
 
-btnMain.addEventListener("click",()=>openModal());
+      old.classList.remove("in");
+      old.classList.add("out");
 
-btnClose.addEventListener("click", closeModal);
-overlay.addEventListener("click",(e)=>{ if(e.target===overlay) closeModal(); });
+      setTimeout(()=>{
+        old.classList.remove("active","out");
+        neu.classList.add("active","in");
+        state.screen=name;
 
-btnShowConfig.addEventListener("click",()=>{
-  if(!state.lastConfig){ showToast("Конфига ещё нет"); return; }
-  openModal();
-  orderBox.style.display="block";
-  orderBadge.className="badge ok";
-  orderBadge.textContent="ready";
-  orderStatusText.textContent="Конфиг готов";
-  btnCopyConfig.disabled=false;
-  btnOpenInvoice.style.display="none";
-});
+        document.querySelectorAll(".seg button").forEach(b=>{
+          b.classList.toggle("active", b.dataset.screen===name);
+        });
+      }, 160);
+    }
+    document.querySelectorAll(".seg button").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        haptic("light");
+        setScreen(b.dataset.screen);
+      });
+    });
 
-btnPayStars.addEventListener("click", async ()=>{
-  try{
-    disablePayButtons();
-    payHint.textContent="Создаём invoice Stars…";
-    await createStarsInvoice();
-    payHint.textContent="Инвойс открыт. Проверяем оплату…";
-  }catch(e){
-    payHint.textContent="Ошибка Stars: " + (e.message || "Load failed");
-    enablePayButtons();
-  }
-});
+    /* =========================
+       Bottom sheet
+    ========================= */
+    function openSheet(){
+      haptic("light");
+      copyBtn.style.display="none";
+      state.config=null;
+      backdrop.classList.add("show");
+      // trigger animation
+      requestAnimationFrame(()=>sheet.classList.add("show"));
+      updateChoice();
+    }
+    function hideSheet(){
+      sheet.classList.remove("show");
+      // small delay to let it disappear smoothly
+      setTimeout(()=>backdrop.classList.remove("show"), 120);
+    }
+    btnSubscribe.addEventListener("click", openSheet);
+    btnOpenSheet.addEventListener("click", openSheet);
+    close.addEventListener("click", hideSheet);
+    backdrop.addEventListener("click",(e)=>{ if(e.target===backdrop) hideSheet(); });
 
-btnPayUSDT.addEventListener("click", async ()=>{
-  try{
-    disablePayButtons();
-    payHint.textContent="Создаём invoice USDT…";
-    await createCryptoInvoice();
-    payHint.textContent="Счёт открыт. Проверяем оплату…";
-  }catch(e){
-    payHint.textContent="Ошибка USDT: " + (e.message || "Load failed");
-    enablePayButtons();
-  }
-});
+    /* =========================
+       Chips
+    ========================= */
+    function makeChip(label, tagText){
+      const el=document.createElement("div");
+      el.className="chip";
+      el.textContent=label;
+      if(tagText){
+        const t=document.createElement("span");
+        t.className="chipTag";
+        t.textContent=tagText;
+        el.appendChild(t);
+      }
+      return el;
+    }
 
-btnOpenInvoice.addEventListener("click", ()=>{
-  if(!state.lastInvoiceLink){ showToast("Ссылка не найдена"); return; }
-  if(tg && tg.openTelegramLink && state.lastInvoiceLink.startsWith("https://t.me/")){
-    tg.openTelegramLink(state.lastInvoiceLink);
-  }else{
-    window.open(state.lastInvoiceLink, "_blank");
-  }
-});
+    function renderChips(){
+      chipsDays.innerHTML="";
+      chipsDevices.innerHTML="";
 
-btnCopyConfig.addEventListener("click", async ()=>{
-  if(!state.lastConfig){ showToast("Конфига ещё нет"); return; }
-  const ok = await copyText(state.lastConfig);
-  showToast(ok ? "Скопировано ✅" : "Не удалось скопировать");
-});
+      [30,90,180].forEach(d=>{
+        const tag = d===30 ? "Популярно" : (d===180 ? "Выгоднее" : "");
+        const c=makeChip(`${d} дней`, tag);
+        c.dataset.days=d;
+        c.addEventListener("click", ()=>{
+          haptic("light");
+          state.plan.days=d;
+          state.plan.price=PRICES[d];
+          updateSelected();
+          updateChoice(true);
+        });
+        chipsDays.appendChild(c);
+      });
 
-$("pillUser").addEventListener("click",()=>setScreen("profile"));
+      DEVICE_CHOICES.forEach(n=>{
+        const c=makeChip(`${n} устройство(а)`);
+        c.dataset.devices=n;
+        c.addEventListener("click", ()=>{
+          haptic("light");
+          state.plan.devices=n;
+          updateSelected();
+          updateChoice();
+        });
+        chipsDevices.appendChild(c);
+      });
 
-btnResetId.addEventListener("click", ()=>{
-  state.userKey = makeUserKey();
-  localStorage.setItem(LS.userKey, state.userKey);
+      updateSelected();
+      updateChoice();
+    }
 
-  state.activeUntil = "";
-  localStorage.removeItem(LS.activeUntil);
+    function updateSelected(){
+      chipsDays.querySelectorAll(".chip").forEach(c=>{
+        c.classList.toggle("selected", Number(c.dataset.days)===state.plan.days);
+      });
+      chipsDevices.querySelectorAll(".chip").forEach(c=>{
+        c.classList.toggle("selected", Number(c.dataset.devices)===state.plan.devices);
+      });
+    }
 
-  state.lastConfig = "";
-  localStorage.removeItem(LS.lastConfig);
+    function animatePrice(from,to,ms=220){
+      const start=performance.now();
+      function tick(now){
+        const p=Math.min(1,(now-start)/ms);
+        const eased=1-Math.pow(1-p,3);
+        const v=Math.round(from+(to-from)*eased);
+        priceText.textContent = `${v} `;
+        const sm=document.createElement("small");
+        sm.textContent="Stars";
+        priceText.appendChild(sm);
+        if(p<1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
 
-  state.lastOrderId = "";
-  localStorage.removeItem(LS.lastOrder);
+    function updateChoice(morph=false){
+      choiceTitle.textContent="Выбранный план";
+      choiceMeta.textContent=`${state.plan.days} дней • ${state.plan.devices} устройство(а)`;
 
-  setUserUI();
-  updateMainSubscriptionUI();
-  showToast("ID обновлён");
-});
+      const current = parseInt((priceText.textContent||"0").replace(/\D/g,"")) || state.plan.price;
+      if(morph) animatePrice(current, state.plan.price);
+      else{
+        priceText.textContent = `${state.plan.price} `;
+        const sm=document.createElement("small");
+        sm.textContent="Stars";
+        priceText.appendChild(sm);
+      }
+    }
 
-/***************
- * init
- ***************/
-async function boot(){
-  setUserUI();
-  setTGUser();
-  renderDevicesChips();
-  renderPlanCards();
-  disablePayButtons();
-  selectedCard.style.display="none";
+    /* =========================
+       Render profile
+    ========================= */
+    function renderProfile(){
+      // avatar
+      avatar.innerHTML="";
+      if(state.user.photo_url){
+        const img=document.createElement("img");
+        img.src=state.user.photo_url;
+        img.alt="avatar";
+        avatar.appendChild(img);
+      }else{
+        const f=document.createElement("div");
+        f.className="fallback";
+        f.textContent=(state.user.name||"Z").trim().slice(0,1).toUpperCase();
+        avatar.appendChild(f);
+      }
 
-  await checkHealth();
-  updateMainSubscriptionUI();
+      userName.textContent=state.user.name||"Гость";
+      tgLine.textContent=`tg_id: ${state.user.tg_id ?? "—"}`;
 
-  // если есть последний заказ — обновим 1 раз
-  if(state.lastOrderId){
-    try{
-      const order = await api(`/pay/order/${state.lastOrderId}`);
-      showOrderUI(order);
-    }catch(e){}
-  }
-}
-boot();
-</script>
+      profileName.textContent=state.user.name||"—";
+      profileTgId.textContent=`tg_id: ${state.user.tg_id ?? "—"}`;
+      profileUserKey.textContent=state.user.user_key||"—";
+    }
+
+    /* =========================
+       API
+    ========================= */
+    async function apiHealth(){
+      try{
+        const r=await fetch(`${API_BASE}/health`);
+        if(!r.ok) throw 0;
+        apiDot.style.background = "rgba(52,199,89,.9)";
+        apiText.textContent="API OK";
+      }catch(e){
+        apiDot.style.background = "rgba(255,59,48,.85)";
+        apiText.textContent="API OFF";
+      }
+    }
+
+    async function createStars(){
+      const body={ user_key: state.user.user_key, days: state.plan.days, devices: state.plan.devices };
+      const r=await fetch(`${API_BASE}/pay/stars/create`,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+      const data=await r.json();
+      if(!r.ok) throw new Error(data?.detail || "Stars error");
+      return data;
+    }
+
+    async function createCrypto(){
+      const body={ user_key: state.user.user_key, days: state.plan.days, devices: state.plan.devices };
+      const r=await fetch(`${API_BASE}/pay/crypto/create`,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+      const data=await r.json();
+      if(!r.ok) throw new Error(data?.detail || "Crypto error");
+      return data;
+    }
+
+    async function getOrder(id){
+      const r=await fetch(`${API_BASE}/pay/order/${id}`);
+      const data=await r.json();
+      if(!r.ok) throw new Error(data?.detail || "Order error");
+      return data;
+    }
+
+    async function issueConfig(){
+      const body={ inbound_id: DEFAULT_INBOUND_ID, user_key: state.user.user_key, days: state.plan.days, limit_ip: 0 };
+      const r=await fetch(`${API_BASE}/issue-config`,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+      const data=await r.json();
+      if(!r.ok) throw new Error(data?.detail || "Config error");
+      return data; // {link}
+    }
+
+    function openInvoice(url){
+      try{
+        if(window.Telegram?.WebApp?.openInvoice){
+          Telegram.WebApp.openInvoice(url, ()=>{});
+          return;
+        }
+      }catch(e){}
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    function stopPolling(){
+      if(state.pollTimer){
+        clearInterval(state.pollTimer);
+        state.pollTimer=null;
+      }
+    }
+
+    function startPolling(orderId){
+      stopPolling();
+      orderLine.textContent=`Заказ: ${orderId} • pending`;
+      state.pollTimer=setInterval(async ()=>{
+        try{
+          const o=await getOrder(orderId);
+          orderLine.textContent=`Заказ: ${o.id} • статус: ${o.status}`;
+
+          // active_until -> only on MAIN
+          if(o.active_until){
+            const d=formatDate(o.active_until);
+            activeUntil.textContent = d ? d : "активна";
+            btnSubscribe.textContent = "Продлить подписку";
+          }else{
+            activeUntil.textContent = "нет";
+            btnSubscribe.textContent = "Приобрести подписку";
+          }
+
+          if(o.config_link){
+            state.config=o.config_link;
+            copyBtn.style.display="inline-flex";
+            copyBtn.textContent="Скопировать конфиг";
+          }
+
+          if(o.status==="paid"){
+            // if no config from backend yet, allow fallback
+            copyBtn.style.display="inline-flex";
+            copyBtn.textContent = state.config ? "Скопировать конфиг" : "Получить и скопировать конфиг";
+          }
+        }catch(e){
+          // no spam
+        }
+      }, 1200);
+    }
+
+    /* =========================
+       Actions
+    ========================= */
+    payStars.addEventListener("click", async ()=>{
+      try{
+        haptic("medium");
+        orderLine.textContent="Создаём инвойс Stars…";
+        const {order_id, invoice_link}=await createStars();
+        saveOrder(order_id);
+        orderLine.textContent=`Инвойс готов • ${order_id}`;
+        openInvoice(invoice_link);
+        startPolling(order_id);
+      }catch(e){
+        orderLine.textContent="Ошибка Stars: " + (e.message || e);
+      }
+    });
+
+    payUsdt.addEventListener("click", async ()=>{
+      try{
+        haptic("medium");
+        orderLine.textContent="Создаём инвойс USDT…";
+        const data=await createCrypto();
+        const oid=data.order_id;
+        saveOrder(oid);
+        orderLine.textContent=`Инвойс готов • ${oid}`;
+        openInvoice(data.invoice_url || data.invoice_link || "");
+        startPolling(oid);
+      }catch(e){
+        orderLine.textContent="Ошибка USDT: " + (e.message || e);
+      }
+    });
+
+    copyBtn.addEventListener("click", async ()=>{
+      try{
+        haptic("light");
+        let link = state.config;
+        if(!link){
+          orderLine.textContent="Получаем конфиг…";
+          const d=await issueConfig();
+          link=d.link;
+          state.config=link;
+        }
+        await navigator.clipboard.writeText(link);
+        toast("Конфиг скопирован");
+      }catch(e){
+        toast("Не удалось скопировать");
+      }
+    });
+
+    btnNewKey.addEventListener("click", ()=>{
+      haptic("light");
+      state.user.user_key=randKey();
+      saveKey();
+      renderProfile();
+      toast("Новый ID создан");
+    });
+
+    /* =========================
+       Instructions swipe
+    ========================= */
+    function updateSlide(){
+      track.style.transform = `translateX(${-state.slide*100}%)`;
+    }
+    prev.addEventListener("click", ()=>{
+      haptic("light");
+      state.slide=clamp(state.slide-1,0,2);
+      updateSlide();
+    });
+    next.addEventListener("click", ()=>{
+      haptic("light");
+      state.slide=clamp(state.slide+1,0,2);
+      updateSlide();
+    });
+
+    (function bindSwipe(){
+      let startX=0, curX=0, dragging=false;
+      track.addEventListener("touchstart",(e)=>{
+        dragging=true;
+        startX=e.touches[0].clientX;
+        curX=startX;
+      },{passive:true});
+      track.addEventListener("touchmove",(e)=>{
+        if(!dragging) return;
+        curX=e.touches[0].clientX;
+      },{passive:true});
+      track.addEventListener("touchend",()=>{
+        if(!dragging) return;
+        dragging=false;
+        const dx=curX-startX;
+        if(Math.abs(dx)>40){
+          if(dx<0) state.slide=clamp(state.slide+1,0,2);
+          else state.slide=clamp(state.slide-1,0,2);
+          haptic("light");
+          updateSlide();
+        }
+      });
+    })();
+
+    /* =========================
+       Load active from last order
+    ========================= */
+    async function refreshActive(){
+      if(!state.orderId) return;
+      try{
+        const o=await getOrder(state.orderId);
+        if(o.active_until){
+          const d=formatDate(o.active_until);
+          activeUntil.textContent = d || "активна";
+          btnSubscribe.textContent = "Продлить подписку";
+        }else{
+          activeUntil.textContent = "нет";
+          btnSubscribe.textContent = "Приобрести подписку";
+        }
+      }catch(e){}
+    }
+
+    /* =========================
+       Boot
+    ========================= */
+    (async function boot(){
+      initTelegram();
+      loadLocal();
+      renderChips();
+      renderProfile();
+
+      await apiHealth();
+      await refreshActive();
+
+      if(state.orderId) startPolling(state.orderId);
+    })();
+  </script>
 </body>
 </html>
