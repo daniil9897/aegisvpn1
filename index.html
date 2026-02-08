@@ -2,1181 +2,1222 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>ZEUSVPN</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
   <style>
     :root{
-      /* ===== iOS Light palette ===== */
-      --bg: #F2F2F7;                 /* iOS grouped background */
-      --card: rgba(255,255,255,.78); /* glass */
-      --stroke: rgba(0,0,0,.08);
-      --stroke2: rgba(0,0,0,.12);
-      --text: #0B0B0F;
-      --muted: rgba(60,60,67,.60);   /* iOS secondary label */
-      --muted2: rgba(60,60,67,.36);  /* iOS tertiary label */
-      --blue: #007AFF;               /* iOS system blue */
-      --green:#34C759;
-      --red:#FF3B30;
-      --shadow: 0 18px 50px rgba(0,0,0,.12);
-      --shadow2: 0 10px 24px rgba(0,0,0,.10);
-      --r: 20px;
-      --r2: 26px;
+      --bg:#ffffff;
+      --bg2:#f5f6fa;
+      --card:#ffffff;
+      --line:#e9ecf5;
+      --text:#0b1220;
+      --muted:#5b6475;
 
-      /* spring-ish timings */
-      --ease: cubic-bezier(.2,.9,.2,1);
-      --ease2: cubic-bezier(.16,1,.3,1);
+      --a:#6d5bff;      /* Zeus purple */
+      --b:#00c2ff;      /* Lightning cyan */
+
+      --ok:#22c55e;
+      --bad:#ff3b30;
+      --warn:#ffb020;
+
+      --r:20px;
+      --shadow: 0 10px 30px rgba(15,23,42,.08);
+      --shadow2: 0 16px 40px rgba(15,23,42,.10);
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display","SF Pro Text", Inter, Segoe UI, Roboto, Arial, sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Arial,sans-serif;
       color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 50% -10%, rgba(0,122,255,.14), rgba(0,122,255,0) 60%),
-        radial-gradient(900px 500px at 90% 10%, rgba(52,199,89,.10), rgba(52,199,89,0) 65%),
-        linear-gradient(180deg, var(--bg), #fff);
+      background: linear-gradient(180deg, var(--bg), var(--bg2));
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
-      overflow-x:hidden;
     }
 
-    .wrap{
-      max-width:520px;
-      margin:0 auto;
-      padding:
-        calc(14px + env(safe-area-inset-top))
-        14px
-        calc(18px + env(safe-area-inset-bottom))
-        14px;
+    /* Layout */
+    .app{
+      min-height:100%;
+      padding: env(safe-area-inset-top) 16px calc(92px + env(safe-area-inset-bottom)) 16px;
+      max-width: 520px;
+      margin: 0 auto;
     }
 
-    /* ===== Top bar (iOS-like) ===== */
     .topbar{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      margin-bottom:12px;
+      padding: 12px 0 14px 0;
     }
     .brand{
-      display:flex; align-items:center; gap:10px;
-      min-width:0;
+      display:flex;
+      align-items:center;
+      gap:12px;
     }
     .logo{
-      width:40px;height:40px;border-radius:14px;
-      background: rgba(255,255,255,.85);
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-      display:grid; place-items:center;
-      flex:0 0 auto;
-    }
-    .logo img{width:100%;height:100%;object-fit:cover;display:block}
-    .logo .fallback{
-      font-weight:900;
-      color: rgba(0,0,0,.55);
-    }
-    .brandText{min-width:0}
-    .brandTitle{
-      font-weight:900;
-      font-size:15px;
-      line-height:1.1;
-      letter-spacing:.2px;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .brandSub{
-      margin-top:2px;
-      font-size:12.5px;
-      color: var(--muted);
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-
-    .apiPill{
-      display:flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.70);
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow2);
-      font-size:12.5px;
-      color: rgba(60,60,67,.82);
-      user-select:none;
-    }
-    .dot{
-      width:8px;height:8px;border-radius:99px;
-      background: rgba(0,0,0,.25);
-    }
-
-    /* ===== iOS Segmented control ===== */
-    .seg{
-      background: rgba(255,255,255,.82);
-      border:1px solid var(--stroke);
-      border-radius: 14px;
-      padding:4px;
-      display:flex;
-      gap:4px;
-      box-shadow: var(--shadow2);
-      margin-bottom:12px;
-      position:sticky;
-      top: calc(10px + env(safe-area-inset-top));
-      z-index:10;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-    .seg button{
-      flex:1;
-      border:0;
-      background:transparent;
-      padding:10px 10px;
-      border-radius: 11px;
-      font-weight:800;
-      font-size:12.5px;
-      color: rgba(60,60,67,.78);
-      cursor:pointer;
-      transition: transform .12s var(--ease), background .2s var(--ease), color .2s var(--ease);
-      -webkit-tap-highlight-color: transparent;
-    }
-    .seg button:active{transform: scale(.99)}
-    .seg button.active{
-      background: rgba(255,255,255,.95);
-      color: var(--text);
-      box-shadow: 0 6px 16px rgba(0,0,0,.10);
-    }
-
-    /* ===== iOS card (glass) ===== */
-    .card{
-      background: var(--card);
-      border:1px solid var(--stroke);
-      border-radius: var(--r2);
+      width:44px;height:44px;border-radius:14px;
+      background: radial-gradient(120% 120% at 20% 10%, rgba(255,255,255,.95), rgba(255,255,255,.5)),
+                  linear-gradient(135deg, rgba(109,91,255,.20), rgba(0,194,255,.15));
+      border:1px solid var(--line);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      overflow:hidden;
-      margin-bottom:12px;
-    }
-    .cardInner{padding:16px}
-    .row{display:flex; align-items:center; justify-content:space-between; gap:12px}
-    .title{
-      font-weight:950;
-      font-size:16px;
-      letter-spacing:.2px;
-    }
-    .muted{color:var(--muted); font-size:13px; line-height:1.45}
-    .divider{
-      height:1px;
-      background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.10), rgba(0,0,0,0));
-      margin:12px 0;
-    }
-
-    /* ===== Profile line ===== */
-    .userBox{display:flex; align-items:center; gap:12px; min-width:0}
-    .avatar{
-      width:46px;height:46px;border-radius:16px;
-      background: rgba(255,255,255,.90);
-      border:1px solid var(--stroke);
-      overflow:hidden;
-      box-shadow: var(--shadow2);
-      flex:0 0 auto;
-      display:grid; place-items:center;
-    }
-    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
-    .avatar .fallback{
-      font-weight:900;
-      color: rgba(0,0,0,.45);
-    }
-    .userMeta{min-width:0}
-    .userName{
-      font-weight:900;
-      font-size:14px;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .userId{
-      margin-top:2px;
-      font-size:12px;
-      color: var(--muted);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-    }
-
-    /* ===== iOS Buttons ===== */
-    .btn{
-      width:100%;
-      border:0;
-      border-radius: 16px;
-      padding:14px 14px;
-      font-weight:900;
-      letter-spacing:.15px;
-      font-size:15px;
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .12s var(--ease), filter .2s var(--ease), opacity .2s var(--ease);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-    }
-    .btn:active{transform: scale(.985)}
-    .btnPrimary{
-      background: var(--blue);
-      color: white;
-      box-shadow: 0 12px 26px rgba(0,122,255,.25);
-    }
-    .btnSecondary{
-      background: rgba(255,255,255,.92);
-      border:1px solid var(--stroke);
-      color: var(--text);
-      box-shadow: 0 10px 22px rgba(0,0,0,.10);
-    }
-    .btnGhost{
-      background: rgba(255,255,255,.0);
-      border:1px solid var(--stroke);
-      color: var(--text);
-    }
-    .btnSmallRow{display:flex; gap:10px}
-    .btnSmallRow .btn{flex:1; padding:12px 12px; font-size:14px}
-
-    /* ===== selection chips (iOS pill) ===== */
-    .chips{display:flex; flex-wrap:wrap; gap:10px}
-    .chip{
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.86);
-      border-radius:999px;
-      padding:10px 12px;
-      font-size:13px;
-      font-weight:900;
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .12s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease);
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-    }
-    .chip:active{transform: scale(.99)}
-    .chip.selected{
-      border-color: rgba(0,122,255,.40);
-      box-shadow: 0 0 0 6px rgba(0,122,255,.10);
-    }
-    .chipTag{
-      font-size:11px;
-      font-weight:950;
-      background: rgba(0,122,255,.12);
-      color: rgba(0,122,255,.95);
-      padding:3px 8px;
-      border-radius:999px;
-    }
-
-    /* ===== screens (iOS transitions) ===== */
-    .screen{display:none}
-    .screen.active{display:block}
-    .in{animation: in .34s var(--ease2) both}
-    .out{animation: out .22s var(--ease) both}
-    @keyframes in{from{opacity:0; transform: translateY(10px)} to{opacity:1; transform: translateY(0)}}
-    @keyframes out{from{opacity:1; transform: translateY(0)} to{opacity:0; transform: translateY(8px)}}
-
-    /* ===== bottom sheet modal (iOS) ===== */
-    .backdrop{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.32);
-      display:none;
-      justify-content:center;
-      align-items:flex-end;
-      padding: 12px 12px calc(12px + env(safe-area-inset-bottom)) 12px;
-      z-index:50;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    .backdrop.show{display:flex}
-
-    .sheet{
-      width:min(520px, 100%);
-      background: rgba(255,255,255,.88);
-      border:1px solid var(--stroke);
-      border-radius: 28px;
-      box-shadow: 0 40px 120px rgba(0,0,0,.24);
-      overflow:hidden;
-      transform: translateY(18px);
-      opacity:0;
-    }
-    .sheet.show{
-      animation: sheetIn .42s var(--ease2) forwards;
-    }
-    @keyframes sheetIn{
-      0%{transform: translateY(26px); opacity:0}
-      60%{transform: translateY(-2px); opacity:1}
-      100%{transform: translateY(0); opacity:1}
-    }
-    .sheetHeader{
-      padding:12px 14px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border-bottom:1px solid rgba(0,0,0,.08);
-    }
-    .grab{
-      width:40px;height:5px;border-radius:99px;
-      background: rgba(60,60,67,.22);
-      margin: 8px auto 0 auto;
-    }
-    .sheetTitle{font-weight:950; font-size:15px}
-    .close{
-      width:36px;height:36px;border-radius:12px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.85);
-      cursor:pointer;
-      display:grid; place-items:center;
-      font-weight:950;
-      transition: transform .12s var(--ease);
-      -webkit-tap-highlight-color: transparent;
-    }
-    .close:active{transform: scale(.98)}
-    .sheetBody{
-      padding:14px;
-      max-height: 74vh;
-      overflow:auto;
-    }
-
-    /* ===== price card ===== */
-    .priceCard{
-      border-radius: 22px;
-      border:1px solid rgba(0,0,0,.08);
-      background:
-        radial-gradient(900px 260px at 20% 0%, rgba(0,122,255,.14), rgba(0,122,255,0) 58%),
-        linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
-      box-shadow: 0 16px 40px rgba(0,0,0,.14);
-      padding:14px;
+      display:grid;
+      place-items:center;
       position:relative;
       overflow:hidden;
     }
-    .priceTop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
-    .pName{font-weight:950; font-size:14px}
-    .pMeta{margin-top:3px; color:var(--muted); font-size:12.5px}
-    .pPrice{
-      font-weight:1000;
-      font-size:20px;
-      letter-spacing:.2px;
-      line-height:1;
-      white-space:nowrap;
-    }
-    .pPrice small{font-size:12px; color:var(--muted); font-weight:900}
-
-    /* subtle shimmer */
-    .priceCard::after{
+    .logo:before{
       content:"";
-      position:absolute; inset:-50% -70%;
-      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.55) 50%, rgba(255,255,255,0) 100%);
-      transform: translateX(-40%);
-      animation: shimmer 1.6s infinite;
-      opacity:.20;
-      pointer-events:none;
+      position:absolute; inset:-20%;
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.70), transparent 55%);
+      transform: rotate(8deg);
     }
-    @keyframes shimmer { to{ transform: translateX(60%);} }
+    .bolt{
+      width:20px;height:20px; z-index:1;
+      filter: drop-shadow(0 8px 12px rgba(109,91,255,.18));
+      background: linear-gradient(135deg, var(--a), var(--b));
+      -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M13 2L3 14h7l-1 8 12-14h-7l-1-6z"/></svg>') center / contain no-repeat;
+      mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M13 2L3 14h7l-1 8 12-14h-7l-1-6z"/></svg>') center / contain no-repeat;
+    }
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      line-height:1.1;
+      letter-spacing:.2px;
+    }
+    .brand p{
+      margin:2px 0 0 0;
+      color:var(--muted);
+      font-size:12.5px;
+    }
 
-    /* ===== toast ===== */
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom: calc(18px + env(safe-area-inset-bottom));
-      transform: translateX(-50%) translateY(8px);
-      background: rgba(255,255,255,.92);
-      border:1px solid var(--stroke);
-      box-shadow: 0 18px 46px rgba(0,0,0,.18);
+    .chip{
       padding:10px 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.85);
+      border-radius: 999px;
+      box-shadow: 0 10px 24px rgba(15,23,42,.05);
+      display:flex; align-items:center; gap:8px;
+      font-size:12.5px;
+      color:var(--muted);
+      user-select:none;
+    }
+    .chip strong{ color:var(--text); font-weight:800; }
+
+    .section{
+      display:none;
+      animation: fadeUp .18s ease-out;
+    }
+    .section.active{ display:block; }
+
+    @keyframes fadeUp{
+      from { opacity:0; transform: translateY(6px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      box-shadow: var(--shadow);
+      padding:16px;
+    }
+    .card + .card{ margin-top:12px; }
+
+    .card-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .card-title h2{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.35;
+    }
+
+    /* Pills */
+    .pill-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+    }
+    .pill{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:13px;
+      font-weight:700;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .pill:active{ transform: scale(.985); }
+    .pill.active{
+      border-color: rgba(109,91,255,.55);
+      background: rgba(109,91,255,.10);
+      box-shadow: 0 12px 22px rgba(109,91,255,.10);
+    }
+
+    /* Summary */
+    .summary{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border:1px dashed rgba(233,236,245,.9);
+      border-radius: 14px;
+      background: rgba(245,246,250,.55);
+    }
+    .row span{ color:var(--muted); font-size:12.5px; }
+    .row strong{ font-size:13px; }
+
+    .price{
+      font-size:24px;
+      font-weight:900;
+      letter-spacing:.2px;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Buttons */
+    .btn{
+      width:100%;
+      border:0;
+      border-radius:18px;
+      height:56px;
+      font-weight:900;
+      font-size:15px;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      user-select:none;
+    }
+    .btn-primary{
+      color:#fff;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      box-shadow: 0 14px 30px rgba(109,91,255,.22);
+    }
+    .btn-primary:active{ transform: scale(.985); box-shadow: 0 10px 22px rgba(109,91,255,.16); }
+
+    .btn-ghost{
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--text);
+      box-shadow: 0 12px 24px rgba(15,23,42,.06);
+    }
+    .btn-ghost:active{ transform: scale(.99); }
+
+    .btn-mini{
+      height:44px;
+      border-radius:14px;
+      font-weight:850;
+      font-size:13px;
+      padding: 0 14px;
+      width:auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+
+    /* Status badge */
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
       border-radius: 999px;
       font-size:12.5px;
-      color: rgba(60,60,67,.90);
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .18s var(--ease), transform .18s var(--ease);
-      z-index:100;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      font-weight:800;
+      border:1px solid var(--line);
+      background: #fff;
     }
-    .toast.show{opacity:1; transform: translateX(-50%) translateY(0)}
+    .badge.ok{
+      border-color: rgba(34,197,94,.35);
+      background: rgba(34,197,94,.12);
+      color: #168a3e;
+    }
+    .badge.bad{
+      border-color: rgba(255,59,48,.35);
+      background: rgba(255,59,48,.12);
+      color: #c9140c;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: currentColor;
+      opacity:.9;
+    }
 
-    /* ===== instruction swipe ===== */
-    .swipeWrap{overflow:hidden}
-    .track{
-      display:flex; gap:12px;
-      transform: translateX(0);
-      transition: transform .34s var(--ease2);
+    /* Config area */
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size:12.5px;
+      line-height:1.35;
+      background: rgba(245,246,250,.75);
+      border:1px solid var(--line);
+      border-radius: 16px;
+      padding:12px;
+      word-break: break-all;
+      overflow:auto;
+      max-height: 140px;
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    /* Orders list */
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
+    }
+    .item{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius: 16px;
+      padding:12px;
+      box-shadow: 0 12px 26px rgba(15,23,42,.06);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .item h3{
+      margin:0;
+      font-size:13px;
+      letter-spacing:.1px;
+    }
+    .item p{
+      margin:4px 0 0 0;
+      color:var(--muted);
+      font-size:12.5px;
+    }
+    .tag{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:800;
+      background: rgba(245,246,250,.65);
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    /* Instruction slider */
+    .slider{
+      position:relative;
+      overflow:hidden;
+      border-radius: var(--r);
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow: var(--shadow);
+    }
+    .slides{
+      display:flex;
+      transition: transform .22s ease;
       will-change: transform;
     }
-    .miniCard{
+    .slide{
       min-width:100%;
+      padding:16px;
+    }
+    .steps{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .step{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      background: rgba(245,246,250,.55);
+    }
+    .num{
+      width:28px;height:28px;border-radius: 10px;
+      display:grid; place-items:center;
+      font-weight:900;
+      color:#fff;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      box-shadow: 0 10px 22px rgba(109,91,255,.18);
+      flex: 0 0 auto;
+    }
+    .step b{ display:block; font-size:13px; }
+    .step span{ display:block; color:var(--muted); font-size:12.5px; margin-top:2px; line-height:1.35; }
+
+    .pager{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      padding:12px;
+      border-top:1px solid var(--line);
+      background: rgba(245,246,250,.45);
+    }
+    .dots{ display:flex; gap:8px; }
+    .dot2{
+      width:8px;height:8px;border-radius:999px;
+      background: rgba(91,100,117,.35);
+    }
+    .dot2.active{
+      width:20px;
+      background: linear-gradient(135deg, var(--a), var(--b));
+    }
+
+    /* Bottom nav */
+    .nav{
+      position: fixed;
+      left:0; right:0; bottom:0;
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom)) 14px;
       background: rgba(255,255,255,.78);
-      border:1px solid var(--stroke);
-      border-radius: var(--r2);
-      box-shadow: var(--shadow);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      overflow:hidden;
+      border-top: 1px solid var(--line);
     }
-    .miniCard .cardInner{padding:16px}
+    .nav-inner{
+      max-width:520px;
+      margin:0 auto;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .navbtn{
+      flex:1;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius: 18px;
+      height:52px;
+      box-shadow: 0 12px 26px rgba(15,23,42,.06);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-weight:900;
+      color:var(--muted);
+      cursor:pointer;
+      user-select:none;
+      transition: transform .12s ease, color .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .navbtn:active{ transform: scale(.988); }
+    .navbtn.active{
+      color:var(--text);
+      border-color: rgba(109,91,255,.35);
+      background: rgba(109,91,255,.08);
+    }
+    .ico{
+      width:18px;height:18px;
+      background: currentColor;
+      opacity:.9;
+      -webkit-mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+    }
+    .ico.home{
+      -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3l9-8z"/></svg>');
+      mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3l9-8z"/></svg>');
+    }
+    .ico.user{
+      -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.42 0-8 2-8 4.5V21h16v-2.5C20 16 16.42 14 12 14z"/></svg>');
+      mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.42 0-8 2-8 4.5V21h16v-2.5C20 16 16.42 14 12 14z"/></svg>');
+    }
+    .ico.book{
+      -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M18 2H8a3 3 0 0 0-3 3v16a1 1 0 0 0 1.45.89A6.9 6.9 0 0 1 9 21h9a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3zm1 16a1 1 0 0 1-1 1H9a8.7 8.7 0 0 0-2 .23V5a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1z"/></svg>');
+      mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M18 2H8a3 3 0 0 0-3 3v16a1 1 0 0 0 1.45.89A6.9 6.9 0 0 1 9 21h9a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3zm1 16a1 1 0 0 1-1 1H9a8.7 8.7 0 0 0-2 .23V5a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1z"/></svg>');
+    }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(100px + env(safe-area-inset-bottom));
+      background: rgba(11,18,32,.92);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 12.5px;
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .15s ease, transform .15s ease;
+      z-index: 50;
+      max-width: 90vw;
+      text-align:center;
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+
+    /* Small helpers */
+    .mt12{ margin-top:12px; }
+    .mt10{ margin-top:10px; }
+    .mt8{ margin-top:8px; }
+    .muted{ color:var(--muted); }
+    .hr{
+      height:1px;
+      background: var(--line);
+      margin: 12px 0;
+    }
+    .two{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .two > *{ flex: 1 1 180px; }
   </style>
 </head>
-
 <body>
-  <div class="toast" id="toast">Скопировано</div>
 
-  <div class="wrap">
-    <!-- Topbar -->
+  <div class="app">
+
     <div class="topbar">
       <div class="brand">
-        <div class="logo" id="logoBox">
-          <img src="logo.png" alt="ZEUSVPN" onerror="this.remove(); const s=document.createElement('div'); s.className='fallback'; s.textContent='Z'; document.getElementById('logoBox').appendChild(s);">
-        </div>
-        <div class="brandText">
-          <div class="brandTitle">ZEUSVPN</div>
-          <div class="brandSub">iOS Premium • Minimal</div>
+        <div class="logo"><div class="bolt"></div></div>
+        <div>
+          <h1>ZEUSVPN</h1>
+          <p>Автоматическая выдача VLESS • iOS-стайл</p>
         </div>
       </div>
-      <div class="apiPill">
-        <span class="dot" id="apiDot"></span>
-        <span id="apiText">API</span>
-      </div>
-    </div>
 
-    <!-- Segmented -->
-    <div class="seg">
-      <button class="active" data-screen="home">Главная</button>
-      <button data-screen="profile">Профиль</button>
-      <button data-screen="instructions">Инструкция</button>
+      <div class="chip" title="Твой идентификатор в системе">
+        ID: <strong id="userKeyShort">—</strong>
+      </div>
     </div>
 
     <!-- HOME -->
-    <div class="screen active in" id="screen-home">
+    <section id="viewHome" class="section active">
       <div class="card">
-        <div class="cardInner">
+        <div class="card-title">
+          <h2>Тариф</h2>
+          <span class="badge" id="planBadge"><span class="dot"></span><span id="planBadgeText">Выбери параметры</span></span>
+        </div>
+        <p class="sub">Выбирай срок подписки и число устройств. После оплаты конфиг появится в кабинете.</p>
+
+        <div class="mt12">
+          <div class="card-title" style="margin-bottom:6px;">
+            <h2 style="font-size:13px;margin:0;">Срок</h2>
+            <span class="sub" id="daysHint">30 дней</span>
+          </div>
+          <div class="pill-row" id="daysPills"></div>
+        </div>
+
+        <div class="mt12">
+          <div class="card-title" style="margin-bottom:6px;">
+            <h2 style="font-size:13px;margin:0;">Устройства</h2>
+            <span class="sub" id="devHint">1 устройство</span>
+          </div>
+          <div class="pill-row" id="devPills"></div>
+        </div>
+
+        <div class="summary">
           <div class="row">
-            <div class="userBox">
-              <div class="avatar" id="avatar"><div class="fallback" id="avatarFallback">Z</div></div>
-              <div class="userMeta">
-                <div class="userName" id="userName">Гость</div>
-                <div class="userId" id="tgLine">tg_id: —</div>
-              </div>
-            </div>
-            <div style="text-align:right">
-              <div class="muted" style="font-weight:900; color:rgba(60,60,67,.70)">Подписка</div>
-              <div style="font-weight:950" id="activeUntil">нет</div>
-            </div>
+            <span>Итого</span>
+            <strong class="price" id="priceText">—</strong>
           </div>
-
-          <div class="divider"></div>
-
-          <div class="muted" style="margin-bottom:12px">
-            Выбери срок и устройства → оплати Stars или USDT → получишь конфиг.
+          <div class="row">
+            <span>Что включено</span>
+            <strong id="includesText">VLESS • 1 сервер • авто-продление</strong>
           </div>
+        </div>
 
-          <button class="btn btnPrimary" id="btnSubscribe">Приобрести подписку</button>
+        <div class="mt12">
+          <button class="btn btn-primary" id="payBtn">Оплатить</button>
+        </div>
+
+        <p class="sub mt10">
+          Нажимая “Оплатить”, ты создаёшь заказ. В этой демо-версии оплата имитируется (потом подключим FastAPI + реальную оплату).
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <h2>Почему это удобно</h2>
+          <span class="tag">Автоматически</span>
+        </div>
+        <div class="two mt10">
+          <div class="row" style="border-style:solid;">
+            <span>⏱ Без поддержки</span>
+            <strong>выдача за секунды</strong>
+          </div>
+          <div class="row" style="border-style:solid;">
+            <span>🔒 Реальный сервер</span>
+            <strong>через 3x-ui/Xray</strong>
+          </div>
+          <div class="row" style="border-style:solid;">
+            <span>🧾 Статус</span>
+            <strong>“Активна до …”</strong>
+          </div>
+          <div class="row" style="border-style:solid;">
+            <span>📲 Инструкция</span>
+            <strong>iOS/Android/Desktop</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CABINET -->
+    <section id="viewCabinet" class="section">
+      <div class="card">
+        <div class="card-title">
+          <h2>Личный кабинет</h2>
+          <span class="tag" id="subTag">—</span>
+        </div>
+
+        <div class="two mt10">
+          <div class="row" style="border-style:solid;">
+            <span>User Key</span>
+            <strong class="mono" style="max-height:none;" id="userKeyFull">—</strong>
+          </div>
+          <div class="row" style="border-style:solid;">
+            <span>Устройства</span>
+            <strong id="devicesLimitText">—</strong>
+          </div>
+        </div>
+
+        <div class="mt10">
+          <div class="row" style="border-style:solid;">
+            <span>Подписка</span>
+            <strong id="activeUntilText">—</strong>
+          </div>
+        </div>
+
+        <p class="sub mt10">Конфиг показывается только если подписка активна.</p>
+      </div>
+
+      <div class="card" id="configCard">
+        <div class="card-title">
+          <h2>Мой конфиг (VLESS)</h2>
+          <span class="badge bad" id="configBadge"><span class="dot"></span><span>Недоступно</span></span>
+        </div>
+
+        <div id="configLocked">
+          <p class="sub">Оплати тариф на главной — после этого здесь появится твоя VLESS ссылка.</p>
+          <button class="btn btn-ghost mt12" onclick="go('home')">Выбрать тариф</button>
+        </div>
+
+        <div id="configUnlocked" style="display:none;">
+          <div class="mono" id="vlessLink">—</div>
+          <div class="actions">
+            <button class="btn btn-mini btn-primary" id="copyBtn">Скопировать</button>
+            <button class="btn btn-mini btn-ghost" id="openBtn">Открыть</button>
+            <button class="btn btn-mini btn-ghost" id="regenBtn" title="В демо просто обновляет ссылку">Обновить</button>
+          </div>
+          <p class="sub mt10">Не делись ссылкой. Она даёт доступ к твоей подписке.</p>
         </div>
       </div>
 
       <div class="card">
-        <div class="cardInner">
-          <div class="title">Быстрые действия</div>
-          <div class="muted" style="margin-top:6px">Инвойс и конфиг появятся в модальном окне.</div>
-
-          <div class="divider"></div>
-
-          <button class="btn btnSecondary" id="btnOpenSheet">Открыть выбор подписки</button>
+        <div class="card-title">
+          <h2>История заказов</h2>
+          <span class="tag" id="ordersCount">0</span>
         </div>
+        <div class="list" id="ordersList"></div>
+        <button class="btn btn-ghost mt12" id="resetBtn">Сбросить демо-данные</button>
+        <p class="sub mt10">Сброс удалит локальные данные (localStorage). На проде это будет SQLite.</p>
       </div>
-    </div>
-
-    <!-- PROFILE (минимально как ты просил) -->
-    <div class="screen" id="screen-profile">
-      <div class="card">
-        <div class="cardInner">
-          <div class="title">Профиль</div>
-          <div class="muted" style="margin-top:6px">Минимум: Telegram + твой ID.</div>
-
-          <div class="divider"></div>
-
-          <div class="row" style="align-items:flex-start">
-            <div style="flex:1; min-width:0">
-              <div class="muted" style="font-weight:900">Telegram</div>
-              <div style="margin-top:6px; font-weight:950" id="profileName">—</div>
-              <div class="userId" style="margin-top:6px" id="profileTgId">tg_id: —</div>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="muted" style="font-weight:900">user_key</div>
-          <div class="userId" style="margin-top:6px; font-size:13px" id="profileUserKey">—</div>
-
-          <div style="height:10px"></div>
-          <button class="btn btnSecondary" id="btnNewKey">Сбросить / новый ID</button>
-        </div>
-      </div>
-    </div>
+    </section>
 
     <!-- INSTRUCTIONS -->
-    <div class="screen" id="screen-instructions">
-      <div class="card">
-        <div class="cardInner">
-          <div class="title">Инструкция</div>
-          <div class="muted" style="margin-top:6px">Свайпай карточки (как iOS).</div>
+    <section id="viewGuide" class="section">
+      <div class="card" style="padding:0;">
+        <div class="card-title" style="padding:16px 16px 0 16px; margin-bottom:10px;">
+          <h2>Инструкция подключения</h2>
+          <span class="tag" id="slideTag">iOS</span>
+        </div>
 
-          <div class="divider"></div>
-
-          <div class="swipeWrap">
-            <div class="track" id="track">
-              <div class="miniCard">
-                <div class="cardInner">
-                  <div class="title">iOS (V2Box / Streisand)</div>
-                  <div class="muted" style="margin-top:8px; line-height:1.6">
-                    1) Скопируй конфиг<br>
-                    2) Import from Clipboard / Add Profile<br>
-                    3) Connect
-                  </div>
+        <div class="slider">
+          <div class="slides" id="slides">
+            <!-- iOS -->
+            <div class="slide">
+              <p class="sub">Рекомендуем клиент: V2Box / Streisand / Shadowrocket (любой VLESS-клиент).</p>
+              <div class="steps">
+                <div class="step">
+                  <div class="num">1</div>
+                  <div><b>Скопируй VLESS ссылку</b><span>Открой “Личный кабинет” → “Скопировать”.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">2</div>
+                  <div><b>Импортируй в приложение</b><span>В клиенте выбери “Import from clipboard” или “Add by link”.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">3</div>
+                  <div><b>Подключись</b><span>Нажми Connect и разреши VPN-профиль в iOS.</span></div>
                 </div>
               </div>
+              <div class="hr"></div>
+              <button class="btn btn-primary" onclick="go('cabinet')">Открыть кабинет</button>
+            </div>
 
-              <div class="miniCard">
-                <div class="cardInner">
-                  <div class="title">Android (v2rayNG)</div>
-                  <div class="muted" style="margin-top:8px; line-height:1.6">
-                    1) Скопируй конфиг<br>
-                    2) + → Import from Clipboard<br>
-                    3) Подключись
-                  </div>
+            <!-- Android -->
+            <div class="slide">
+              <p class="sub">Подойдёт: v2rayNG / NekoRay (или другой клиент с поддержкой VLESS).</p>
+              <div class="steps">
+                <div class="step">
+                  <div class="num">1</div>
+                  <div><b>Скопируй VLESS ссылку</b><span>Кабинет → “Скопировать”.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">2</div>
+                  <div><b>Импорт по ссылке</b><span>В приложении: “Import from clipboard / from link”.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">3</div>
+                  <div><b>Подключись</b><span>Нажми Start/Connect и разреши VPN.</span></div>
                 </div>
               </div>
+              <div class="hr"></div>
+              <button class="btn btn-ghost" onclick="go('home')">Вернуться к тарифам</button>
+            </div>
 
-              <div class="miniCard">
-                <div class="cardInner">
-                  <div class="title">Desktop</div>
-                  <div class="muted" style="margin-top:8px; line-height:1.6">
-                    1) Скопируй VLESS ссылку<br>
-                    2) Import / Add profile<br>
-                    3) Connect
-                  </div>
+            <!-- Desktop -->
+            <div class="slide">
+              <p class="sub">Подойдёт: Nekoray / Clash Meta (если поддерживает импорт VLESS) / любой клиент VLESS.</p>
+              <div class="steps">
+                <div class="step">
+                  <div class="num">1</div>
+                  <div><b>Скопируй ссылку</b><span>Кабинет → “Скопировать”.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">2</div>
+                  <div><b>Импортируй</b><span>В клиенте: Import → From clipboard/URL.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">3</div>
+                  <div><b>Подключись</b><span>Выбери профиль и нажми Connect.</span></div>
                 </div>
               </div>
+              <div class="hr"></div>
+              <button class="btn btn-primary" onclick="go('cabinet')">Проверить подписку</button>
             </div>
           </div>
 
-          <div style="height:12px"></div>
-          <div class="btnSmallRow">
-            <button class="btn btnSecondary" id="prev">Назад</button>
-            <button class="btn btnSecondary" id="next">Далее</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bottom Sheet -->
-  <div class="backdrop" id="backdrop">
-    <div class="sheet" id="sheet">
-      <div class="grab"></div>
-      <div class="sheetHeader">
-        <div class="sheetTitle">Подписка ZEUSVPN</div>
-        <div class="close" id="close">✕</div>
-      </div>
-
-      <div class="sheetBody">
-        <div class="muted">Выбери срок и устройства. Цена и кнопка оплаты обновятся.</div>
-
-        <div class="divider"></div>
-
-        <div class="muted" style="font-weight:900">Срок</div>
-        <div style="height:8px"></div>
-        <div class="chips" id="chipsDays"></div>
-
-        <div style="height:14px"></div>
-
-        <div class="muted" style="font-weight:900">Устройства</div>
-        <div style="height:8px"></div>
-        <div class="chips" id="chipsDevices"></div>
-
-        <div class="divider"></div>
-
-        <div class="priceCard" id="priceCard">
-          <div class="priceTop">
-            <div>
-              <div class="pName" id="choiceTitle">Выбор</div>
-              <div class="pMeta" id="choiceMeta">—</div>
+          <div class="pager">
+            <button class="btn btn-mini btn-ghost" id="prevBtn">Назад</button>
+            <div class="dots">
+              <div class="dot2 active"></div>
+              <div class="dot2"></div>
+              <div class="dot2"></div>
             </div>
-            <div class="pPrice" id="priceText">—</div>
+            <button class="btn btn-mini btn-ghost" id="nextBtn">Далее</button>
           </div>
-
-          <div style="height:12px"></div>
-
-          <button class="btn btnPrimary" id="payStars">Оплатить Stars</button>
-          <div style="height:10px"></div>
-          <button class="btn btnSecondary" id="payUsdt">Оплатить USDT (CryptoPay)</button>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="muted" style="font-weight:900">Статус</div>
-        <div class="muted" id="orderLine" style="margin-top:6px">Нет активного заказа</div>
-
-        <div style="height:10px"></div>
-        <button class="btn btnSecondary" id="copyBtn" style="display:none">Скопировать конфиг</button>
+        <div style="padding:16px;">
+          <p class="sub">Под прод: сюда добавим реальные ссылки на App Store / Google Play и авто-открытие импорта.</p>
+        </div>
       </div>
+    </section>
+
+  </div>
+
+  <!-- Bottom nav -->
+  <div class="nav">
+    <div class="nav-inner">
+      <button class="navbtn active" id="navHome" onclick="go('home')">
+        <span class="ico home"></span>
+        Главная
+      </button>
+      <button class="navbtn" id="navCabinet" onclick="go('cabinet')">
+        <span class="ico user"></span>
+        Кабинет
+      </button>
+      <button class="navbtn" id="navGuide" onclick="go('guide')">
+        <span class="ico book"></span>
+        Инструкция
+      </button>
     </div>
   </div>
+
+  <div class="toast" id="toast">Скопировано</div>
 
   <script>
-    /* =========================
-       CONFIG
-    ========================= */
-    const API_BASE = "https://api.45.133.251.210.nip.io:8443";
-    const DEFAULT_INBOUND_ID = 1;
+    /***********************
+     * ZEUSVPN — Single-file Demo Frontend
+     * - Mobile iOS-like white theme
+     * - Mock payments & subscription storage in localStorage
+     * - Later: replace mockApi.* with real FastAPI calls
+     ************************/
 
-    const PRICES = { 30:199, 90:399, 180:599 };
-    const DEVICE_CHOICES = [1,3,5,10];
-
-    const state = {
-      screen: "home",
-      slide: 0,
-      user: { tg_id:null, name:"Гость", photo_url:null, user_key:null, tg_username:null, devices_limit:0, status:"none" },
-      plan: { days:30, devices:1, price:PRICES[30] },
-      orderId: null,
-      config: null,
-      pollTimer: null
+    // ---------- Mock pricing (edit as you want) ----------
+    // base price for 30 days, per device pack
+    const PRICES_30 = {
+      1: 199,
+      3: 349,
+      5: 399,
+      10: 599
+    };
+    // multipliers for days
+    const MULT = {
+      30: 1.0,
+      90: 2.6,    // small discount
+      180: 4.8    // bigger discount
     };
 
-    /* =========================
-       HAPTIC
-    ========================= */
-    function haptic(type="light"){
-      try{
-        if (window.Telegram?.WebApp?.HapticFeedback){
-          Telegram.WebApp.HapticFeedback.impactOccurred(type);
-        } else if (navigator.vibrate) {
-          navigator.vibrate(8);
-        }
-      }catch(e){}
-    }
+    const DAYS = [30, 90, 180];
+    const DEVS = [1, 3, 5, 10];
 
-    /* =========================
-       Toast
-    ========================= */
-    const toastEl = document.getElementById("toast");
-    let toastT=null;
-    function toast(msg){
-      toastEl.textContent = msg;
-      toastEl.classList.add("show");
-      clearTimeout(toastT);
-      toastT=setTimeout(()=>toastEl.classList.remove("show"), 1400);
-    }
+    // ---------- Storage ----------
+    const LS_KEY = "zeusvpn_demo_v1";
 
-    /* =========================
-       Utils
-    ========================= */
-    function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
-    function formatDate(ts){
-      if(!ts) return null;
+    function nowTs(){ return Date.now(); }
+    function addDays(ts, days){ return ts + days*24*60*60*1000; }
+    function fmtDate(ts){
+      if(!ts) return "—";
       const d = new Date(ts);
-      if(Number.isNaN(d.getTime())) return null;
-      const dd=String(d.getDate()).padStart(2,"0");
-      const mm=String(d.getMonth()+1).padStart(2,"0");
-      const yy=d.getFullYear();
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const yy = d.getFullYear();
       return `${dd}.${mm}.${yy}`;
     }
-    function randKey(){
-      const c="abcdefghjkmnpqrstuvwxyz23456789";
-      let s="";
-      for(let i=0;i<8;i++) s+=c[Math.floor(Math.random()*c.length)];
-      return s;
+
+    function uid(len=14){
+      const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let out="";
+      for(let i=0;i<len;i++) out += chars[(Math.random()*chars.length)|0];
+      return out;
     }
 
-    /* =========================
-       Telegram user
-    ========================= */
-    function initTelegram(){
-      const tg = window.Telegram?.WebApp;
-      if(!tg) return;
-      try{ tg.expand(); }catch(e){}
-      const u = tg.initDataUnsafe?.user;
-      if(u){
-        state.user.tg_id = u.id ?? null;
-        state.user.tg_username = u.username ?? null;
-        const name = [u.first_name, u.last_name].filter(Boolean).join(" ").trim();
-        state.user.name = name || (u.username ? "@"+u.username : "Пользователь");
-        state.user.photo_url = u.photo_url || null;
+    function uuid4(){
+      // simple uuid-like
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+        const r = (Math.random()*16)|0;
+        const v = c === "x" ? r : (r&0x3)|0x8;
+        return v.toString(16);
+      });
+    }
+
+    function loadState(){
+      const raw = localStorage.getItem(LS_KEY);
+      if(raw){
+        try { return JSON.parse(raw); } catch(e){}
+      }
+      // init
+      const st = {
+        user_key: "Z-" + uid(16),
+        sub: {
+          active_until: 0,
+          devices_limit: 0,
+          vless: ""
+        },
+        orders: [],
+        ui: {
+          days: 30,
+          devices: 1
+        }
+      };
+      saveState(st);
+      return st;
+    }
+
+    function saveState(st){
+      localStorage.setItem(LS_KEY, JSON.stringify(st));
+    }
+
+    let state = loadState();
+
+    // ---------- Mock API ----------
+    const mockApi = {
+      createOrder: async ({days, devices, price}) => {
+        // imitate latency
+        await sleep(350);
+        const order = {
+          order_id: "ORD-" + uid(10),
+          created_at: nowTs(),
+          status: "pending",
+          days, devices, price
+        };
+        state.orders.unshift(order);
+        saveState(state);
+        return order;
+      },
+      payOrder: async (order_id) => {
+        await sleep(650);
+        const order = state.orders.find(o => o.order_id === order_id);
+        if(!order) throw new Error("order_not_found");
+        order.status = "paid";
+        order.paid_at = nowTs();
+
+        // extend subscription
+        const base = (state.sub.active_until && state.sub.active_until > nowTs())
+          ? state.sub.active_until
+          : nowTs();
+
+        state.sub.active_until = addDays(base, order.days);
+        state.sub.devices_limit = order.devices;
+
+        // generate demo VLESS (on prod: request backend -> 3x-ui -> returns real)
+        state.sub.vless = buildDemoVless(state.user_key, order.devices);
+
+        saveState(state);
+        return order;
+      },
+      regenConfig: async () => {
+        await sleep(250);
+        state.sub.vless = buildDemoVless(state.user_key, state.sub.devices_limit || state.ui.devices);
+        saveState(state);
+        return state.sub.vless;
+      }
+    };
+
+    function buildDemoVless(userKey, devices){
+      // This is a DEMO link (not real). Replace with backend result.
+      const uuid = uuid4();
+      const host = "vpn.example.com";
+      const port = 443;
+      const name = encodeURIComponent(`ZEUSVPN-${userKey.slice(-6)}-${devices}dev`);
+      // mimic common vless params
+      return `vless://${uuid}@${host}:${port}?type=ws&security=tls&sni=${host}&path=%2Fzeus&host=${host}#${name}`;
+    }
+
+    function sleep(ms){ return new Promise(res => setTimeout(res, ms)); }
+
+    // ---------- UI ----------
+    const $ = (sel) => document.querySelector(sel);
+
+    const el = {
+      userKeyShort: $("#userKeyShort"),
+      userKeyFull: $("#userKeyFull"),
+      daysPills: $("#daysPills"),
+      devPills: $("#devPills"),
+      daysHint: $("#daysHint"),
+      devHint: $("#devHint"),
+      priceText: $("#priceText"),
+      payBtn: $("#payBtn"),
+      planBadge: $("#planBadge"),
+      planBadgeText: $("#planBadgeText"),
+
+      subTag: $("#subTag"),
+      devicesLimitText: $("#devicesLimitText"),
+      activeUntilText: $("#activeUntilText"),
+
+      configLocked: $("#configLocked"),
+      configUnlocked: $("#configUnlocked"),
+      vlessLink: $("#vlessLink"),
+      configBadge: $("#configBadge"),
+
+      ordersList: $("#ordersList"),
+      ordersCount: $("#ordersCount"),
+      resetBtn: $("#resetBtn"),
+
+      toast: $("#toast"),
+
+      // sections
+      viewHome: $("#viewHome"),
+      viewCabinet: $("#viewCabinet"),
+      viewGuide: $("#viewGuide"),
+
+      // nav
+      navHome: $("#navHome"),
+      navCabinet: $("#navCabinet"),
+      navGuide: $("#navGuide"),
+
+      // slider
+      slides: $("#slides"),
+      prevBtn: $("#prevBtn"),
+      nextBtn: $("#nextBtn"),
+      slideTag: $("#slideTag"),
+      dots: document.querySelectorAll(".dot2"),
+
+      copyBtn: $("#copyBtn"),
+      openBtn: $("#openBtn"),
+      regenBtn: $("#regenBtn"),
+    };
+
+    function renderPills(container, values, activeValue, onPick, format){
+      container.innerHTML = "";
+      values.forEach(v => {
+        const b = document.createElement("button");
+        b.className = "pill" + (v === activeValue ? " active" : "");
+        b.textContent = format ? format(v) : String(v);
+        b.onclick = () => onPick(v);
+        container.appendChild(b);
+      });
+    }
+
+    function calcPrice(days, devices){
+      const base = PRICES_30[devices] ?? 199;
+      const mult = MULT[days] ?? 1;
+      return Math.round(base * mult);
+    }
+
+    function setBadge(kind, text){
+      // kind: ok/bad/neutral
+      el.planBadge.className = "badge" + (kind ? " " + kind : "");
+      el.planBadgeText.textContent = text;
+      el.planBadge.querySelector(".dot").style.opacity = 0.9;
+    }
+
+    function subscriptionActive(){
+      return state.sub.active_until && state.sub.active_until > nowTs();
+    }
+
+    function toast(msg){
+      el.toast.textContent = msg;
+      el.toast.classList.add("show");
+      setTimeout(() => el.toast.classList.remove("show"), 1400);
+    }
+
+    function renderHome(){
+      // user key
+      el.userKeyShort.textContent = state.user_key.slice(-6);
+      el.userKeyFull.textContent = state.user_key;
+
+      // pills
+      renderPills(el.daysPills, DAYS, state.ui.days, (v)=>{
+        state.ui.days = v; saveState(state); renderHome();
+      }, (v)=> `${v} дней`);
+
+      renderPills(el.devPills, DEVS, state.ui.devices, (v)=>{
+        state.ui.devices = v; saveState(state); renderHome();
+      }, (v)=> `${v}`);
+
+      el.daysHint.textContent = `${state.ui.days} дней`;
+      el.devHint.textContent = `${state.ui.devices} ${state.ui.devices === 1 ? "устройство" : "устройств"}`;
+
+      const price = calcPrice(state.ui.days, state.ui.devices);
+      el.priceText.textContent = price + " ₽";
+
+      // badge
+      if(subscriptionActive()){
+        setBadge("ok", "Подписка активна");
+      } else {
+        setBadge("", "Готово к оплате");
       }
     }
 
-    /* =========================
-       Local storage
-    ========================= */
-    function loadLocal(){
-      const k = localStorage.getItem("zeus_user_key");
-      state.user.user_key = k || randKey();
-      if(!k) localStorage.setItem("zeus_user_key", state.user.user_key);
+    function renderCabinet(){
+      el.userKeyShort.textContent = state.user_key.slice(-6);
+      el.userKeyFull.textContent = state.user_key;
 
-      const oid = localStorage.getItem("zeus_last_order");
-      if(oid) state.orderId = oid;
-    }
-    function saveKey(){ localStorage.setItem("zeus_user_key", state.user.user_key); }
-    function saveOrder(id){ state.orderId=id; localStorage.setItem("zeus_last_order", id); }
+      const active = subscriptionActive();
+      const until = state.sub.active_until ? fmtDate(state.sub.active_until) : "—";
+      el.activeUntilText.textContent = active ? `Активна до ${until}` : "Не активна";
+      el.devicesLimitText.textContent = state.sub.devices_limit ? String(state.sub.devices_limit) : "—";
 
-    /* =========================
-       UI refs
-    ========================= */
-    const apiDot=document.getElementById("apiDot");
-    const apiText=document.getElementById("apiText");
+      // tag
+      if(active){
+        el.subTag.textContent = "Активна";
+      } else {
+        el.subTag.textContent = "Не активна";
+      }
 
-    const userName=document.getElementById("userName");
-    const tgLine=document.getElementById("tgLine");
-    const avatar=document.getElementById("avatar");
+      // config
+      if(active && state.sub.vless){
+        el.configLocked.style.display = "none";
+        el.configUnlocked.style.display = "block";
+        el.vlessLink.textContent = state.sub.vless;
 
-    const activeUntil=document.getElementById("activeUntil");
-    const btnSubscribe=document.getElementById("btnSubscribe");
-    const btnOpenSheet=document.getElementById("btnOpenSheet");
+        el.configBadge.className = "badge ok";
+        el.configBadge.innerHTML = '<span class="dot"></span><span>Доступно</span>';
+      } else {
+        el.configLocked.style.display = "block";
+        el.configUnlocked.style.display = "none";
 
-    const profileName=document.getElementById("profileName");
-    const profileTgId=document.getElementById("profileTgId");
-    const profileUserKey=document.getElementById("profileUserKey");
-    const btnNewKey=document.getElementById("btnNewKey");
+        el.configBadge.className = "badge bad";
+        el.configBadge.innerHTML = '<span class="dot"></span><span>Недоступно</span>';
+      }
 
-    const backdrop=document.getElementById("backdrop");
-    const sheet=document.getElementById("sheet");
-    const close=document.getElementById("close");
+      // orders
+      el.ordersCount.textContent = String(state.orders.length);
+      el.ordersList.innerHTML = "";
 
-    const chipsDays=document.getElementById("chipsDays");
-    const chipsDevices=document.getElementById("chipsDevices");
-    const choiceTitle=document.getElementById("choiceTitle");
-    const choiceMeta=document.getElementById("choiceMeta");
-    const priceText=document.getElementById("priceText");
-
-    const payStars=document.getElementById("payStars");
-    const payUsdt=document.getElementById("payUsdt");
-    const orderLine=document.getElementById("orderLine");
-    const copyBtn=document.getElementById("copyBtn");
-
-    const track=document.getElementById("track");
-    const prev=document.getElementById("prev");
-    const next=document.getElementById("next");
-
-    /* =========================
-       Screen switching
-    ========================= */
-    function setScreen(name){
-      if(state.screen===name) return;
-      const old=document.getElementById("screen-"+state.screen);
-      const neu=document.getElementById("screen-"+name);
-
-      old.classList.remove("in");
-      old.classList.add("out");
-
-      setTimeout(()=>{
-        old.classList.remove("active","out");
-        neu.classList.add("active","in");
-        state.screen=name;
-
-        document.querySelectorAll(".seg button").forEach(b=>{
-          b.classList.toggle("active", b.dataset.screen===name);
+      if(state.orders.length === 0){
+        const empty = document.createElement("div");
+        empty.className = "row";
+        empty.innerHTML = `<span>Пока нет заказов</span><strong class="muted">создай на главной</strong>`;
+        el.ordersList.appendChild(empty);
+      } else {
+        state.orders.slice(0, 12).forEach(o => {
+          const div = document.createElement("div");
+          div.className = "item";
+          const statusTxt = o.status === "paid" ? "Оплачено" : "Ожидает оплату";
+          const tagClass = o.status === "paid" ? "tag" : "tag";
+          const date = fmtDate(o.created_at);
+          div.innerHTML = `
+            <div>
+              <h3>${o.days} дней • ${o.devices} устройств • ${o.price} ₽</h3>
+              <p>${o.order_id} • ${date}</p>
+            </div>
+            <div class="${tagClass}" style="${o.status==="paid" ? "color:#168a3e;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35);" : ""}">
+              ${statusTxt}
+            </div>
+          `;
+          el.ordersList.appendChild(div);
         });
-      }, 160);
-    }
-    document.querySelectorAll(".seg button").forEach(b=>{
-      b.addEventListener("click", ()=>{
-        haptic("light");
-        setScreen(b.dataset.screen);
-      });
-    });
-
-    /* =========================
-       Bottom sheet
-    ========================= */
-    function openSheet(){
-      haptic("light");
-      copyBtn.style.display="none";
-      state.config=null;
-      backdrop.classList.add("show");
-      requestAnimationFrame(()=>sheet.classList.add("show"));
-      updateChoice();
-    }
-    function hideSheet(){
-      sheet.classList.remove("show");
-      setTimeout(()=>backdrop.classList.remove("show"), 120);
-    }
-    btnSubscribe.addEventListener("click", openSheet);
-    btnOpenSheet.addEventListener("click", openSheet);
-    close.addEventListener("click", hideSheet);
-    backdrop.addEventListener("click",(e)=>{ if(e.target===backdrop) hideSheet(); });
-
-    /* =========================
-       Chips
-    ========================= */
-    function makeChip(label, tagText){
-      const el=document.createElement("div");
-      el.className="chip";
-      el.textContent=label;
-      if(tagText){
-        const t=document.createElement("span");
-        t.className="chipTag";
-        t.textContent=tagText;
-        el.appendChild(t);
-      }
-      return el;
-    }
-
-    function renderChips(){
-      chipsDays.innerHTML="";
-      chipsDevices.innerHTML="";
-
-      [30,90,180].forEach(d=>{
-        const tag = d===30 ? "Популярно" : (d===180 ? "Выгоднее" : "");
-        const c=makeChip(`${d} дней`, tag);
-        c.dataset.days=d;
-        c.addEventListener("click", ()=>{
-          haptic("light");
-          state.plan.days=d;
-          state.plan.price=PRICES[d];
-          updateSelected();
-          updateChoice(true);
-        });
-        chipsDays.appendChild(c);
-      });
-
-      DEVICE_CHOICES.forEach(n=>{
-        const c=makeChip(`${n} устройство(а)`);
-        c.dataset.devices=n;
-        c.addEventListener("click", ()=>{
-          haptic("light");
-          state.plan.devices=n;
-          updateSelected();
-          updateChoice();
-        });
-        chipsDevices.appendChild(c);
-      });
-
-      updateSelected();
-      updateChoice();
-    }
-
-    function updateSelected(){
-      chipsDays.querySelectorAll(".chip").forEach(c=>{
-        c.classList.toggle("selected", Number(c.dataset.days)===state.plan.days);
-      });
-      chipsDevices.querySelectorAll(".chip").forEach(c=>{
-        c.classList.toggle("selected", Number(c.dataset.devices)===state.plan.devices);
-      });
-    }
-
-    function animatePrice(from,to,ms=220){
-      const start=performance.now();
-      function tick(now){
-        const p=Math.min(1,(now-start)/ms);
-        const eased=1-Math.pow(1-p,3);
-        const v=Math.round(from+(to-from)*eased);
-        priceText.textContent = `${v} `;
-        const sm=document.createElement("small");
-        sm.textContent="Stars";
-        priceText.appendChild(sm);
-        if(p<1) requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-    }
-
-    function updateChoice(morph=false){
-      choiceTitle.textContent="Выбранный план";
-      choiceMeta.textContent=`${state.plan.days} дней • ${state.plan.devices} устройство(а)`;
-
-      const current = parseInt((priceText.textContent||"0").replace(/\D/g,"")) || state.plan.price;
-      if(morph) animatePrice(current, state.plan.price);
-      else{
-        priceText.textContent = `${state.plan.price} `;
-        const sm=document.createElement("small");
-        sm.textContent="Stars";
-        priceText.appendChild(sm);
       }
     }
 
-    /* =========================
-       Render profile
-    ========================= */
-    function renderProfile(){
-      avatar.innerHTML="";
-      if(state.user.photo_url){
-        const img=document.createElement("img");
-        img.src=state.user.photo_url;
-        img.alt="avatar";
-        avatar.appendChild(img);
-      }else{
-        const f=document.createElement("div");
-        f.className="fallback";
-        f.textContent=(state.user.name||"Z").trim().slice(0,1).toUpperCase();
-        avatar.appendChild(f);
-      }
-
-      userName.textContent=state.user.name||"Гость";
-      tgLine.textContent=`tg_id: ${state.user.tg_id ?? "—"}`;
-
-      profileName.textContent=state.user.name||"—";
-      profileTgId.textContent=`tg_id: ${state.user.tg_id ?? "—"}`;
-      profileUserKey.textContent=state.user.user_key||"—";
+    // ---------- Navigation ----------
+    function setNav(active){
+      [el.navHome, el.navCabinet, el.navGuide].forEach(b => b.classList.remove("active"));
+      if(active === "home") el.navHome.classList.add("active");
+      if(active === "cabinet") el.navCabinet.classList.add("active");
+      if(active === "guide") el.navGuide.classList.add("active");
     }
 
-    /* =========================
-       API
-    ========================= */
-    async function apiHealth(){
+    function go(where){
+      [el.viewHome, el.viewCabinet, el.viewGuide].forEach(v => v.classList.remove("active"));
+
+      if(where === "home"){
+        el.viewHome.classList.add("active");
+        setNav("home");
+        renderHome();
+      }
+      if(where === "cabinet"){
+        el.viewCabinet.classList.add("active");
+        setNav("cabinet");
+        renderCabinet();
+      }
+      if(where === "guide"){
+        el.viewGuide.classList.add("active");
+        setNav("guide");
+      }
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    // ---------- Payment flow (demo) ----------
+    el.payBtn.onclick = async () => {
+      const days = state.ui.days;
+      const devices = state.ui.devices;
+      const price = calcPrice(days, devices);
+
+      el.payBtn.disabled = true;
+      el.payBtn.style.filter = "grayscale(.15)";
+      el.payBtn.textContent = "Создаём заказ…";
+
       try{
-        const r=await fetch(`${API_BASE}/health`);
-        if(!r.ok) throw 0;
-        apiDot.style.background = "rgba(52,199,89,.9)";
-        apiText.textContent="API OK";
-      }catch(e){
-        apiDot.style.background = "rgba(255,59,48,.85)";
-        apiText.textContent="API OFF";
-      }
-    }
+        const order = await mockApi.createOrder({days, devices, price});
+        el.payBtn.textContent = "Имитация оплаты…";
+        // emulate success
+        await mockApi.payOrder(order.order_id);
 
-    /* ====== ВОТ ЭТО ГЛАВНОЕ: /me sync ====== */
-    async function syncMe(){
+        toast("Оплата успешна • подписка активирована");
+        el.payBtn.textContent = "Оплатить";
+        el.payBtn.disabled = false;
+        el.payBtn.style.filter = "";
+
+        // after pay -> cabinet
+        go("cabinet");
+      } catch(e){
+        console.error(e);
+        toast("Ошибка создания заказа");
+        el.payBtn.textContent = "Оплатить";
+        el.payBtn.disabled = false;
+        el.payBtn.style.filter = "";
+      }
+    };
+
+    // ---------- Config actions ----------
+    el.copyBtn?.addEventListener("click", async () => {
+      const text = state.sub.vless || "";
+      if(!text) return toast("Нет ссылки");
       try{
-        const tg = window.Telegram?.WebApp;
-        const u = tg?.initDataUnsafe?.user;
-
-        const params = new URLSearchParams();
-        params.set("user_key", state.user.user_key);
-
-        if(u?.id) params.set("tg_id", String(u.id));
-        if(u?.username) params.set("tg_username", u.username);
-
-        const r = await fetch(`${API_BASE}/me?${params.toString()}`);
-        const data = await r.json();
-        if(!r.ok) throw new Error(data?.detail || "me error");
-
-        // На главной показываем реальную дату из users.active_until
-        if(data.active_until){
-          const d = formatDate(data.active_until);
-          activeUntil.textContent = d || "активна";
-          btnSubscribe.textContent = "Продлить подписку";
-        } else {
-          activeUntil.textContent = "нет";
-          btnSubscribe.textContent = "Приобрести подписку";
-        }
-
-        state.user.devices_limit = data.devices_limit ?? 0;
-        state.user.status = data.status ?? "none";
-      }catch(e){
-        // молча, чтобы UX не ломать
+        await navigator.clipboard.writeText(text);
+        toast("Скопировано");
+      } catch(e){
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        toast("Скопировано");
       }
-    }
+    });
 
-    async function createStars(){
-      const body={ user_key: state.user.user_key, days: state.plan.days, devices: state.plan.devices };
-      const r=await fetch(`${API_BASE}/pay/stars/create`,{
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify(body)
-      });
-      const data=await r.json();
-      if(!r.ok) throw new Error(data?.detail || "Stars error");
-      return data;
-    }
+    el.openBtn?.addEventListener("click", () => {
+      const link = state.sub.vless;
+      if(!link) return toast("Нет ссылки");
+      // will open handler in apps that support vless://
+      window.location.href = link;
+    });
 
-    async function createCrypto(){
-      const body={ user_key: state.user.user_key, days: state.plan.days, devices: state.plan.devices };
-      const r=await fetch(`${API_BASE}/pay/crypto/create`,{
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify(body)
-      });
-      const data=await r.json();
-      if(!r.ok) throw new Error(data?.detail || "Crypto error");
-      return data;
-    }
-
-    async function getOrder(id){
-      const r=await fetch(`${API_BASE}/pay/order/${id}`);
-      const data=await r.json();
-      if(!r.ok) throw new Error(data?.detail || "Order error");
-      return data;
-    }
-
-    async function issueConfig(){
-      const body={ inbound_id: DEFAULT_INBOUND_ID, user_key: state.user.user_key, days: state.plan.days, limit_ip: 0 };
-      const r=await fetch(`${API_BASE}/issue-config`,{
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify(body)
-      });
-      const data=await r.json();
-      if(!r.ok) throw new Error(data?.detail || "Config error");
-      return data; // {link}
-    }
-
-    function openInvoice(url){
+    el.regenBtn?.addEventListener("click", async () => {
+      if(!subscriptionActive()) return toast("Подписка не активна");
+      el.regenBtn.disabled = true;
+      el.regenBtn.textContent = "…";
       try{
-        if(window.Telegram?.WebApp?.openInvoice){
-          Telegram.WebApp.openInvoice(url, ()=>{});
-          return;
-        }
-      }catch(e){}
-      window.open(url, "_blank", "noopener,noreferrer");
-    }
-
-    function stopPolling(){
-      if(state.pollTimer){
-        clearInterval(state.pollTimer);
-        state.pollTimer=null;
-      }
-    }
-
-    function startPolling(orderId){
-      stopPolling();
-      orderLine.textContent=`Заказ: ${orderId} • pending`;
-      state.pollTimer=setInterval(async ()=>{
-        try{
-          const o=await getOrder(orderId);
-          orderLine.textContent=`Заказ: ${o.id} • статус: ${o.status}`;
-
-          // Если backend уже кладёт active_until в order — ок, обновим UI тоже.
-          // Но главный источник подписки теперь /me (users), поэтому после оплаты ты просто вызовешь syncMe().
-          if(o.active_until){
-            const d=formatDate(o.active_until);
-            activeUntil.textContent = d ? d : "активна";
-            btnSubscribe.textContent = "Продлить подписку";
-          }
-
-          if(o.config_link){
-            state.config=o.config_link;
-            copyBtn.style.display="inline-flex";
-            copyBtn.textContent="Скопировать конфиг";
-          }
-
-          if(o.status==="paid"){
-            copyBtn.style.display="inline-flex";
-            copyBtn.textContent = state.config ? "Скопировать конфиг" : "Получить и скопировать конфиг";
-            // после оплаты ещё раз подтянем user подписку (users.active_until)
-            await syncMe();
-          }
-        }catch(e){
-          // no spam
-        }
-      }, 1200);
-    }
-
-    /* =========================
-       Actions
-    ========================= */
-    payStars.addEventListener("click", async ()=>{
-      try{
-        haptic("medium");
-        orderLine.textContent="Создаём инвойс Stars…";
-        const {order_id, invoice_link}=await createStars();
-        saveOrder(order_id);
-        orderLine.textContent=`Инвойс готов • ${order_id}`;
-        openInvoice(invoice_link);
-        startPolling(order_id);
-      }catch(e){
-        orderLine.textContent="Ошибка Stars: " + (e.message || e);
+        const v = await mockApi.regenConfig();
+        el.vlessLink.textContent = v;
+        toast("Обновлено");
+      } finally{
+        el.regenBtn.disabled = false;
+        el.regenBtn.textContent = "Обновить";
       }
     });
 
-    payUsdt.addEventListener("click", async ()=>{
-      try{
-        haptic("medium");
-        orderLine.textContent="Создаём инвойс USDT…";
-        const data=await createCrypto();
-        const oid=data.order_id;
-        saveOrder(oid);
-        orderLine.textContent=`Инвойс готов • ${oid}`;
-        openInvoice(data.invoice_url || data.invoice_link || "");
-        startPolling(oid);
-      }catch(e){
-        orderLine.textContent="Ошибка USDT: " + (e.message || e);
-      }
-    });
+    // ---------- Reset ----------
+    el.resetBtn.onclick = () => {
+      localStorage.removeItem(LS_KEY);
+      state = loadState();
+      toast("Демо-данные сброшены");
+      renderHome();
+      renderCabinet();
+      go("home");
+    };
 
-    copyBtn.addEventListener("click", async ()=>{
-      try{
-        haptic("light");
-        let link = state.config;
-        if(!link){
-          orderLine.textContent="Получаем конфиг…";
-          const d=await issueConfig();
-          link=d.link;
-          state.config=link;
-        }
-        await navigator.clipboard.writeText(link);
-        toast("Конфиг скопирован");
-      }catch(e){
-        toast("Не удалось скопировать");
-      }
-    });
-
-    btnNewKey.addEventListener("click", ()=>{
-      haptic("light");
-      state.user.user_key=randKey();
-      saveKey();
-      renderProfile();
-      toast("Новый ID создан");
-      // создадим/обновим user в backend заново
-      syncMe();
-    });
-
-    /* =========================
-       Instructions swipe
-    ========================= */
-    function updateSlide(){
-      track.style.transform = `translateX(${-state.slide*100}%)`;
+    // ---------- Slider ----------
+    let slide = 0;
+    function setSlide(i){
+      slide = Math.max(0, Math.min(2, i));
+      el.slides.style.transform = `translateX(-${slide*100}%)`;
+      el.dots.forEach((d, idx) => d.classList.toggle("active", idx===slide));
+      el.slideTag.textContent = slide === 0 ? "iOS" : slide === 1 ? "Android" : "Desktop";
     }
-    prev.addEventListener("click", ()=>{
-      haptic("light");
-      state.slide=clamp(state.slide-1,0,2);
-      updateSlide();
-    });
-    next.addEventListener("click", ()=>{
-      haptic("light");
-      state.slide=clamp(state.slide+1,0,2);
-      updateSlide();
-    });
+    el.prevBtn.onclick = () => setSlide(slide-1);
+    el.nextBtn.onclick = () => setSlide(slide+1);
 
-    (function bindSwipe(){
-      let startX=0, curX=0, dragging=false;
-      track.addEventListener("touchstart",(e)=>{
-        dragging=true;
-        startX=e.touches[0].clientX;
-        curX=startX;
-      },{passive:true});
-      track.addEventListener("touchmove",(e)=>{
-        if(!dragging) return;
-        curX=e.touches[0].clientX;
-      },{passive:true});
-      track.addEventListener("touchend",()=>{
-        if(!dragging) return;
-        dragging=false;
-        const dx=curX-startX;
-        if(Math.abs(dx)>40){
-          if(dx<0) state.slide=clamp(state.slide+1,0,2);
-          else state.slide=clamp(state.slide-1,0,2);
-          haptic("light");
-          updateSlide();
-        }
-      });
-    })();
+    // swipe support (simple)
+    let sx=0, down=false;
+    el.slides.addEventListener("touchstart", (e)=>{ down=true; sx=e.touches[0].clientX; }, {passive:true});
+    el.slides.addEventListener("touchend", (e)=>{
+      if(!down) return;
+      down=false;
+      const ex = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : sx;
+      const dx = ex - sx;
+      if(Math.abs(dx) > 40){
+        if(dx < 0) setSlide(slide+1);
+        else setSlide(slide-1);
+      }
+    }, {passive:true});
 
-    /* =========================
-       Boot
-    ========================= */
-    (async function boot(){
-      initTelegram();
-      loadLocal();
-      renderChips();
-      renderProfile();
+    // ---------- First render ----------
+    renderHome();
+    renderCabinet();
+    setSlide(0);
 
-      await apiHealth();
-
-      // ВАЖНО: привязка Telegram->users SQLite + реальное active_until
-      await syncMe();
-
-      // если есть прошлый заказ — пусть поллит order для статуса/конфига
-      if(state.orderId) startPolling(state.orderId);
-    })();
+    // expose for buttons
+    window.go = go;
   </script>
 </body>
 </html>
