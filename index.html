@@ -5,30 +5,31 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ZEUSVPN</title>
 
-  <!-- Telegram WebApp (внутри Telegram будет доступен объект Telegram) -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     :root{
-      --bg0:#07090d;
-      --bg1:#0a0f18;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.08);
-      --stroke:rgba(255,255,255,.10);
-      --stroke2:rgba(255,255,255,.14);
-      --text:#f3f6ff;
-      --muted:rgba(243,246,255,.65);
+      --bg:#070A10;
+      --bg2:#0A0F18;
 
-      /* черно-синий, НЕ ярко-синий */
-      --blue:#1b2a4a;
-      --blue2:#0f1a33;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.12);
+      --stroke2: rgba(255,255,255,.16);
+
+      --text:#F3F6FF;
+      --muted: rgba(243,246,255,.65);
+
+      /* темный сине-черный, НЕ яркий */
+      --accent1: rgba(20,38,74,.95);
+      --accent2: rgba(10,20,45,.95);
 
       --ok:#22c55e;
       --warn:#fbbf24;
       --bad:#ef4444;
 
       --r:18px;
-      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --shadow: 0 18px 70px rgba(0,0,0,.55);
     }
 
     *{box-sizing:border-box}
@@ -38,20 +39,20 @@
       color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       background:
-        radial-gradient(1200px 700px at 80% -10%, rgba(27,42,74,.35), transparent 55%),
-        radial-gradient(900px 600px at -20% 20%, rgba(27,42,74,.25), transparent 60%),
-        linear-gradient(180deg, var(--bg1), var(--bg0));
+        radial-gradient(900px 520px at 80% -10%, rgba(20,38,74,.22), transparent 60%),
+        radial-gradient(780px 520px at -20% 20%, rgba(20,38,74,.14), transparent 62%),
+        linear-gradient(180deg, var(--bg2), var(--bg));
       overflow-x:hidden;
     }
 
     .wrap{
-      max-width: 520px;
-      margin: 0 auto;
+      max-width:520px;
+      margin:0 auto;
       padding: 18px 16px 32px;
       padding-bottom: calc(32px + env(safe-area-inset-bottom));
     }
 
-    /* верх */
+    /* top */
     .top{
       display:flex;
       align-items:center;
@@ -60,40 +61,21 @@
       margin-top: 6px;
     }
     .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
+      display:flex; align-items:center; gap:12px; min-width:0;
     }
     .logo{
       width:44px;height:44px;border-radius:14px;
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
       border:1px solid var(--stroke);
-      display:grid;place-items:center;
+      background: rgba(255,255,255,.06);
       overflow:hidden;
-      box-shadow: 0 10px 28px rgba(0,0,0,.35);
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
       flex:0 0 auto;
+      display:grid; place-items:center;
     }
     .logo img{width:100%;height:100%;object-fit:cover}
     .titlebox{min-width:0}
-    .title{
-      font-size:16px;
-      font-weight:800;
-      letter-spacing:.2px;
-      margin:0;
-      line-height:1.1;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .subtitle{
-      margin:4px 0 0;
-      font-size:12px;
-      color:var(--muted);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+    .title{margin:0;font-weight:900;font-size:16px;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .subtitle{margin:4px 0 0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
     .chip{
       border:1px solid var(--stroke);
@@ -106,19 +88,16 @@
       align-items:center;
       gap:8px;
       user-select:none;
+      flex:0 0 auto;
     }
-    .dot{
-      width:8px;height:8px;border-radius:99px;
-      background: rgba(255,255,255,.18);
-      border:1px solid rgba(255,255,255,.18);
-    }
-    .dot.ok{background:rgba(34,197,94,.8); border-color:rgba(34,197,94,.9)}
-    .dot.warn{background:rgba(251,191,36,.85); border-color:rgba(251,191,36,.9)}
-    .dot.bad{background:rgba(239,68,68,.85); border-color:rgba(239,68,68,.9)}
+    .dot{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.18)}
+    .dot.ok{background:rgba(34,197,94,.85);border-color:rgba(34,197,94,.9)}
+    .dot.warn{background:rgba(251,191,36,.85);border-color:rgba(251,191,36,.9)}
+    .dot.bad{background:rgba(239,68,68,.85);border-color:rgba(239,68,68,.9)}
 
-    /* карточки */
+    /* cards */
     .card{
-      margin-top: 14px;
+      margin-top:14px;
       border-radius: var(--r);
       border:1px solid var(--stroke);
       background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.045));
@@ -130,8 +109,8 @@
       content:"";
       position:absolute; inset:0;
       background:
-        radial-gradient(800px 180px at 20% 0%, rgba(27,42,74,.25), transparent 60%),
-        radial-gradient(700px 200px at 90% 10%, rgba(255,255,255,.06), transparent 55%);
+        radial-gradient(800px 180px at 20% 0%, rgba(20,38,74,.18), transparent 60%),
+        radial-gradient(700px 220px at 90% 15%, rgba(255,255,255,.06), transparent 55%);
       pointer-events:none;
       opacity:.9;
     }
@@ -143,31 +122,17 @@
       justify-content:space-between;
       gap:12px;
     }
-    .cardTitle{
-      font-size:14px;
-      font-weight:800;
-      margin:0;
-      letter-spacing:.2px;
-    }
-    .small{
-      font-size:12px;
-      color:var(--muted);
-    }
+    .cardTitle{margin:0;font-size:14px;font-weight:900;letter-spacing:.2px}
+    .small{font-size:12px;color:var(--muted)}
     .divider{
       height:1px;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent);
       margin:0 16px;
     }
-    .cardBody{
-      padding: 12px 16px 16px;
-    }
+    .cardBody{padding: 12px 16px 16px}
 
-    /* профиль */
-    .profileRow{
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
+    /* profile row */
+    .profileRow{display:flex;align-items:center;gap:12px}
     .avatar{
       width:46px;height:46px;border-radius:16px;
       border:1px solid var(--stroke);
@@ -177,21 +142,10 @@
     }
     .avatar img{width:100%;height:100%;object-fit:cover}
     .pmeta{min-width:0}
-    .pname{
-      font-weight:800;
-      font-size:14px;
-      margin:0;
-      white-space:nowrap;
-      overflow:hidden;text-overflow:ellipsis;
-    }
-    .pid{
-      margin:4px 0 0;
-      font-size:12px;
-      color:var(--muted);
-      white-space:nowrap;
-      overflow:hidden;text-overflow:ellipsis;
-    }
+    .pname{margin:0;font-weight:900;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pid{margin:4px 0 0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+    /* subscription line (ONLY on home) */
     .subStatus{
       display:flex;
       align-items:center;
@@ -204,8 +158,8 @@
       background: rgba(255,255,255,.05);
     }
     .subLeft{min-width:0}
-    .subLabel{font-size:12px;color:var(--muted);margin:0}
-    .subValue{font-size:14px;font-weight:900;margin:4px 0 0}
+    .subLabel{margin:0;font-size:12px;color:var(--muted);font-weight:800}
+    .subValue{margin:4px 0 0;font-size:14px;font-weight:950;letter-spacing:.2px}
     .pill{
       padding:8px 10px;
       border-radius: 999px;
@@ -218,28 +172,23 @@
     .pill.active{border-color: rgba(34,197,94,.35); color: rgba(180,255,210,.92)}
     .pill.none{border-color: rgba(251,191,36,.25); color: rgba(255,235,180,.92)}
 
-    /* CTA */
-    .cta{
-      display:flex;
-      gap:10px;
-      margin-top: 14px;
-    }
+    /* buttons */
+    .btnRow{display:flex;gap:10px;margin-top:14px}
     .btn{
       width:100%;
       appearance:none;
       border:none;
       border-radius: 16px;
       padding: 14px 14px;
-      font-weight:900;
+      font-weight:950;
       font-size:14px;
       letter-spacing:.2px;
       color: var(--text);
-      background: linear-gradient(180deg, rgba(27,42,74,.90), rgba(15,26,51,.92));
+      background: linear-gradient(180deg, var(--accent1), var(--accent2));
       border:1px solid rgba(255,255,255,.10);
       box-shadow: 0 16px 46px rgba(0,0,0,.45);
       cursor:pointer;
-      transform: translateZ(0);
-      transition: transform .12s ease, filter .12s ease;
+      transition: transform .12s ease;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
@@ -251,26 +200,56 @@
       color: rgba(243,246,255,.86);
     }
 
-    /* модалка */
+    /* config box */
+    .configBox{
+      margin-top: 12px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.30);
+      padding: 12px;
+      display:none;
+    }
+    .configBox.show{display:block}
+    .configBox .label{margin:0 0 8px;font-size:12px;color:rgba(243,246,255,.65);font-weight:850}
+    .configBox textarea{
+      width:100%;
+      min-height: 92px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color: rgba(243,246,255,.92);
+      padding: 10px;
+      font-size:12px;
+      line-height:1.4;
+      outline:none;
+      resize:none;
+    }
+
+    /* modal overlay */
     .modal{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
+      background: rgba(0,0,0,.58);
       display:none;
       align-items:flex-end;
       justify-content:center;
-      padding: 18px 14px;
-      padding-bottom: calc(18px + env(safe-area-inset-bottom));
+      padding: 16px 14px;
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
       z-index: 50;
     }
     .modal.show{display:flex}
+
+    /* FIXED modal sheet: does NOT auto-shrink weirdly */
     .sheet{
       width:100%;
       max-width:520px;
+      height: min(74vh, 560px); /* фикс по сути — не режет текст, скролл внутри */
       border-radius: 22px;
       border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(10,15,24,.92), rgba(7,9,13,.96));
+      background: linear-gradient(180deg, rgba(10,15,24,.94), rgba(7,9,13,.96));
       box-shadow: 0 26px 90px rgba(0,0,0,.7);
       overflow:hidden;
+      display:flex;
+      flex-direction:column;
     }
     .sheetHead{
       padding: 14px 14px 10px;
@@ -278,8 +257,9 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
+      flex:0 0 auto;
     }
-    .sheetTitle{font-size:14px;font-weight:900;margin:0}
+    .sheetTitle{margin:0;font-size:14px;font-weight:950}
     .xbtn{
       width:38px;height:38px;border-radius: 14px;
       border:1px solid var(--stroke);
@@ -288,9 +268,10 @@
       display:grid;place-items:center;
       cursor:pointer;
     }
-
     .sheetBody{
       padding: 12px 14px 14px;
+      overflow:auto;
+      flex:1 1 auto;
     }
 
     .row{
@@ -300,14 +281,10 @@
       gap:12px;
       margin-bottom:10px;
     }
-    .row h4{margin:0;font-size:12px;color:var(--muted);font-weight:800}
+    .row h4{margin:0;font-size:12px;color:var(--muted);font-weight:900}
     .hint{font-size:12px;color:rgba(243,246,255,.50)}
+    .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
 
-    .chips{
-      display:flex; flex-wrap:wrap;
-      gap:10px;
-      margin-top: 10px;
-    }
     .chipBtn{
       border:1px solid var(--stroke);
       background: rgba(255,255,255,.05);
@@ -315,16 +292,17 @@
       padding: 10px 12px;
       border-radius: 999px;
       font-size:13px;
-      font-weight:850;
+      font-weight:900;
       cursor:pointer;
       transition: transform .12s ease, background .12s ease, border-color .12s ease;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
       position:relative;
+      white-space:nowrap;
     }
     .chipBtn:active{transform: scale(.985)}
     .chipBtn.selected{
-      background: rgba(27,42,74,.38);
+      background: rgba(20,38,74,.34);
       border-color: rgba(255,255,255,.18);
       color: rgba(243,246,255,.96);
     }
@@ -340,7 +318,6 @@
       backdrop-filter: blur(10px);
     }
 
-    /* карточка выбора */
     .choiceCard{
       margin-top: 14px;
       border-radius: 18px;
@@ -350,50 +327,12 @@
       position:relative;
       overflow:hidden;
     }
-    .choiceCard::before{
-      content:"";
-      position:absolute; inset:-40px;
-      background: radial-gradient(220px 120px at 22% 20%, rgba(255,255,255,.07), transparent 60%),
-                  radial-gradient(260px 150px at 85% 30%, rgba(27,42,74,.25), transparent 62%);
-      animation: shimmer 3.6s ease-in-out infinite;
-      opacity:.8;
-      pointer-events:none;
-    }
-    @keyframes shimmer{
-      0%{transform: translateX(-8px)}
-      50%{transform: translateX(8px)}
-      100%{transform: translateX(-8px)}
-    }
-    .choiceCard > *{position:relative}
+    .choiceTop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .choiceName{margin:0;font-weight:950;font-size:14px}
+    .price{margin:0;font-weight:950;font-size:14px;color:rgba(243,246,255,.95)}
+    .choiceDesc{margin:8px 0 0;font-size:12px;color:rgba(243,246,255,.70);line-height:1.35}
 
-    .choiceTop{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .choiceName{
-      font-weight:950;
-      font-size:14px;
-      margin:0;
-    }
-    .price{
-      font-weight:950;
-      font-size:14px;
-      margin:0;
-      color: rgba(243,246,255,.95);
-    }
-    .choiceDesc{
-      margin:8px 0 0;
-      font-size:12px;
-      color: rgba(243,246,255,.70);
-      line-height:1.35;
-    }
-
-    .payGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top: 14px;
-    }
-
+    .payGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
     .payBtn{
       border-radius: 16px;
       border:1px solid rgba(255,255,255,.12);
@@ -406,11 +345,10 @@
       -webkit-tap-highlight-color: transparent;
     }
     .payBtn:active{transform: scale(.985)}
-    .payBtn strong{display:block;font-size:13px}
+    .payBtn strong{display:block;font-size:13px;font-weight:950}
     .payBtn span{display:block;font-size:12px;color:rgba(243,246,255,.60);margin-top:4px}
-
     .payBtn.primary{
-      background: linear-gradient(180deg, rgba(27,42,74,.78), rgba(15,26,51,.88));
+      background: linear-gradient(180deg, rgba(20,38,74,.72), rgba(10,20,45,.86));
       border-color: rgba(255,255,255,.14);
     }
 
@@ -433,10 +371,8 @@
     .spin.show{display:inline-block}
     @keyframes rot{to{transform:rotate(360deg)}}
 
-    /* инструкции swipe */
-    .instWrap{
-      margin-top: 10px;
-    }
+    /* Instructions screen — swipe */
+    .instWrap{margin-top:10px}
     .swipe{
       display:flex;
       gap:12px;
@@ -455,65 +391,13 @@
       padding: 14px;
       min-height: 140px;
     }
-    .instCard h3{
-      margin:0;
-      font-size:13px;
-      font-weight:950;
-      letter-spacing:.2px;
-    }
-    .instCard p{
-      margin:10px 0 0;
-      font-size:12px;
-      color: rgba(243,246,255,.70);
-      line-height:1.45;
-    }
-    .dots{
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      margin: 2px 0 0;
-    }
-    .dots span{
-      width:6px;height:6px;border-radius:99px;
-      background: rgba(255,255,255,.18);
-      border:1px solid rgba(255,255,255,.18);
-    }
-    .dots span.on{
-      background: rgba(255,255,255,.62);
-      border-color: rgba(255,255,255,.55);
-    }
+    .instCard h3{margin:0;font-size:13px;font-weight:950;letter-spacing:.2px}
+    .instCard p{margin:10px 0 0;font-size:12px;color:rgba(243,246,255,.70);line-height:1.45}
+    .dots{display:flex;justify-content:center;gap:8px;margin: 2px 0 0}
+    .dots span{width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.18)}
+    .dots span.on{background:rgba(255,255,255,.62);border-color:rgba(255,255,255,.55)}
 
-    /* вывод конфига */
-    .configBox{
-      margin-top: 12px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.30);
-      padding: 12px;
-      display:none;
-    }
-    .configBox.show{display:block}
-    .configBox .label{
-      font-size:12px;color:rgba(243,246,255,.65);font-weight:850;margin:0 0 8px
-    }
-    .configBox textarea{
-      width:100%;
-      min-height: 92px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      color: rgba(243,246,255,.92);
-      padding: 10px;
-      font-size:12px;
-      line-height:1.4;
-      outline:none;
-      resize:none;
-    }
-    .copyRow{
-      display:flex; gap:10px; margin-top:10px;
-    }
-
-    /* снизу менюшка */
+    /* bottom nav */
     .nav{
       position:sticky;
       bottom: 12px;
@@ -530,30 +414,19 @@
       padding: 12px 10px;
       text-align:center;
       font-size:12px;
-      font-weight:900;
+      font-weight:950;
       color: rgba(243,246,255,.62);
       cursor:pointer;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
-    .tab.active{
-      color: rgba(243,246,255,.95);
-      background: rgba(255,255,255,.06);
-    }
+    .tab.active{color: rgba(243,246,255,.95);background: rgba(255,255,255,.06)}
 
     .screen{display:none}
     .screen.show{display:block}
+    .fadeSlideIn{animation: fsi .22s ease both}
+    @keyframes fsi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-    /* iOS-like переход */
-    .fadeSlideIn{
-      animation: fsi .22s ease both;
-    }
-    @keyframes fsi{
-      from{opacity:0; transform: translateY(8px)}
-      to{opacity:1; transform: translateY(0)}
-    }
-
-    /* toast */
     .toast{
       position:fixed;
       left:50%;
@@ -574,24 +447,38 @@
       text-overflow:ellipsis;
     }
     .toast.show{display:block}
+
+    /* debug error block inside modal */
+    .errBox{
+      margin-top: 12px;
+      border-radius: 14px;
+      border:1px solid rgba(239,68,68,.25);
+      background: rgba(239,68,68,.08);
+      padding: 10px 10px;
+      color: rgba(255,210,210,.92);
+      font-size:12px;
+      line-height:1.35;
+      display:none;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+    .errBox.show{display:block}
+    .errTitle{font-weight:950;margin-bottom:6px;color:rgba(255,220,220,.96)}
   </style>
 </head>
 
 <body>
   <div class="wrap">
-
     <div class="top">
       <div class="brand">
-        <div class="logo" id="logoBox">
-          <img id="logoImg" alt="ZEUSVPN" />
-        </div>
+        <div class="logo"><img id="logoImg" alt="ZEUSVPN"></div>
         <div class="titlebox">
           <p class="title">ZEUSVPN</p>
-          <p class="subtitle" id="subtitle">Премиум-доступ • быстрые сервера</p>
+          <p class="subtitle" id="subtitle">Премиум доступ • стабильное подключение</p>
         </div>
       </div>
 
-      <div class="chip" id="apiChip">
+      <div class="chip">
         <span class="dot warn" id="apiDot"></span>
         <span id="apiText">API проверка…</span>
       </div>
@@ -601,20 +488,21 @@
     <div class="screen show fadeSlideIn" id="screenHome">
       <div class="card">
         <div class="cardHead">
-          <p class="cardTitle">Аккаунт</p>
+          <p class="cardTitle">Главная</p>
           <span class="pill none" id="subPill">Подписки нет</span>
         </div>
         <div class="divider"></div>
         <div class="cardBody">
 
           <div class="profileRow">
-            <div class="avatar"><img id="avatarImg" alt="avatar" /></div>
+            <div class="avatar"><img id="avatarImg" alt="avatar"></div>
             <div class="pmeta">
-              <p class="pname" id="pName">Гость</p>
+              <p class="pname" id="pName">—</p>
               <p class="pid" id="pId">TG ID: —</p>
             </div>
           </div>
 
+          <!-- ONLY HERE "Активна до" -->
           <div class="subStatus">
             <div class="subLeft">
               <p class="subLabel">Подписка активна до</p>
@@ -623,15 +511,14 @@
             <div class="pill" id="planMini">—</div>
           </div>
 
-          <div class="cta">
+          <div class="btnRow">
             <button class="btn" id="btnSubscribe">Приобрести подписку</button>
-            <button class="btn secondary" id="btnSupport">Поддержка</button>
           </div>
 
           <div class="configBox" id="configBox">
             <p class="label">Ваш конфиг</p>
             <textarea id="configText" readonly></textarea>
-            <div class="copyRow">
+            <div class="btnRow" style="margin-top:10px">
               <button class="btn" id="btnCopy">Скопировать</button>
               <button class="btn secondary" id="btnCloseConfig">Скрыть</button>
             </div>
@@ -639,7 +526,36 @@
 
         </div>
       </div>
+    </div>
 
+    <!-- PROFILE -->
+    <div class="screen" id="screenProfile">
+      <div class="card">
+        <div class="cardHead">
+          <p class="cardTitle">Профиль</p>
+          <span class="small">только нужное</span>
+        </div>
+        <div class="divider"></div>
+        <div class="cardBody">
+
+          <div class="profileRow">
+            <div class="avatar"><img id="avatarImg2" alt="avatar2"></div>
+            <div class="pmeta">
+              <p class="pname" id="pName2">—</p>
+              <p class="pid" id="pId2">TG ID: —</p>
+            </div>
+          </div>
+
+          <!-- вернул кнопку Инструкции -->
+          <div class="btnRow">
+            <button class="btn secondary" id="btnGoInstructions">Инструкции</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTRUCTIONS -->
+    <div class="screen" id="screenInstructions">
       <div class="card">
         <div class="cardHead">
           <p class="cardTitle">Инструкции</p>
@@ -652,14 +568,14 @@
               <h3>iOS (V2Box / Streisand)</h3>
               <p>1) Установи клиент из App Store.<br>
                  2) Нажми “Добавить конфиг”.<br>
-                 3) Вставь ссылку VLESS и сохрани.<br>
-                 4) Подключи профиль.</p>
+                 3) Вставь ссылку VLESS.<br>
+                 4) Сохрани и подключи.</p>
             </div>
             <div class="instCard">
               <h3>Android (v2rayNG)</h3>
               <p>1) Установи v2rayNG.<br>
                  2) Нажми “+” → Import from clipboard.<br>
-                 3) Вставь ссылку и включи подключение.</p>
+                 3) Вставь ссылку и включи.</p>
             </div>
             <div class="instCard">
               <h3>Desktop (Windows/macOS)</h3>
@@ -671,30 +587,10 @@
           <div class="dots" id="dots">
             <span class="on"></span><span></span><span></span>
           </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- PROFILE (упрощенный, без лишнего) -->
-    <div class="screen" id="screenProfile">
-      <div class="card">
-        <div class="cardHead">
-          <p class="cardTitle">Профиль</p>
-          <span class="small">минимум лишнего</span>
-        </div>
-        <div class="divider"></div>
-        <div class="cardBody">
-          <div class="profileRow">
-            <div class="avatar"><img id="avatarImg2" alt="avatar2" /></div>
-            <div class="pmeta">
-              <p class="pname" id="pName2">—</p>
-              <p class="pid" id="pId2">TG ID: —</p>
-            </div>
+          <div class="btnRow">
+            <button class="btn secondary" id="btnBackFromInstructions">Назад</button>
           </div>
-
-          <div style="height:12px"></div>
-
-          <button class="btn secondary" id="btnOpenBot">Открыть бота</button>
         </div>
       </div>
     </div>
@@ -710,10 +606,11 @@
   <div class="modal" id="modal">
     <div class="sheet">
       <div class="sheetHead">
-        <p class="sheetTitle">Выбор подписки</p>
+        <p class="sheetTitle">Подписка</p>
         <div class="xbtn" id="closeModal">✕</div>
       </div>
       <div class="divider"></div>
+
       <div class="sheetBody">
 
         <div class="row">
@@ -734,33 +631,29 @@
           <div class="hint">дней</div>
         </div>
         <div class="chips" id="dayChips">
-          <div class="chipBtn selected" data-days="30">
-            30 <span class="badge">Популярно</span>
-          </div>
+          <div class="chipBtn selected" data-days="30">30 <span class="badge">Популярно</span></div>
           <div class="chipBtn" data-days="90">90</div>
-          <div class="chipBtn" data-days="180">
-            180 <span class="badge">Выгоднее</span>
-          </div>
+          <div class="chipBtn" data-days="180">180 <span class="badge">Выгоднее</span></div>
         </div>
 
-        <div class="choiceCard" id="choiceCard">
+        <div class="choiceCard">
           <div class="choiceTop">
             <p class="choiceName" id="choiceName">30 дней • 1 устройство</p>
-            <p class="price" id="choicePrice">199 XTR</p>
+            <p class="price" id="choicePrice">199</p>
           </div>
           <p class="choiceDesc" id="choiceDesc">
-            Доступ активируется после оплаты. После оплаты появится конфиг + “Активна до …”.
+            После оплаты статус изменится на “активна”, появится дата и конфиг.
           </p>
         </div>
 
         <div class="payGrid">
           <button class="payBtn primary" id="payStars">
             <strong>Оплатить Stars</strong>
-            <span>моментально в Telegram</span>
+            <span>в Telegram</span>
           </button>
           <button class="payBtn" id="payCrypto">
             <strong>Оплатить USDT</strong>
-            <span>через Crypto Bot</span>
+            <span>Crypto Bot</span>
           </button>
         </div>
 
@@ -772,6 +665,11 @@
           <span class="small" id="orderHint"></span>
         </div>
 
+        <div class="errBox" id="errBox">
+          <div class="errTitle">Ошибка запроса</div>
+          <div id="errText"></div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -779,37 +677,35 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ========= НАСТРОЙКИ =========
-    const API_BASE = "https://api.45.133.251.210.nip.io:8443"; // твой nginx:8443
+    // ===== CONFIG =====
+    const API_BASE = "https://api.45.133.251.210.nip.io:8443";
     const LOGO_URL = "./logo.png"; // положи logo.png рядом с index.html
-    const SUPPORT_URL = "https://t.me/"; // потом поставишь свой саппорт
-    const BOT_URL = "https://t.me/"; // потом поставишь бота
 
-    // ========= STATE =========
+    // ===== STATE =====
     const state = {
       user_key: "site-guest",
       tg: { id:null, username:null, name:"Гость", photo:null },
       devices: 1,
       days: 30,
-      lastOrderId: null,
-      lastOrder: null,
       pollTimer: null,
       paidActiveUntil: null
     };
 
-    // ========= DOM =========
+    // ===== DOM =====
     const $ = (id)=>document.getElementById(id);
+    $("logoImg").src = LOGO_URL;
+
     const apiDot = $("apiDot");
     const apiText = $("apiText");
-    const subPill = $("subPill");
-    const activeUntilText = $("activeUntilText");
-    const planMini = $("planMini");
 
     const pName = $("pName"), pId = $("pId"), avatarImg = $("avatarImg");
     const pName2 = $("pName2"), pId2 = $("pId2"), avatarImg2 = $("avatarImg2");
 
+    const subPill = $("subPill");
+    const activeUntilText = $("activeUntilText");
+    const planMini = $("planMini");
+
     const btnSubscribe = $("btnSubscribe");
-    const btnSupport = $("btnSupport");
 
     const modal = $("modal");
     const closeModal = $("closeModal");
@@ -827,6 +723,9 @@
     const orderHint = $("orderHint");
     const spin = $("spin");
 
+    const errBox = $("errBox");
+    const errText = $("errText");
+
     const configBox = $("configBox");
     const configText = $("configText");
     const btnCopy = $("btnCopy");
@@ -834,27 +733,42 @@
 
     const toast = $("toast");
 
-    // ========= HELPERS =========
+    // nav screens
+    const screenHome = $("screenHome");
+    const screenProfile = $("screenProfile");
+    const screenInstructions = $("screenInstructions");
+
     function showToast(msg){
       toast.textContent = msg;
       toast.classList.add("show");
       setTimeout(()=>toast.classList.remove("show"), 2200);
     }
 
-    function haptic(type="light"){
+    function hapticLight(){
       try{
         if(window.Telegram?.WebApp?.HapticFeedback){
-          const h = window.Telegram.WebApp.HapticFeedback;
-          if(type==="success") h.notificationOccurred("success");
-          else if(type==="error") h.notificationOccurred("error");
-          else h.impactOccurred("light");
+          window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+        }
+      }catch(e){}
+    }
+    function hapticSuccess(){
+      try{
+        if(window.Telegram?.WebApp?.HapticFeedback){
+          window.Telegram.WebApp.HapticFeedback.notificationOccurred("success");
+        }
+      }catch(e){}
+    }
+    function hapticError(){
+      try{
+        if(window.Telegram?.WebApp?.HapticFeedback){
+          window.Telegram.WebApp.HapticFeedback.notificationOccurred("error");
         }
       }catch(e){}
     }
 
-    function fmtDate(isoOrMs){
-      if(!isoOrMs) return "—";
-      const d = typeof isoOrMs === "number" ? new Date(isoOrMs) : new Date(isoOrMs);
+    function fmtDate(iso){
+      if(!iso) return "—";
+      const d = new Date(iso);
       if(isNaN(d)) return "—";
       const dd = String(d.getDate()).padStart(2,"0");
       const mm = String(d.getMonth()+1).padStart(2,"0");
@@ -863,56 +777,28 @@
     }
 
     function priceFor(days){
-      // подставь реальные цены если надо.
-      // сейчас: 30=199, 90=399, 180=599 (как у тебя в env)
       if(days==30) return 199;
       if(days==90) return 399;
       if(days==180) return 599;
       return 0;
     }
 
-    function updateChoiceUI(){
-      // chips select
-      [...deviceChips.querySelectorAll(".chipBtn")].forEach(b=>{
-        b.classList.toggle("selected", Number(b.dataset.dev)===state.devices);
-      });
-      [...dayChips.querySelectorAll(".chipBtn")].forEach(b=>{
-        b.classList.toggle("selected", Number(b.dataset.days)===state.days);
-      });
-
-      choiceName.textContent = `${state.days} дней • ${state.devices} устройств`;
-      const p = priceFor(state.days);
-      choicePrice.textContent = p ? `${p} XTR` : "—";
-
-      // main button text
-      const hasActive = !!state.paidActiveUntil;
-      btnSubscribe.textContent = hasActive ? "Продлить подписку" : "Приобрести подписку";
+    function clearError(){
+      errBox.classList.remove("show");
+      errText.textContent = "";
     }
-
-    function setSubUI(order){
-      // order: {status, active_until, plan_days, devices, config_link}
-      const isActive = order?.active_until && (order.status==="paid" || order.status==="active");
-      if(isActive){
-        subPill.classList.remove("none");
-        subPill.classList.add("active");
-        subPill.textContent = "Подписка активна";
-        activeUntilText.textContent = fmtDate(order.active_until);
-        planMini.textContent = `${order.plan_days}д • ${order.devices}устр`;
-        state.paidActiveUntil = order.active_until;
-      }else{
-        subPill.classList.remove("active");
-        subPill.classList.add("none");
-        subPill.textContent = "Подписки нет";
-        activeUntilText.textContent = "—";
-        planMini.textContent = "—";
-        state.paidActiveUntil = null;
-      }
-      updateChoiceUI();
+    function showError(err, url){
+      errBox.classList.add("show");
+      const msg = (err && err.message) ? err.message : String(err);
+      errText.textContent =
+        `URL: ${url}\n` +
+        `Ошибка: ${msg}\n\n` +
+        `Если это "Failed to fetch" — значит браузер/Telegram не доверяет SSL на API:8443.`;
     }
 
     async function apiHealth(){
       try{
-        const r = await fetch(`${API_BASE}/health`, { method:"GET" });
+        const r = await fetch(`${API_BASE}/health`, { method:"GET", mode:"cors" });
         if(!r.ok) throw new Error("health not ok");
         apiDot.className = "dot ok";
         apiText.textContent = "API online";
@@ -920,19 +806,18 @@
       }catch(e){
         apiDot.className = "dot bad";
         apiText.textContent = "API/SSL ошибка";
-        // в браузере “Failed to fetch” часто из-за сертификата
         return false;
       }
     }
 
     async function apiPost(path, body){
-      const r = await fetch(`${API_BASE}${path}`,{
+      const url = `${API_BASE}${path}`;
+      const r = await fetch(url,{
         method:"POST",
         headers:{ "Content-Type":"application/json" },
         body: JSON.stringify(body),
         mode:"cors"
       });
-      // если SSL/блок — тут прилетит TypeError, поймаем выше
       if(!r.ok){
         const t = await r.text().catch(()=> "");
         throw new Error(`HTTP ${r.status}: ${t}`);
@@ -941,7 +826,8 @@
     }
 
     async function apiGet(path){
-      const r = await fetch(`${API_BASE}${path}`,{ method:"GET", mode:"cors" });
+      const url = `${API_BASE}${path}`;
+      const r = await fetch(url,{ method:"GET", mode:"cors" });
       if(!r.ok){
         const t = await r.text().catch(()=> "");
         throw new Error(`HTTP ${r.status}: ${t}`);
@@ -949,18 +835,63 @@
       return r.json();
     }
 
-    function openInvoice(url){
-      // Telegram: openInvoice (правильно)
+    function setSubUI(order){
+      const isActive = order?.active_until && (order.status==="paid" || order.status==="active");
+      if(isActive){
+        subPill.classList.remove("none");
+        subPill.classList.add("active");
+        subPill.textContent = "Подписка активна";
+        activeUntilText.textContent = fmtDate(order.active_until);
+        planMini.textContent = `${order.plan_days}д • ${order.devices}устр`;
+        state.paidActiveUntil = order.active_until;
+        btnSubscribe.textContent = "Продлить";
+      }else{
+        subPill.classList.remove("active");
+        subPill.classList.add("none");
+        subPill.textContent = "Подписки нет";
+        activeUntilText.textContent = "—";
+        planMini.textContent = "—";
+        state.paidActiveUntil = null;
+        btnSubscribe.textContent = "Приобрести подписку";
+      }
+    }
+
+    function updateChoiceUI(){
+      [...deviceChips.querySelectorAll(".chipBtn")].forEach(b=>{
+        b.classList.toggle("selected", Number(b.dataset.dev)===state.devices);
+      });
+      [...dayChips.querySelectorAll(".chipBtn")].forEach(b=>{
+        b.classList.toggle("selected", Number(b.dataset.days)===state.days);
+      });
+
+      choiceName.textContent = `${state.days} дней • ${state.devices} устройство${state.devices===1?'':'(а)'}`;
+      const p = priceFor(state.days);
+      choicePrice.textContent = p ? `${p} XTR` : "—";
+    }
+
+    function showModal(){
+      clearError();
+      modal.classList.add("show");
+      document.body.style.overflow = "hidden";
+      updateChoiceUI();
+    }
+    function hideModal(){
+      modal.classList.remove("show");
+      document.body.style.overflow = "";
+      spin.classList.remove("show");
+      statusText.textContent = "Выбери параметры и способ оплаты";
+      orderHint.textContent = "";
+      clearError();
+      clearInterval(state.pollTimer);
+    }
+
+    function openInvoiceTG(url){
       if(window.Telegram?.WebApp?.openInvoice){
-        statusText.textContent = "Открываю инвойс в Telegram…";
         return new Promise((resolve)=>{
-          window.Telegram.WebApp.openInvoice(url, (status)=>{
-            // status: paid / cancelled / failed / pending (зависит от Telegram)
-            resolve(status);
-          });
+          window.Telegram.WebApp.openInvoice(url, (status)=> resolve(status));
         });
       }
-      // Browser
+      // browser fallback
       window.open(url, "_blank");
       return Promise.resolve("opened");
     }
@@ -970,8 +901,6 @@
       state.pollTimer = setInterval(async ()=>{
         try{
           const o = await apiGet(`/pay/order/${order_id}`);
-          state.lastOrder = o;
-
           if(o.status === "paid" || o.status === "active"){
             clearInterval(state.pollTimer);
             spin.classList.remove("show");
@@ -983,62 +912,46 @@
             if(o.config_link){
               configText.value = o.config_link;
               configBox.classList.add("show");
+              hapticSuccess();
             }else{
-              // если backend пока не пишет config_link автоматически
               showToast("Оплата ок. Конфиг появится после выдачи.");
+              hapticSuccess();
             }
-            haptic("success");
           }else{
             statusText.textContent = `Ожидаю оплату… (${o.status})`;
           }
         }catch(e){
-          // если временно упало — не убиваем, просто показываем
+          // не убиваем polling из-за временной ошибки
           statusText.textContent = "Проверяю оплату…";
         }
       }, 1200);
     }
 
-    function showModal(){
-      modal.classList.add("show");
-      document.body.style.overflow = "hidden";
-      updateChoiceUI();
-    }
-    function hideModal(){
-      modal.classList.remove("show");
-      document.body.style.overflow = "";
-      spin.classList.remove("show");
-      statusText.textContent = "Выбери параметры и способ оплаты";
-      orderHint.textContent = "";
-      clearInterval(state.pollTimer);
-    }
-
-    // ========= Telegram user =========
     function loadTelegramUser(){
       const tg = window.Telegram?.WebApp;
       if(tg){
         try{ tg.ready(); }catch(e){}
         try{ tg.expand(); }catch(e){}
       }
-
       const u = tg?.initDataUnsafe?.user;
+
       if(u){
         state.tg.id = u.id;
         state.tg.username = u.username ? "@"+u.username : "";
         state.tg.name = [u.first_name, u.last_name].filter(Boolean).join(" ").trim() || "Пользователь";
         state.tg.photo = u.photo_url || null;
-        state.user_key = String(u.id); // ключ в backend (потом можно поменять)
+        state.user_key = String(u.id);
       }else{
-        // Browser fallback
         state.user_key = "site-guest";
         state.tg = { id:null, username:"", name:"Гость (browser)", photo:null };
       }
 
-      // render
-      pName.textContent = state.tg.name + (state.tg.username ? ` • ${state.tg.username}` : "");
+      const nameLine = state.tg.name + (state.tg.username ? ` • ${state.tg.username}` : "");
+      pName.textContent = nameLine;
       pId.textContent = `TG ID: ${state.tg.id ?? "—"}`;
 
-      pName2.textContent = pName.textContent;
-      pId2.textContent = pId.textContent;
+      pName2.textContent = nameLine;
+      pId2.textContent = `TG ID: ${state.tg.id ?? "—"}`;
 
       const img = state.tg.photo || "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(`
         <svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'>
@@ -1051,21 +964,6 @@
       avatarImg2.src = img;
     }
 
-    // ========= UI nav =========
-    function showScreen(name){
-      const home = $("screenHome");
-      const prof = $("screenProfile");
-      home.classList.remove("show","fadeSlideIn");
-      prof.classList.remove("show","fadeSlideIn");
-      if(name==="home"){ home.classList.add("show","fadeSlideIn"); }
-      else { prof.classList.add("show","fadeSlideIn"); }
-
-      document.querySelectorAll(".tab").forEach(t=>{
-        t.classList.toggle("active", t.dataset.tab===name);
-      });
-    }
-
-    // ========= instructions dots =========
     function bindSwipeDots(){
       const swipe = $("swipe");
       const dots = [...$("dots").children];
@@ -1075,8 +973,8 @@
         let bestDist = Infinity;
         for(let i=0;i<cards.length;i++){
           const rect = cards[i].getBoundingClientRect();
-          const dist = Math.abs(rect.left - 16); // приблизительно
-          if(dist<bestDist){ bestDist=dist; best=i; }
+          const dist = Math.abs(rect.left - 16);
+          if(dist < bestDist){ bestDist = dist; best = i; }
         }
         dots.forEach((d,i)=>d.classList.toggle("on", i===best));
       }
@@ -1084,141 +982,150 @@
       update();
     }
 
-    // ========= init =========
-    (function init(){
-      // logo
-      $("logoImg").src = LOGO_URL;
+    function showScreen(name){
+      [screenHome, screenProfile, screenInstructions].forEach(s=>s.classList.remove("show","fadeSlideIn"));
+      if(name==="home") screenHome.classList.add("show","fadeSlideIn");
+      if(name==="profile") screenProfile.classList.add("show","fadeSlideIn");
+      if(name==="instructions") screenInstructions.classList.add("show","fadeSlideIn");
 
+      document.querySelectorAll(".tab").forEach(t=>{
+        t.classList.toggle("active", t.dataset.tab===name);
+      });
+      // instructions screen is not in bottom tabs; keep last active tab
+      if(name==="instructions"){
+        document.querySelectorAll(".tab").forEach(t=>{
+          if(t.dataset.tab==="home") t.classList.add("active");
+          if(t.dataset.tab==="profile") t.classList.remove("active");
+        });
+      }
+    }
+
+    // ===== INIT =====
+    (function init(){
       loadTelegramUser();
       bindSwipeDots();
-
-      // check API
       apiHealth();
+
+      // default sub ui
+      setSubUI(null);
 
       // nav
       document.querySelectorAll(".tab").forEach(t=>{
-        t.addEventListener("click", ()=>showScreen(t.dataset.tab));
+        t.addEventListener("click", ()=>{
+          hapticLight();
+          showScreen(t.dataset.tab);
+        });
       });
 
-      // buttons
-      btnSupport.addEventListener("click", ()=>{ window.open(SUPPORT_URL, "_blank"); });
-      $("btnOpenBot").addEventListener("click", ()=>{ window.open(BOT_URL, "_blank"); });
+      // instructions button in profile
+      $("btnGoInstructions").addEventListener("click", ()=>{
+        hapticLight();
+        showScreen("instructions");
+      });
+      $("btnBackFromInstructions").addEventListener("click", ()=>{
+        hapticLight();
+        showScreen("profile");
+      });
 
+      // modal open/close
       btnSubscribe.addEventListener("click", ()=>{
-        haptic();
+        hapticLight();
         showModal();
       });
-
       closeModal.addEventListener("click", hideModal);
-      modal.addEventListener("click", (e)=>{
-        if(e.target === modal) hideModal();
-      });
+      modal.addEventListener("click", (e)=>{ if(e.target===modal) hideModal(); });
 
-      // chips
+      // chips select
       deviceChips.addEventListener("click", (e)=>{
         const b = e.target.closest(".chipBtn"); if(!b) return;
         state.devices = Number(b.dataset.dev);
         updateChoiceUI();
-        haptic();
+        hapticLight();
       });
       dayChips.addEventListener("click", (e)=>{
         const b = e.target.closest(".chipBtn"); if(!b) return;
         state.days = Number(b.dataset.days);
         updateChoiceUI();
-        haptic();
+        hapticLight();
       });
 
-      // copy
+      // config actions
       btnCopy.addEventListener("click", async ()=>{
         try{
           await navigator.clipboard.writeText(configText.value || "");
           showToast("Скопировано");
-          haptic("success");
+          hapticSuccess();
         }catch(e){
           showToast("Не удалось скопировать");
-          haptic("error");
+          hapticError();
         }
       });
       btnCloseConfig.addEventListener("click", ()=>configBox.classList.remove("show"));
 
-      // pay stars
+      // PAY STARS
       payStars.addEventListener("click", async ()=>{
-        try{
-          spin.classList.add("show");
-          statusText.textContent = "Создаю заказ (Stars)…";
-          orderHint.textContent = "";
+        clearError();
+        spin.classList.add("show");
+        statusText.textContent = "Создаю заказ (Stars)…";
+        orderHint.textContent = "";
 
+        const url = `${API_BASE}/pay/stars/create`;
+        try{
           const res = await apiPost("/pay/stars/create", {
             user_key: state.user_key,
             days: state.days,
             devices: state.devices
           });
 
-          state.lastOrderId = res.order_id;
           orderHint.textContent = `#${res.order_id}`;
           statusText.textContent = "Открываю оплату…";
 
-          // открыть invoice
-          const invStatus = await openInvoice(res.invoice_link);
+          await openInvoiceTG(res.invoice_link);
 
-          // стартуем polling в любом случае (после оплаты Telegram пришлет webhook)
           statusText.textContent = "Ожидаю оплату…";
           spin.classList.add("show");
           startPolling(res.order_id);
-
-          // если Telegram вернул failed
-          if(invStatus === "failed"){
-            showToast("Invoice: failed (проверь SSL/API или Stars)");
-            haptic("error");
-          }
         }catch(err){
           spin.classList.remove("show");
-          statusText.textContent = "Ошибка создания заказа";
-          // самая частая причина: SSL/сертификат — браузер режет fetch
-          showToast("Failed to fetch / SSL / CORS. Проверь HTTPS сертификат API.");
-          haptic("error");
+          statusText.textContent = "Не удалось создать заказ";
+          showError(err, url);
+          hapticError();
         }
       });
 
-      // pay crypto (USDT)
+      // PAY USDT
       payCrypto.addEventListener("click", async ()=>{
-        try{
-          spin.classList.add("show");
-          statusText.textContent = "Создаю инвойс (USDT)…";
-          orderHint.textContent = "";
+        clearError();
+        spin.classList.add("show");
+        statusText.textContent = "Создаю инвойс (USDT)…";
+        orderHint.textContent = "";
 
+        const url = `${API_BASE}/pay/crypto/create`;
+        try{
           const res = await apiPost("/pay/crypto/create", {
             user_key: state.user_key,
             days: state.days,
             devices: state.devices
           });
 
-          state.lastOrderId = res.order_id;
           orderHint.textContent = `#${res.order_id}`;
           statusText.textContent = "Открываю оплату USDT…";
 
-          // res.invoice_url (или invoice_link — зависит как ты отдаешь)
-          const url = res.invoice_url || res.invoice_link || res.url;
-          if(!url) throw new Error("invoice_url missing");
+          const invUrl = res.invoice_url || res.invoice_link || res.url;
+          if(!invUrl) throw new Error("invoice_url missing in response");
 
-          // в Telegram можно тоже открыть ссылку обычным способом
-          window.open(url, "_blank");
+          window.open(invUrl, "_blank");
 
           statusText.textContent = "Ожидаю оплату…";
           spin.classList.add("show");
           startPolling(res.order_id);
-
         }catch(err){
           spin.classList.remove("show");
-          statusText.textContent = "Ошибка создания инвойса";
-          showToast("Failed to fetch / SSL / CORS или не настроен CryptoPay");
-          haptic("error");
+          statusText.textContent = "Не удалось создать инвойс";
+          showError(err, url);
+          hapticError();
         }
       });
-
-      // Попробуем подтянуть последнюю подписку (если хочешь — позже сделаем /me)
-      // Пока просто выставим UI "нет подписки"
-      setSubUI(null);
 
       updateChoiceUI();
     })();
