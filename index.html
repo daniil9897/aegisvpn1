@@ -6,37 +6,22 @@
   <title>ZEUSVPN</title>
   <style>
     :root{
-      /* Telegram theme fallbacks (если не в TG — красиво работает как сайт) */
-      --tg-bg: #ffffff;
-      --tg-secondary-bg: #f6f7fb;
-      --tg-text: #0b1220;
-      --tg-hint: #6b7280;
-      --tg-link: #6d5bff;
+      --bg:#ffffff;
+      --bg2:#f5f6fa;
+      --card:#ffffff;
+      --line:#e9ecf5;
+      --text:#0b1220;
+      --muted:#5b6475;
 
-      /* Zeus accents */
-      --a:#6d5bff;
-      --b:#00c2ff;
+      --a:#6d5bff;      /* Zeus purple */
+      --b:#00c2ff;      /* Lightning cyan */
 
       --ok:#22c55e;
       --bad:#ff3b30;
       --warn:#ffb020;
 
-      --line: rgba(15,23,42,.08);
-      --line2: rgba(15,23,42,.12);
-
-      --r: 22px;
-      --r2: 18px;
-
-      --shadow: 0 18px 50px rgba(15,23,42,.08);
-      --shadow2: 0 10px 22px rgba(15,23,42,.06);
-      --shadow3: 0 8px 16px rgba(15,23,42,.05);
-
-      --blur: blur(18px);
-
-      --tap: scale(.985);
-
-      --safe-top: env(safe-area-inset-top);
-      --safe-bottom: env(safe-area-inset-bottom);
+      --r:20px;
+      --shadow: 0 10px 30px rgba(15,23,42,.08);
     }
 
     *{box-sizing:border-box}
@@ -44,80 +29,66 @@
     body{
       margin:0;
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Arial,sans-serif;
-      color: var(--tg-text);
-      background:
-        radial-gradient(1200px 700px at 12% -10%, rgba(109,91,255,.12), transparent 55%),
-        radial-gradient(900px 650px at 95% 0%, rgba(0,194,255,.10), transparent 52%),
-        linear-gradient(180deg, var(--tg-bg), var(--tg-secondary-bg));
+      color:var(--text);
+      background: linear-gradient(180deg, var(--bg), var(--bg2));
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
     }
 
-    a{color:inherit}
-
+    /* Layout */
     .app{
       min-height:100%;
-      max-width: 560px;
+      padding: env(safe-area-inset-top) 16px calc(92px + env(safe-area-inset-bottom)) 16px;
+      max-width: 520px;
       margin: 0 auto;
-      padding: calc(var(--safe-top) + 12px) 16px calc(96px + var(--safe-bottom)) 16px;
     }
 
-    /* Topbar */
     .topbar{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      padding: 2px 0 14px 0;
+      padding: 12px 0 14px 0;
     }
     .brand{
-      display:flex; align-items:center; gap:12px;
-      min-width: 0;
+      display:flex;
+      align-items:center;
+      gap:12px;
     }
     .logo{
-      width:46px;height:46px;border-radius:16px;
-      background:
-        radial-gradient(120% 120% at 20% 10%, rgba(255,255,255,.95), rgba(255,255,255,.55)),
-        linear-gradient(135deg, rgba(109,91,255,.22), rgba(0,194,255,.16));
+      width:44px;height:44px;border-radius:14px;
+      background: radial-gradient(120% 120% at 20% 10%, rgba(255,255,255,.95), rgba(255,255,255,.5)),
+                  linear-gradient(135deg, rgba(109,91,255,.20), rgba(0,194,255,.15));
       border:1px solid var(--line);
-      box-shadow: var(--shadow3);
-      display:grid; place-items:center;
-      position:relative; overflow:hidden;
-      flex: 0 0 auto;
+      box-shadow: var(--shadow);
+      display:grid;
+      place-items:center;
+      position:relative;
+      overflow:hidden;
     }
     .logo:before{
       content:"";
-      position:absolute; inset:-30%;
-      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.80), transparent 55%);
-      transform: rotate(10deg);
-      opacity: .9;
+      position:absolute; inset:-20%;
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.70), transparent 55%);
+      transform: rotate(8deg);
     }
     .bolt{
       width:20px;height:20px; z-index:1;
+      filter: drop-shadow(0 8px 12px rgba(109,91,255,.18));
       background: linear-gradient(135deg, var(--a), var(--b));
       -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M13 2L3 14h7l-1 8 12-14h-7l-1-6z"/></svg>') center / contain no-repeat;
       mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M13 2L3 14h7l-1 8 12-14h-7l-1-6z"/></svg>') center / contain no-repeat;
-      filter: drop-shadow(0 10px 14px rgba(109,91,255,.18));
     }
-    .brand-title{
-      min-width:0;
-    }
-    .brand-title h1{
+    .brand h1{
       margin:0;
       font-size:18px;
-      line-height:1.15;
+      line-height:1.1;
       letter-spacing:.2px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
     }
-    .brand-title p{
-      margin:3px 0 0 0;
+    .brand p{
+      margin:2px 0 0 0;
+      color:var(--muted);
       font-size:12.5px;
-      color: var(--tg-hint);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
     }
 
     .chip{
@@ -125,88 +96,158 @@
       border:1px solid var(--line);
       background: rgba(255,255,255,.85);
       border-radius: 999px;
-      box-shadow: var(--shadow2);
+      box-shadow: 0 10px 24px rgba(15,23,42,.05);
       display:flex; align-items:center; gap:8px;
       font-size:12.5px;
-      color: var(--tg-hint);
+      color:var(--muted);
       user-select:none;
       white-space:nowrap;
-      flex: 0 0 auto;
     }
-    .chip strong{ color: var(--tg-text); font-weight:900; letter-spacing:.2px; }
-    .chip .mini{
-      width:8px;height:8px;border-radius:999px;
-      background: linear-gradient(135deg, var(--a), var(--b));
-      box-shadow: 0 10px 16px rgba(109,91,255,.18);
-    }
+    .chip strong{ color:var(--text); font-weight:900; }
 
-    /* Sections & cards */
-    .section{ display:none; animation: fadeUp .18s ease-out; }
+    .section{
+      display:none;
+      animation: fadeUp .18s ease-out;
+    }
     .section.active{ display:block; }
+
     @keyframes fadeUp{
       from { opacity:0; transform: translateY(6px); }
-      to { opacity:1; transform: translateY(0); }
+      to   { opacity:1; transform: translateY(0); }
     }
 
+    /* Cards */
     .card{
-      background: rgba(255,255,255,.92);
+      background:var(--card);
       border:1px solid var(--line);
-      border-radius: var(--r);
+      border-radius:var(--r);
       box-shadow: var(--shadow);
-      padding: 16px;
+      padding:16px;
     }
-    .card + .card{ margin-top: 12px; }
+    .card + .card{ margin-top:12px; }
 
     .card-title{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom: 10px;
+      margin-bottom:10px;
     }
     .card-title h2{
       margin:0;
-      font-size: 14px;
+      font-size:14px;
       letter-spacing:.2px;
     }
     .sub{
       margin:0;
-      color: var(--tg-hint);
-      font-size: 12.8px;
-      line-height: 1.42;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.35;
     }
 
-    /* Premium plan header */
-    .hero{
-      padding: 14px 14px 12px 14px;
-      border-radius: var(--r2);
-      border:1px solid var(--line);
-      background:
-        radial-gradient(900px 420px at 18% -40%, rgba(109,91,255,.18), transparent 60%),
-        radial-gradient(700px 420px at 90% -20%, rgba(0,194,255,.14), transparent 55%),
-        rgba(245,246,250,.65);
-      box-shadow: var(--shadow2);
-      margin-bottom: 12px;
-    }
-    .hero-top{
+    /* Pills */
+    .pill-row{
       display:flex;
-      align-items:flex-start;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+    }
+    .pill{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:13px;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease, opacity .12s ease;
+    }
+    .pill:active{ transform: scale(.985); }
+    .pill.active{
+      border-color: rgba(109,91,255,.55);
+      background: rgba(109,91,255,.10);
+      box-shadow: 0 12px 22px rgba(109,91,255,.10);
+    }
+    .pill.disabled{
+      opacity:.45;
+      cursor:not-allowed;
+      pointer-events:none;
+    }
+
+    /* Summary */
+    .summary{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .row{
+      display:flex;
+      align-items:center;
       justify-content:space-between;
       gap:10px;
+      padding:10px 12px;
+      border:1px dashed rgba(233,236,245,.9);
+      border-radius: 14px;
+      background: rgba(245,246,250,.55);
     }
-    .hero h3{
-      margin:0;
-      font-size: 16px;
+    .row span{ color:var(--muted); font-size:12.5px; }
+    .row strong{ font-size:13px; }
+
+    .price{
+      font-size:24px;
+      font-weight:900;
       letter-spacing:.2px;
-    }
-    .hero p{
-      margin: 6px 0 0 0;
-      font-size: 12.8px;
-      color: var(--tg-hint);
-      line-height: 1.4;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
-    /* Badges */
+    /* Buttons */
+    .btn{
+      width:100%;
+      border:0;
+      border-radius:18px;
+      height:56px;
+      font-weight:900;
+      font-size:15px;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease, opacity .12s ease;
+      user-select:none;
+    }
+    .btn:disabled{ opacity:.65; cursor:not-allowed; }
+    .btn-primary{
+      color:#fff;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      box-shadow: 0 14px 30px rgba(109,91,255,.22);
+    }
+    .btn-primary:active{ transform: scale(.985); box-shadow: 0 10px 22px rgba(109,91,255,.16); }
+
+    .btn-ghost{
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--text);
+      box-shadow: 0 12px 24px rgba(15,23,42,.06);
+    }
+    .btn-ghost:active{ transform: scale(.99); }
+
+    .btn-mini{
+      height:44px;
+      border-radius:14px;
+      font-weight:900;
+      font-size:13px;
+      padding: 0 14px;
+      width:auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+
+    /* Status badge */
     .badge{
       display:inline-flex;
       align-items:center;
@@ -216,220 +257,169 @@
       font-size:12.5px;
       font-weight:900;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.88);
+      background: #fff;
       white-space:nowrap;
     }
-    .badge .dot{ width:8px;height:8px;border-radius:999px;background: currentColor; opacity:.9; }
     .badge.ok{
-      border-color: rgba(34,197,94,.30);
-      background: rgba(34,197,94,.10);
+      border-color: rgba(34,197,94,.35);
+      background: rgba(34,197,94,.12);
       color: #168a3e;
     }
     .badge.bad{
-      border-color: rgba(255,59,48,.30);
-      background: rgba(255,59,48,.10);
+      border-color: rgba(255,59,48,.35);
+      background: rgba(255,59,48,.12);
       color: #c9140c;
     }
     .badge.warn{
-      border-color: rgba(255,176,32,.30);
-      background: rgba(255,176,32,.10);
-      color: #a86100;
+      border-color: rgba(255,176,32,.35);
+      background: rgba(255,176,32,.12);
+      color: #b26a00;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: currentColor;
+      opacity:.9;
     }
 
-    /* Segmented controls */
-    .seg{
-      display:flex;
-      gap:8px;
-      padding: 8px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.85);
-      border-radius: 18px;
-      box-shadow: var(--shadow2);
-    }
-    .seg button{
-      flex:1;
-      border:0;
-      height: 44px;
-      border-radius: 14px;
-      background: transparent;
-      color: var(--tg-hint);
-      font-weight: 900;
-      font-size: 13px;
-      cursor:pointer;
-      transition: transform .12s ease, background .12s ease, color .12s ease, box-shadow .12s ease;
-      user-select:none;
-    }
-    .seg button:active{ transform: var(--tap); }
-    .seg button.active{
-      color: var(--tg-text);
-      background: rgba(109,91,255,.10);
-      box-shadow: 0 10px 18px rgba(109,91,255,.10);
-    }
-
-    /* Pills */
-    .pill-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top: 10px; }
-    .pill{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.92);
-      color: var(--tg-text);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: 900;
-      cursor:pointer;
-      user-select:none;
-      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease, opacity .12s ease;
-      box-shadow: var(--shadow3);
-    }
-    .pill:active{ transform: var(--tap); }
-    .pill.active{
-      border-color: rgba(109,91,255,.45);
-      background: rgba(109,91,255,.10);
-      box-shadow: 0 14px 24px rgba(109,91,255,.12);
-    }
-
-    /* Summary rows */
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding: 11px 12px;
-      border-radius: 16px;
-      border:1px solid var(--line);
-      background: rgba(245,246,250,.60);
-    }
-    .row span{ color: var(--tg-hint); font-size: 12.6px; }
-    .row strong{ font-size: 13px; letter-spacing:.1px; }
-
-    .price{
-      font-size: 24px;
-      font-weight: 1000;
-      letter-spacing:.2px;
-      background: linear-gradient(135deg, var(--a), var(--b));
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-    }
-
-    /* Buttons */
-    .btn{
-      width:100%;
-      height:56px;
-      border-radius: 18px;
-      border:0;
-      font-weight: 1000;
-      font-size: 15px;
-      cursor:pointer;
-      user-select:none;
-      transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease, filter .12s ease;
-    }
-    .btn:active{ transform: var(--tap); }
-    .btn:disabled{ opacity:.65; cursor:not-allowed; }
-    .btn-primary{
-      color:#fff;
-      background: linear-gradient(135deg, var(--a), var(--b));
-      box-shadow: 0 18px 38px rgba(109,91,255,.22);
-    }
-    .btn-ghost{
-      background: rgba(255,255,255,.92);
-      border: 1px solid var(--line);
-      color: var(--tg-text);
-      box-shadow: var(--shadow2);
-    }
-
-    /* Config box */
+    /* Config area */
     .mono{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      font-size: 12.6px;
-      line-height: 1.35;
-      background: rgba(245,246,250,.72);
+      font-size:12.5px;
+      line-height:1.35;
+      background: rgba(245,246,250,.75);
       border:1px solid var(--line);
       border-radius: 16px;
-      padding: 12px;
+      padding:12px;
       word-break: break-all;
       overflow:auto;
-      max-height: 170px;
+      max-height: 160px;
     }
-    .mono.masked{ filter: blur(7px); user-select:none; pointer-events:none; }
-
+    .mono.masked{
+      filter: blur(7px);
+      user-select:none;
+      pointer-events:none;
+    }
     .actions{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
-      margin-top: 10px;
-    }
-    .mini-btn{
-      height:44px;
-      border-radius: 14px;
-      padding: 0 14px;
-      font-weight: 1000;
-      font-size: 13px;
-      width: auto;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.92);
-      box-shadow: var(--shadow3);
-      cursor:pointer;
-      user-select:none;
-      transition: transform .12s ease, box-shadow .12s ease;
-    }
-    .mini-btn:active{ transform: var(--tap); }
-    .mini-btn.primary{
-      border:0;
-      color:#fff;
-      background: linear-gradient(135deg, var(--a), var(--b));
-      box-shadow: 0 14px 28px rgba(109,91,255,.22);
+      margin-top:10px;
     }
 
-    /* Orders */
-    .list{ display:flex; flex-direction:column; gap:10px; margin-top: 10px; }
+    /* Orders list */
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
+    }
     .item{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.92);
-      border-radius: 18px;
-      padding: 12px;
-      box-shadow: var(--shadow2);
+      background:#fff;
+      border-radius: 16px;
+      padding:12px;
+      box-shadow: 0 12px 26px rgba(15,23,42,.06);
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
       gap:10px;
     }
-    .item h3{ margin:0; font-size:13px; letter-spacing:.1px; }
-    .item p{ margin:4px 0 0 0; color: var(--tg-hint); font-size:12.6px; }
+    .item h3{
+      margin:0;
+      font-size:13px;
+      letter-spacing:.1px;
+    }
+    .item p{
+      margin:4px 0 0 0;
+      color:var(--muted);
+      font-size:12.5px;
+    }
     .tag{
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      font-size: 12px;
-      font-weight: 1000;
-      background: rgba(245,246,250,.70);
-      color: var(--tg-hint);
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:900;
+      background: rgba(245,246,250,.65);
+      color: var(--muted);
       white-space:nowrap;
     }
 
-    /* Tabs */
+    /* Instruction slider */
+    .slider{
+      position:relative;
+      overflow:hidden;
+      border-radius: var(--r);
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow: var(--shadow);
+    }
+    .slides{
+      display:flex;
+      transition: transform .22s ease;
+      will-change: transform;
+    }
+    .slide{
+      min-width:100%;
+      padding:16px;
+    }
+    .steps{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .step{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      background: rgba(245,246,250,.55);
+    }
+    .num{
+      width:28px;height:28px;border-radius: 10px;
+      display:grid; place-items:center;
+      font-weight:900;
+      color:#fff;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      box-shadow: 0 10px 22px rgba(109,91,255,.18);
+      flex: 0 0 auto;
+    }
+    .step b{ display:block; font-size:13px; }
+    .step span{ display:block; color:var(--muted); font-size:12.5px; margin-top:2px; line-height:1.35; }
+
+    .pager{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      padding:12px;
+      border-top:1px solid var(--line);
+      background: rgba(245,246,250,.45);
+    }
+    .dots{ display:flex; gap:8px; }
+    .dot2{
+      width:8px;height:8px;border-radius:999px;
+      background: rgba(91,100,117,.35);
+    }
+    .dot2.active{
+      width:20px;
+      background: linear-gradient(135deg, var(--a), var(--b));
+    }
+
+    /* Bottom nav */
     .nav{
       position: fixed;
       left:0; right:0; bottom:0;
-      padding: 10px 14px calc(10px + var(--safe-bottom)) 14px;
-      background: rgba(255,255,255,.72);
-      backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom)) 14px;
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-top: 1px solid var(--line);
       z-index: 20;
     }
     .nav-inner{
-      max-width:560px;
+      max-width:520px;
       margin:0 auto;
       display:flex;
       gap:10px;
@@ -439,27 +429,26 @@
     .navbtn{
       flex:1;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.90);
+      background:#fff;
       border-radius: 18px;
       height:52px;
-      box-shadow: var(--shadow2);
+      box-shadow: 0 12px 26px rgba(15,23,42,.06);
       display:flex;
       align-items:center;
       justify-content:center;
       gap:10px;
-      font-weight: 1000;
-      color: var(--tg-hint);
+      font-weight:900;
+      color:var(--muted);
       cursor:pointer;
       user-select:none;
       transition: transform .12s ease, color .12s ease, border-color .12s ease, background .12s ease;
     }
-    .navbtn:active{ transform: var(--tap); }
+    .navbtn:active{ transform: scale(.988); }
     .navbtn.active{
-      color: var(--tg-text);
+      color:var(--text);
       border-color: rgba(109,91,255,.35);
-      background: rgba(109,91,255,.09);
+      background: rgba(109,91,255,.08);
     }
-
     .ico{
       width:18px;height:18px;
       background: currentColor;
@@ -481,7 +470,7 @@
     }
     .ico.book{
       -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M18 2H8a3 3 0 0 0-3 3v16a1 1 0 0 0 1.45.89A6.9 6.9 0 0 1 9 21h9a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3zm1 16a1 1 0 0 1-1 1H9a8.7 8.7 0 0 0-2 .23V5a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1z"/></svg>');
-      mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M18 2H8a3 3 0 0 0-3 3v16a1 1 0 0 0 1.45.89A6.9 6.9 0 0 1 9 21h9a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3zm1 16a1 1 0 0 1-1 1H9a8.7 8.7 0 0 0-2 .23V5a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1z"/></svg>');
+      mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M18 2H8a3 3 0 0 0-3 3v16a1 1 0 0 0 1.45.89A6.9 6.9 0 0 1 9 21h9a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3zm1 16a1 1 0 0 1-1 1H9a8.7 8.7 0 0 0-2 .23V5a1 1 0 0 0 1-1h10a1 1 0 0 0 1 1z"/></svg>');
     }
 
     /* Toast */
@@ -489,18 +478,18 @@
       position: fixed;
       left: 50%;
       transform: translateX(-50%);
-      bottom: calc(100px + var(--safe-bottom));
+      bottom: calc(100px + env(safe-area-inset-bottom));
       background: rgba(11,18,32,.92);
       color:#fff;
       padding: 10px 12px;
       border-radius: 14px;
-      font-weight: 1000;
-      font-size: 12.6px;
+      font-weight: 900;
+      font-size: 12.5px;
       opacity: 0;
       pointer-events:none;
       transition: opacity .15s ease, transform .15s ease;
       z-index: 50;
-      max-width: 92vw;
+      max-width: 90vw;
       text-align:center;
     }
     .toast.show{
@@ -508,89 +497,145 @@
       transform: translateX(-50%) translateY(-4px);
     }
 
-    /* Small helpers */
-    .mt8{ margin-top: 8px; }
-    .mt10{ margin-top: 10px; }
-    .mt12{ margin-top: 12px; }
-    .hr{ height:1px; background: var(--line); margin: 12px 0; }
+    /* Helpers */
+    .mt12{ margin-top:12px; }
+    .mt10{ margin-top:10px; }
+    .mt8{ margin-top:8px; }
+    .two{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .two > *{ flex: 1 1 180px; }
+    .hr{
+      height:1px;
+      background: var(--line);
+      margin: 12px 0;
+    }
 
-    /* Make it feel more iOS */
-    .card, .pill, .navbtn, .chip, .seg, .mini-btn, .btn {
-      -webkit-tap-highlight-color: transparent;
+    /***********************
+     * SMART CARDS ADDITIONS
+     ************************/
+    .mini-progress{
+      height:10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,.08);
+      overflow:hidden;
+      border: 1px solid rgba(15,23,42,.08);
+    }
+    .mini-progress > div{
+      height:100%;
+      width:0%;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      transition: width .25s ease;
+    }
+    .kpi{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:10px;
+    }
+    .kpi .left{
+      display:flex;
+      flex-direction:column;
+      gap:3px;
+    }
+    .kpi .left b{ font-size:13px; }
+    .kpi .left span{ font-size:12.5px; color:var(--muted); }
+    .kpi .right{
+      font-weight:900;
+      font-size:13px;
+      color:var(--text);
     }
   </style>
 </head>
-
 <body>
+
   <div class="app">
+
     <div class="topbar">
       <div class="brand">
         <div class="logo"><div class="bolt"></div></div>
-        <div class="brand-title">
+        <div>
           <h1>ZEUSVPN</h1>
-          <p>VLESS конфиги через 3X-UI • Telegram Mini App ready</p>
+          <p>Автоматическая выдача VLESS • White iOS UI</p>
         </div>
       </div>
 
-      <div class="chip" title="Твой ключ пользователя (user_key)">
-        <span class="mini"></span> ID: <strong id="userKeyShort">—</strong>
+      <div class="chip" title="Твой идентификатор в системе">
+        ID: <strong id="userKeyShort">—</strong>
       </div>
     </div>
 
     <!-- HOME -->
     <section id="viewHome" class="section active">
       <div class="card">
-        <div class="hero">
-          <div class="hero-top">
-            <div>
-              <h3>Выбери тариф</h3>
-              <p>После оплаты выдадим рабочую VLESS-ссылку. Подписка хранится в системе — конфиг не “рандомный текст”.</p>
-            </div>
-            <span class="badge" id="planBadge"><span class="dot"></span><span id="planBadgeText">Готово</span></span>
-          </div>
-        </div>
-
         <div class="card-title">
-          <h2>Срок</h2>
-          <span class="sub" id="daysHint">—</span>
+          <h2>Тариф</h2>
+          <span class="badge" id="planBadge"><span class="dot"></span><span id="planBadgeText">Выбери параметры</span></span>
         </div>
-        <div class="seg" id="daysSeg"></div>
+        <p class="sub">Выбирай срок и число устройств. Оплата откроется внутри Telegram (Stars / CryptoBot). После оплаты конфиг появится в кабинете.</p>
 
-        <div class="card-title mt12">
-          <h2>Устройства</h2>
-          <span class="sub" id="devHint">—</span>
+        <div class="mt12">
+          <div class="card-title" style="margin-bottom:6px;">
+            <h2 style="font-size:13px;margin:0;">Срок</h2>
+            <span class="sub" id="daysHint">30 дней</span>
+          </div>
+          <div class="pill-row" id="daysPills"></div>
         </div>
-        <div class="pill-row" id="devPills"></div>
 
-        <div class="grid">
+        <div class="mt12">
+          <div class="card-title" style="margin-bottom:6px;">
+            <h2 style="font-size:13px;margin:0;">Устройства</h2>
+            <span class="sub" id="devHint">1 устройство</span>
+          </div>
+          <div class="pill-row" id="devPills"></div>
+        </div>
+
+        <div class="summary">
           <div class="row">
             <span>Итого</span>
             <strong class="price" id="priceText">—</strong>
           </div>
           <div class="row">
             <span>Оплата</span>
-            <strong id="payHint">Stars / CryptoBot</strong>
+            <strong id="payHint">Telegram Stars / CryptoBot</strong>
           </div>
         </div>
 
         <div class="mt12">
-          <button class="btn btn-primary" id="payBtn">Перейти к оплате</button>
+          <button class="btn btn-primary" id="payBtn">Оплатить</button>
         </div>
 
         <p class="sub mt10">
-          Сейчас это демо-фронт. Позже подключим бекенд: он будет возвращать invoice-ссылку и подтверждать оплату по webhook.
+          Это демо-фронт: “инвойс” открывается как ссылка, а успешная оплата имитируется автоматически.
+          Когда подключим бекенд — сюда будут приходить реальные invoice-ссылки от Stars и CryptoBot.
         </p>
       </div>
 
       <div class="card">
         <div class="card-title">
-          <h2>Суть “рабочих конфигов”</h2>
-          <span class="tag">важно</span>
+          <h2>Почему это удобно</h2>
+          <span class="tag">Автоматически</span>
         </div>
-        <p class="sub">
-          Конфиг появляется потому что бекенд создаёт реального клиента в 3X-UI, а 3X-UI управляет Xray на сервере.
-          Поэтому VLESS-ссылка рабочая: сервер реально “знает” пользователя и срок.
-        </p>
+        <div class="two mt10">
+          <div class="row" style="border-style:solid;">
+            <span>⏱ Без поддержки</span>
+            <strong>выдача за секунды</strong>
+          </div>
+          <div class="row" style="border-style:solid;">
+            <span>🔒 Реальный сервер</span>
+            <strong>через 3x-ui/Xray</strong>
+          </div>
+          <div class="row" style="border-style:solid;">
+            <span>🧾 Статус</span>
+            <strong>“Активна до …”</strong>
+          </div>
+          <div class="row" style="border-style:solid;">
+            <span>📲 Инструкция</span>
+            <strong>iOS/Android/Desktop</strong>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -602,7 +647,7 @@
           <span class="tag" id="payOrderId">—</span>
         </div>
 
-        <div class="grid">
+        <div class="summary">
           <div class="row">
             <span>Тариф</span>
             <strong id="payPlanText">—</strong>
@@ -613,26 +658,47 @@
           </div>
         </div>
 
-        <div class="card-title mt12">
-          <h2>Способ</h2>
-          <span class="sub">в Telegram</span>
-        </div>
-        <div class="seg" id="payMethodSeg"></div>
+        <p class="sub mt10">Выбери способ оплаты. Мы откроем готовый инвойс внутри Telegram.</p>
+
+        <div class="pill-row" id="payMethodPills"></div>
 
         <div class="mt12">
           <button class="btn btn-primary" id="openInvoiceBtn">Открыть оплату</button>
         </div>
+
         <div class="mt10">
           <button class="btn btn-ghost" id="checkStatusBtn">Проверить статус</button>
         </div>
 
-        <div class="mt12">
+        <div class="mt12" id="payStatusBox">
           <span class="badge warn" id="payStatusBadge"><span class="dot"></span><span>Ожидает оплату</span></span>
-          <p class="sub mt10" id="payStatusHint">После оплаты статус обновится.</p>
+          <p class="sub mt10" id="payStatusHint">После оплаты статус обновится автоматически.</p>
         </div>
 
-        <div class="hr"></div>
-        <button class="btn btn-ghost" id="backFromPayBtn">Назад</button>
+        <div class="mt12" style="display:none" id="paySuccessBox">
+          <span class="badge ok"><span class="dot"></span><span>Оплачено ✅</span></span>
+          <p class="sub mt10">Переходим в кабинет…</p>
+        </div>
+
+        <div class="mt12" style="display:none" id="payFailBox">
+          <span class="badge bad"><span class="dot"></span><span>Не оплачено</span></span>
+          <p class="sub mt10">Если ты уже оплатил — нажми “Проверить статус”.</p>
+        </div>
+
+        <div class="mt12">
+          <button class="btn btn-ghost" id="backFromPayBtn">Назад к тарифам</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <h2>Важно</h2>
+          <span class="tag">Mini App</span>
+        </div>
+        <p class="sub">
+          Мы используем готовые решения: Telegram Stars и CryptoBot (Crypto Pay). На проде инвойс будет открываться через Telegram WebApp API,
+          а подтверждение оплаты — через бекенд по webhook.
+        </p>
       </div>
     </section>
 
@@ -640,26 +706,50 @@
     <section id="viewCabinet" class="section">
       <div class="card">
         <div class="card-title">
-          <h2>Кабинет</h2>
+          <h2>Личный кабинет</h2>
           <span class="tag" id="subTag">—</span>
         </div>
 
-        <div class="grid">
-          <div class="row">
+        <div class="two mt10">
+          <div class="row" style="border-style:solid;">
             <span>User Key</span>
-            <strong id="userKeyFull" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace;">—</strong>
+            <strong class="mono" style="max-height:none;" id="userKeyFull">—</strong>
           </div>
-          <div class="row">
+          <div class="row" style="border-style:solid;">
             <span>Устройства</span>
             <strong id="devicesLimitText">—</strong>
           </div>
-          <div class="row">
+        </div>
+
+        <div class="mt10">
+          <div class="row" style="border-style:solid;">
             <span>Подписка</span>
             <strong id="activeUntilText">—</strong>
           </div>
         </div>
 
-        <p class="sub mt10">Конфиг доступен только при активной подписке.</p>
+        <!-- SMART CARDS: progress + days left + devices used -->
+        <div class="mt10">
+          <div class="kpi">
+            <div class="left">
+              <b>Осталось</b>
+              <span id="daysLeftText">—</span>
+            </div>
+            <div class="right" id="progressPctText">—</div>
+          </div>
+          <div class="mini-progress mt8">
+            <div id="subProgressBar"></div>
+          </div>
+        </div>
+
+        <div class="mt10">
+          <div class="row" style="border-style:solid;">
+            <span>Использовано устройств</span>
+            <strong id="devicesUsedText">—</strong>
+          </div>
+        </div>
+
+        <p class="sub mt10">Конфиг показывается только если подписка активна.</p>
       </div>
 
       <div class="card" id="configCard">
@@ -669,134 +759,178 @@
         </div>
 
         <div id="configLocked">
-          <p class="sub">Оплати тариф на главной — и здесь появится VLESS-ссылка.</p>
+          <p class="sub">Оплати тариф на главной — после этого здесь появится твоя VLESS ссылка.</p>
           <button class="btn btn-ghost mt12" onclick="go('home')">Выбрать тариф</button>
         </div>
 
         <div id="configUnlocked" style="display:none;">
           <div class="mono masked" id="vlessLink">—</div>
           <div class="actions">
-            <button class="mini-btn" id="toggleMaskBtn">Показать</button>
-            <button class="mini-btn primary" id="copyBtn">Скопировать</button>
-            <button class="mini-btn" id="openBtn">Открыть</button>
-            <button class="mini-btn" id="shareBtn">Поделиться</button>
-            <button class="mini-btn" id="regenBtn">Обновить</button>
+            <button class="btn btn-mini btn-ghost" id="toggleMaskBtn">Показать</button>
+            <button class="btn btn-mini btn-primary" id="copyBtn">Скопировать</button>
+            <button class="btn btn-mini btn-ghost" id="openBtn">Открыть</button>
+            <button class="btn btn-mini btn-ghost" id="shareBtn">Поделиться</button>
+            <button class="btn btn-mini btn-ghost" id="regenBtn" title="В демо просто обновляет ссылку">Обновить</button>
           </div>
-          <p class="sub mt10">Не делись ссылкой — она даёт доступ к твоей подписке.</p>
+          <p class="sub mt10">Не делись ссылкой. Она даёт доступ к твоей подписке.</p>
         </div>
       </div>
 
       <div class="card">
         <div class="card-title">
-          <h2>История</h2>
+          <h2>История заказов</h2>
           <span class="tag" id="ordersCount">0</span>
         </div>
         <div class="list" id="ordersList"></div>
-        <button class="btn btn-ghost mt12" id="resetBtn">Сбросить демо</button>
-        <p class="sub mt10">Сброс удалит localStorage. На проде это будет SQLite.</p>
+        <button class="btn btn-ghost mt12" id="resetBtn">Сбросить демо-данные</button>
+        <p class="sub mt10">Сброс удалит локальные данные (localStorage). На проде это будет SQLite.</p>
       </div>
     </section>
 
-    <!-- GUIDE -->
+    <!-- INSTRUCTIONS (iOS paging slider) -->
     <section id="viewGuide" class="section">
-      <div class="card">
-        <div class="card-title">
-          <h2>Как подключить</h2>
-          <span class="tag" id="guideTag">iOS</span>
+      <div class="card" style="padding:0;">
+        <div class="card-title" style="padding:16px 16px 0 16px; margin-bottom:10px;">
+          <h2>Инструкция подключения</h2>
+          <span class="tag" id="slideTag">iOS</span>
         </div>
 
-        <div class="grid">
-          <div class="row"><span>1</span><strong>Скопируй VLESS ссылку в кабинете</strong></div>
-          <div class="row"><span>2</span><strong>Импортируй в клиент (V2Box / v2rayNG)</strong></div>
-          <div class="row"><span>3</span><strong>Нажми Connect и разреши VPN</strong></div>
+        <div class="slider">
+          <div class="slides" id="slides">
+            <!-- iOS -->
+            <div class="slide">
+              <p class="sub">Рекомендуем клиент: V2Box / Streisand / Shadowrocket (любой VLESS-клиент).</p>
+              <div class="steps">
+                <div class="step">
+                  <div class="num">1</div>
+                  <div><b>Скопируй VLESS ссылку</b><span>Открой “Кабинет” → “Скопировать”.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">2</div>
+                  <div><b>Импортируй в приложение</b><span>Выбери “Import from clipboard” или “Add by link”.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">3</div>
+                  <div><b>Подключись</b><span>Нажми Connect и разреши VPN-профиль в iOS.</span></div>
+                </div>
+              </div>
+              <div class="hr"></div>
+              <button class="btn btn-primary" onclick="go('cabinet')">Открыть кабинет</button>
+            </div>
+
+            <!-- Android -->
+            <div class="slide">
+              <p class="sub">Подойдёт: v2rayNG / NekoRay (или другой клиент с поддержкой VLESS).</p>
+              <div class="steps">
+                <div class="step">
+                  <div class="num">1</div>
+                  <div><b>Скопируй VLESS ссылку</b><span>Кабинет → “Скопировать”.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">2</div>
+                  <div><b>Импорт по ссылке</b><span>В приложении: “Import from clipboard / from link”.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">3</div>
+                  <div><b>Подключись</b><span>Нажми Start/Connect и разреши VPN.</span></div>
+                </div>
+              </div>
+              <div class="hr"></div>
+              <button class="btn btn-ghost" onclick="go('home')">Вернуться к тарифам</button>
+            </div>
+
+            <!-- Desktop -->
+            <div class="slide">
+              <p class="sub">Подойдёт: Nekoray / любой клиент VLESS с импортом по ссылке.</p>
+              <div class="steps">
+                <div class="step">
+                  <div class="num">1</div>
+                  <div><b>Скопируй ссылку</b><span>Кабинет → “Скопировать”.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">2</div>
+                  <div><b>Импортируй</b><span>В клиенте: Import → From clipboard/URL.</span></div>
+                </div>
+                <div class="step">
+                  <div class="num">3</div>
+                  <div><b>Подключись</b><span>Выбери профиль и нажми Connect.</span></div>
+                </div>
+              </div>
+              <div class="hr"></div>
+              <button class="btn btn-primary" onclick="go('cabinet')">Проверить подписку</button>
+            </div>
+          </div>
+
+          <div class="pager">
+            <button class="btn btn-mini btn-ghost" id="prevBtn">Назад</button>
+            <div class="dots">
+              <div class="dot2 active"></div>
+              <div class="dot2"></div>
+              <div class="dot2"></div>
+            </div>
+            <button class="btn btn-mini btn-ghost" id="nextBtn">Далее</button>
+          </div>
         </div>
 
-        <p class="sub mt12">Позже добавим кнопки “Открыть App Store/Google Play” и авто-импорт.</p>
+        <div style="padding:16px;">
+          <p class="sub">Под прод: добавим реальные ссылки на App Store / Google Play и авто-открытие импорта.</p>
+        </div>
       </div>
     </section>
+
   </div>
 
-  <!-- Tabs -->
+  <!-- Bottom nav -->
   <div class="nav">
     <div class="nav-inner">
-      <button class="navbtn active" id="navHome" onclick="go('home')"><span class="ico home"></span>Главная</button>
-      <button class="navbtn" id="navCabinet" onclick="go('cabinet')"><span class="ico user"></span>Кабинет</button>
-      <button class="navbtn" id="navGuide" onclick="go('guide')"><span class="ico book"></span>Инструкция</button>
+      <button class="navbtn active" id="navHome" onclick="go('home')">
+        <span class="ico home"></span>
+        Главная
+      </button>
+      <button class="navbtn" id="navCabinet" onclick="go('cabinet')">
+        <span class="ico user"></span>
+        Кабинет
+      </button>
+      <button class="navbtn" id="navGuide" onclick="go('guide')">
+        <span class="ico book"></span>
+        Инструкция
+      </button>
     </div>
   </div>
 
   <div class="toast" id="toast">Ок</div>
 
   <script>
-    /******************************************************************
-     * ZEUSVPN — Improved Telegram Mini App ready Frontend (DEMO)
-     * - No backend yet
-     * - Prepared hooks: Telegram.WebApp (MainButton/BackButton/Haptics/openInvoice)
-     ******************************************************************/
+    /***********************
+     * ZEUSVPN — Single-file Demo Frontend
+     * Payments: Telegram Stars / CryptoBot (invoice links)
+     * This is DEMO: "paid" is emulated after opening invoice.
+     *
+     * TG-ready hooks:
+     * - Telegram.WebApp.ready()
+     * - Telegram.WebApp.expand()
+     * - Telegram.WebApp.openInvoice()
+     ************************/
 
-    // ---------------- Telegram WebApp helpers ----------------
-    const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
-
-    function tgInit(){
-      if(!tg) return;
+    // Telegram Mini App init (safe)
+    (function initTelegram(){
       try{
-        tg.ready();
-        tg.expand();
-        // optional: tg.setHeaderColor('bg_color'); tg.setBackgroundColor('#ffffff');
-        applyTelegramTheme();
-        tg.enableClosingConfirmation?.();
+        if(window.Telegram && Telegram.WebApp){
+          Telegram.WebApp.ready();
+          Telegram.WebApp.expand();
+        }
       }catch(e){}
-    }
+    })();
 
-    function applyTelegramTheme(){
-      if(!tg || !tg.themeParams) return;
-      const p = tg.themeParams;
-
-      // Map Telegram theme params (если есть) в CSS vars
-      const css = document.documentElement.style;
-      if(p.bg_color) css.setProperty('--tg-bg', p.bg_color);
-      if(p.secondary_bg_color) css.setProperty('--tg-secondary-bg', p.secondary_bg_color);
-      if(p.text_color) css.setProperty('--tg-text', p.text_color);
-      if(p.hint_color) css.setProperty('--tg-hint', p.hint_color);
-      if(p.link_color) css.setProperty('--tg-link', p.link_color);
-    }
-
-    function haptic(type='impact', style='light'){
-      if(!tg || !tg.HapticFeedback) return;
-      try{
-        if(type === 'impact') tg.HapticFeedback.impactOccurred(style);
-        if(type === 'notify') tg.HapticFeedback.notificationOccurred(style);
-        if(type === 'select') tg.HapticFeedback.selectionChanged();
-      }catch(e){}
-    }
-
-    function openLink(url){
-      if(tg && tg.openLink){
-        tg.openLink(url);
-        return;
-      }
-      window.open(url, "_blank");
-    }
-
-    function openInvoice(link){
-      // В проде для Stars: tg.openInvoice(invoiceLink, cb)
-      if(tg && typeof tg.openInvoice === "function"){
-        tg.openInvoice(link, (status) => {
-          // status: paid/cancelled/failed (зависит от провайдера)
-        });
-        return;
-      }
-      openLink(link);
-    }
-
-    // ---------------- Pricing ----------------
+    // ---------- Mock pricing (edit as you want) ----------
     const PRICES_30 = { 1: 199, 3: 349, 5: 399, 10: 599 };
     const MULT = { 30: 1.0, 90: 2.6, 180: 4.8 };
     const DAYS = [30, 90, 180];
     const DEVS = [1, 3, 5, 10];
 
-    // ---------------- Storage ----------------
-    const LS_KEY = "zeusvpn_demo_tg_v3";
+    // ---------- Storage ----------
+    const LS_KEY = "zeusvpn_demo_v3";
+
     function nowTs(){ return Date.now(); }
     function addDays(ts, days){ return ts + days*24*60*60*1000; }
     function fmtDate(ts){
@@ -807,12 +941,14 @@
       const yy = d.getFullYear();
       return `${dd}.${mm}.${yy}`;
     }
+
     function uid(len=14){
       const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
       let out="";
       for(let i=0;i<len;i++) out += chars[(Math.random()*chars.length)|0];
       return out;
     }
+
     function uuid4(){
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
         const r = (Math.random()*16)|0;
@@ -830,26 +966,30 @@
         user_key: "Z-" + uid(16),
         sub: { active_until: 0, devices_limit: 0, vless: "" },
         orders: [],
-        ui: { days: 30, devices: 1, pay_provider: "stars" }, // stars | cryptobot
-        flags: { vless_masked: true },
-        pay: { current_order_id: null }
+        ui: { days: 30, devices: 1 },
+        pay: { current_order_id: null, provider: "stars" }, // stars | cryptobot
+        ui_flags: { vless_masked: true }
       };
       saveState(st);
       return st;
     }
+
     function saveState(st){ localStorage.setItem(LS_KEY, JSON.stringify(st)); }
     let state = loadState();
+
+    function sleep(ms){ return new Promise(res => setTimeout(res, ms)); }
 
     function calcPrice(days, devices){
       const base = PRICES_30[devices] ?? 199;
       const mult = MULT[days] ?? 1;
       return Math.round(base * mult);
     }
+
     function subscriptionActive(){
       return state.sub.active_until && state.sub.active_until > nowTs();
     }
 
-    // ---------------- Demo VLESS (placeholder) ----------------
+    // ---------- Demo VLESS ----------
     function buildDemoVless(userKey, devices){
       const uuid = uuid4();
       const host = "vpn.example.com";
@@ -858,12 +998,13 @@
       return `vless://${uuid}@${host}:${port}?type=ws&security=tls&sni=${host}&path=%2Fzeus&host=${host}#${name}`;
     }
 
-    // ---------------- Mock API (DEMO ONLY) ----------------
+    // ---------- Mock API ----------
     const mockApi = {
       createOrder: async ({days, devices, provider}) => {
         await sleep(220);
         const price = calcPrice(days, devices);
 
+        // DEMO invoice links (placeholder). On prod: backend returns real invoice link.
         const invoice_link = provider === "stars"
           ? "https://t.me/$invoice/FAKE_STARS_INVOICE"
           : "https://t.me/CryptoBot?start=invoice_FAKE";
@@ -881,6 +1022,7 @@
 
         state.orders.unshift(order);
         state.pay.current_order_id = order.order_id;
+        state.pay.provider = provider;
         saveState(state);
         return order;
       },
@@ -893,14 +1035,16 @@
       },
 
       emulatePaid: async (order_id) => {
-        await sleep(1200 + Math.random()*1400);
+        await sleep(1600 + Math.random()*1600);
         const o = state.orders.find(x => x.order_id === order_id);
         if(!o) return;
 
+        // set fulfilled
         o.status = "fulfilled";
         o.paid_at = nowTs();
         o.fulfilled_at = nowTs();
 
+        // extend subscription
         const base = (state.sub.active_until && state.sub.active_until > nowTs())
           ? state.sub.active_until
           : nowTs();
@@ -920,17 +1064,14 @@
       }
     };
 
-    function sleep(ms){ return new Promise(res => setTimeout(res, ms)); }
-
-    // ---------------- UI refs ----------------
+    // ---------- UI helpers ----------
     const $ = (sel) => document.querySelector(sel);
 
     const el = {
       userKeyShort: $("#userKeyShort"),
       userKeyFull: $("#userKeyFull"),
 
-      // home
-      daysSeg: $("#daysSeg"),
+      daysPills: $("#daysPills"),
       devPills: $("#devPills"),
       daysHint: $("#daysHint"),
       devHint: $("#devHint"),
@@ -938,6 +1079,27 @@
       payBtn: $("#payBtn"),
       planBadge: $("#planBadge"),
       planBadgeText: $("#planBadgeText"),
+
+      subTag: $("#subTag"),
+      devicesLimitText: $("#devicesLimitText"),
+      activeUntilText: $("#activeUntilText"),
+
+      // smart cards
+      daysLeftText: $("#daysLeftText"),
+      progressPctText: $("#progressPctText"),
+      subProgressBar: $("#subProgressBar"),
+      devicesUsedText: $("#devicesUsedText"),
+
+      configLocked: $("#configLocked"),
+      configUnlocked: $("#configUnlocked"),
+      vlessLink: $("#vlessLink"),
+      configBadge: $("#configBadge"),
+
+      ordersList: $("#ordersList"),
+      ordersCount: $("#ordersCount"),
+      resetBtn: $("#resetBtn"),
+
+      toast: $("#toast"),
 
       // views
       viewHome: $("#viewHome"),
@@ -950,93 +1112,68 @@
       navCabinet: $("#navCabinet"),
       navGuide: $("#navGuide"),
 
-      // pay
-      payOrderId: $("#payOrderId"),
-      payPlanText: $("#payPlanText"),
-      payAmountText: $("#payAmountText"),
-      payMethodSeg: $("#payMethodSeg"),
-      openInvoiceBtn: $("#openInvoiceBtn"),
-      checkStatusBtn: $("#checkStatusBtn"),
-      payStatusBadge: $("#payStatusBadge"),
-      payStatusHint: $("#payStatusHint"),
-      backFromPayBtn: $("#backFromPayBtn"),
+      // slider
+      slides: $("#slides"),
+      prevBtn: $("#prevBtn"),
+      nextBtn: $("#nextBtn"),
+      slideTag: $("#slideTag"),
+      dots: document.querySelectorAll(".dot2"),
 
-      // cabinet
-      subTag: $("#subTag"),
-      devicesLimitText: $("#devicesLimitText"),
-      activeUntilText: $("#activeUntilText"),
-      configLocked: $("#configLocked"),
-      configUnlocked: $("#configUnlocked"),
-      vlessLink: $("#vlessLink"),
-      configBadge: $("#configBadge"),
+      // config actions
       toggleMaskBtn: $("#toggleMaskBtn"),
       copyBtn: $("#copyBtn"),
       openBtn: $("#openBtn"),
       shareBtn: $("#shareBtn"),
       regenBtn: $("#regenBtn"),
 
-      // orders
-      ordersList: $("#ordersList"),
-      ordersCount: $("#ordersCount"),
-      resetBtn: $("#resetBtn"),
-
-      // guide
-      guideTag: $("#guideTag"),
-
-      toast: $("#toast"),
+      // pay
+      payOrderId: $("#payOrderId"),
+      payPlanText: $("#payPlanText"),
+      payAmountText: $("#payAmountText"),
+      payMethodPills: $("#payMethodPills"),
+      openInvoiceBtn: $("#openInvoiceBtn"),
+      checkStatusBtn: $("#checkStatusBtn"),
+      payStatusBadge: $("#payStatusBadge"),
+      payStatusHint: $("#payStatusHint"),
+      paySuccessBox: $("#paySuccessBox"),
+      payFailBox: $("#payFailBox"),
+      backFromPayBtn: $("#backFromPayBtn"),
     };
 
-    // ---------------- Toast ----------------
     function toast(msg){
       el.toast.textContent = msg;
       el.toast.classList.add("show");
       setTimeout(() => el.toast.classList.remove("show"), 1400);
     }
 
-    // ---------------- Render helpers ----------------
+    function renderPills(container, values, activeValue, onPick, format){
+      container.innerHTML = "";
+      values.forEach(v => {
+        const b = document.createElement("button");
+        b.className = "pill" + (v === activeValue ? " active" : "");
+        b.textContent = format ? format(v) : String(v);
+        b.onclick = () => onPick(v);
+        container.appendChild(b);
+      });
+    }
+
     function setHomeBadge(kind, text){
       el.planBadge.className = "badge" + (kind ? " " + kind : "");
       el.planBadgeText.textContent = text;
-    }
-
-    function renderDaysSeg(){
-      el.daysSeg.innerHTML = "";
-      DAYS.forEach(days => {
-        const b = document.createElement("button");
-        b.className = (state.ui.days === days) ? "active" : "";
-        b.textContent = (days === 30) ? "30 дней" : (days === 90) ? "90 дней" : "180 дней";
-        b.onclick = () => {
-          haptic('select');
-          state.ui.days = days;
-          saveState(state);
-          renderHome();
-        };
-        el.daysSeg.appendChild(b);
-      });
-    }
-
-    function renderDevPills(){
-      el.devPills.innerHTML = "";
-      DEVS.forEach(dev => {
-        const b = document.createElement("button");
-        b.className = "pill" + (state.ui.devices === dev ? " active" : "");
-        b.textContent = `${dev}`;
-        b.onclick = () => {
-          haptic('select');
-          state.ui.devices = dev;
-          saveState(state);
-          renderHome();
-        };
-        el.devPills.appendChild(b);
-      });
+      el.planBadge.querySelector(".dot").style.opacity = 0.9;
     }
 
     function renderHome(){
       el.userKeyShort.textContent = state.user_key.slice(-6);
       el.userKeyFull.textContent = state.user_key;
 
-      renderDaysSeg();
-      renderDevPills();
+      renderPills(el.daysPills, DAYS, state.ui.days, (v)=>{
+        state.ui.days = v; saveState(state); renderHome();
+      }, (v)=> `${v} дней`);
+
+      renderPills(el.devPills, DEVS, state.ui.devices, (v)=>{
+        state.ui.devices = v; saveState(state); renderHome();
+      }, (v)=> `${v}`);
 
       el.daysHint.textContent = `${state.ui.days} дней`;
       el.devHint.textContent = `${state.ui.devices} ${state.ui.devices === 1 ? "устройство" : "устройств"}`;
@@ -1048,56 +1185,6 @@
         setHomeBadge("ok", "Подписка активна");
       } else {
         setHomeBadge("", "Готово к оплате");
-      }
-
-      // Telegram MainButton (если внутри TG — можно включить как системную кнопку)
-      if(tg && tg.MainButton){
-        tg.MainButton.setText("Оплатить");
-        tg.MainButton.show();
-        tg.MainButton.onClick(() => el.payBtn.click());
-      }
-    }
-
-    function renderPay(){
-      const order = ensureCurrentOrder();
-      if(!order){
-        toast("Сначала создай заказ");
-        return go("home");
-      }
-
-      el.payOrderId.textContent = order.order_id;
-      el.payPlanText.textContent = `${order.days} дней • ${order.devices} устройств`;
-      el.payAmountText.textContent = `${order.price} ₽`;
-
-      // Provider seg
-      el.payMethodSeg.innerHTML = "";
-      const providers = [
-        { id: "stars", label: "Telegram Stars" },
-        { id: "cryptobot", label: "CryptoBot" },
-      ];
-      providers.forEach(p=>{
-        const b = document.createElement("button");
-        b.className = (state.ui.pay_provider === p.id) ? "active" : "";
-        b.textContent = p.label;
-        b.onclick = () => {
-          haptic('select');
-          state.ui.pay_provider = p.id;
-          saveState(state);
-          renderPay();
-        };
-        el.payMethodSeg.appendChild(b);
-      });
-
-      if(order.status === "fulfilled"){
-        setPayBadge("ok", "Оплачено ✅", "Платёж подтверждён. Конфиг готов.");
-      } else {
-        setPayBadge("warn", "Ожидает оплату", "Откроем оплату внутри Telegram. После оплаты нажми “Проверить статус”.");
-      }
-
-      // TG BackButton
-      if(tg && tg.BackButton){
-        tg.BackButton.show();
-        tg.BackButton.onClick(() => go("home"));
       }
     }
 
@@ -1111,6 +1198,27 @@
       el.devicesLimitText.textContent = state.sub.devices_limit ? String(state.sub.devices_limit) : "—";
       el.subTag.textContent = active ? "Активна" : "Не активна";
 
+      // SMART CARDS
+      let daysLeft = 0;
+      if (state.sub.active_until && state.sub.active_until > nowTs()) {
+        const diffMs = state.sub.active_until - nowTs();
+        daysLeft = Math.max(0, Math.ceil(diffMs / (24*60*60*1000)));
+      }
+      if(el.daysLeftText) el.daysLeftText.textContent = daysLeft ? `${daysLeft} дней` : "—";
+
+      const planDays = state.ui?.days || 30;
+      let pct = 0;
+      if(active){
+        pct = Math.round((1 - (daysLeft / planDays)) * 100);
+        pct = Math.max(0, Math.min(100, pct));
+      }
+      if(el.progressPctText) el.progressPctText.textContent = active ? `${pct}%` : "—";
+      if(el.subProgressBar) el.subProgressBar.style.width = active ? `${pct}%` : `0%`;
+
+      const limit = state.sub.devices_limit || 0;
+      const used = active ? Math.min(1, limit || 1) : 0; // demo mock
+      if(el.devicesUsedText) el.devicesUsedText.textContent = limit ? `${used}/${limit}` : "—";
+
       if(active && state.sub.vless){
         el.configLocked.style.display = "none";
         el.configUnlocked.style.display = "block";
@@ -1119,7 +1227,8 @@
         el.configBadge.className = "badge ok";
         el.configBadge.innerHTML = '<span class="dot"></span><span>Доступно</span>';
 
-        const masked = !!state.flags.vless_masked;
+        // mask
+        const masked = !!state.ui_flags.vless_masked;
         el.vlessLink.classList.toggle("masked", masked);
         el.toggleMaskBtn.textContent = masked ? "Показать" : "Скрыть";
       } else {
@@ -1136,22 +1245,25 @@
       if(state.orders.length === 0){
         const empty = document.createElement("div");
         empty.className = "row";
-        empty.innerHTML = `<span>Пока нет заказов</span><strong style="color:var(--tg-hint)">создай на главной</strong>`;
+        empty.innerHTML = `<span>Пока нет заказов</span><strong style="color:var(--muted)">создай на главной</strong>`;
         el.ordersList.appendChild(empty);
       } else {
         state.orders.slice(0, 12).forEach(o => {
           const div = document.createElement("div");
           div.className = "item";
-
           const statusTxt =
             o.status === "fulfilled" ? "Оплачено" :
-            o.status === "pending_payment" ? "Ожидает" :
+            o.status === "pending_payment" ? "Ожидает оплату" :
+            o.status === "failed" ? "Ошибка" :
             o.status;
 
           const date = fmtDate(o.created_at);
+
           const pillStyle =
             o.status === "fulfilled"
-              ? "color:#168a3e;background:rgba(34,197,94,.10);border-color:rgba(34,197,94,.30);"
+              ? "color:#168a3e;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35);"
+              : o.status === "failed"
+              ? "color:#c9140c;background:rgba(255,59,48,.12);border-color:rgba(255,59,48,.35);"
               : "";
 
           div.innerHTML = `
@@ -1159,23 +1271,117 @@
               <h3>${o.days} дней • ${o.devices} устройств • ${o.price} ₽</h3>
               <p>${o.order_id} • ${date} • ${o.provider === "stars" ? "Stars" : "CryptoBot"}</p>
             </div>
-            <div class="tag" style="${pillStyle}">${statusTxt}</div>
+            <div class="tag" style="${pillStyle}">
+              ${statusTxt}
+            </div>
           `;
           el.ordersList.appendChild(div);
         });
       }
-
-      if(tg && tg.BackButton) tg.BackButton.hide();
     }
 
-    // ---------------- Pay badge ----------------
-    function setPayBadge(kind, text, hint){
+    // ---------- Pay screen ----------
+    function setPayBadge(kind, text){
       el.payStatusBadge.className = "badge " + (kind || "warn");
       el.payStatusBadge.innerHTML = `<span class="dot"></span><span>${text}</span>`;
-      el.payStatusHint.textContent = hint || "";
     }
 
-    // ---------------- Router ----------------
+    function ensureCurrentOrder(){
+      const orderId = state.pay.current_order_id;
+      if(!orderId) return null;
+      return state.orders.find(o => o.order_id === orderId) || null;
+    }
+
+    function renderPay(){
+      const order = ensureCurrentOrder();
+      if(!order){
+        toast("Сначала создай заказ");
+        return go("home");
+      }
+
+      el.payOrderId.textContent = order.order_id;
+      el.payPlanText.textContent = `${order.days} дней • ${order.devices} устройств`;
+      el.payAmountText.textContent = `${order.price} ₽`;
+
+      const methods = [
+        {id:"stars", label:"Telegram Stars"},
+        {id:"cryptobot", label:"CryptoBot"}
+      ];
+
+      el.payMethodPills.innerHTML = "";
+      methods.forEach(m=>{
+        const b = document.createElement("button");
+        b.className = "pill" + (state.pay.provider === m.id ? " active" : "");
+        b.textContent = m.label;
+        b.onclick = ()=>{
+          state.pay.provider = m.id;
+          saveState(state);
+          renderPay();
+        };
+        el.payMethodPills.appendChild(b);
+      });
+
+      el.paySuccessBox.style.display = "none";
+      el.payFailBox.style.display = "none";
+
+      if(order.status === "fulfilled"){
+        setPayBadge("ok","Оплачено ✅");
+        el.paySuccessBox.style.display = "block";
+        el.payStatusHint.textContent = "Платёж подтверждён. Конфиг готов.";
+      } else if(order.status === "failed" || order.status === "expired"){
+        setPayBadge("bad","Ошибка/истёк");
+        el.payFailBox.style.display = "block";
+        el.payStatusHint.textContent = "Если оплатил — нажми “Проверить статус”.";
+      } else {
+        setPayBadge("warn","Ожидает оплату");
+        el.payStatusHint.textContent =
+          state.pay.provider === "stars"
+            ? "Откроем оплату Stars внутри Telegram."
+            : "Откроем инвойс CryptoBot внутри Telegram.";
+      }
+    }
+
+    async function openInvoiceLink(link){
+      // Telegram Mini App supports Telegram.WebApp.openInvoice
+      try{
+        if(window.Telegram && Telegram.WebApp && typeof Telegram.WebApp.openInvoice === "function"){
+          Telegram.WebApp.openInvoice(link, (status) => {
+            if(status === "paid") toast("Оплата подтверждена");
+          });
+          return;
+        }
+      }catch(e){}
+      // fallback
+      window.open(link, "_blank");
+    }
+
+    let payPollTimer = null;
+
+    async function pollOrder(order_id, maxMs=60000){
+      if(payPollTimer) clearInterval(payPollTimer);
+
+      const started = Date.now();
+      payPollTimer = setInterval(async ()=>{
+        try{
+          const o = await mockApi.getOrder(order_id);
+          if(o.status === "fulfilled"){
+            clearInterval(payPollTimer);
+            payPollTimer = null;
+            renderPay();
+            setTimeout(()=>go("cabinet"), 650);
+            return;
+          }
+          if(Date.now() - started > maxMs){
+            clearInterval(payPollTimer);
+            payPollTimer = null;
+            setPayBadge("warn","Проверка позже");
+            el.payStatusHint.textContent = "Платёж ещё не найден. Нажми “Проверить статус” позже.";
+          }
+        }catch(e){}
+      }, 2500);
+    }
+
+    // ---------- Navigation ----------
     function setNav(active){
       [el.navHome, el.navCabinet, el.navGuide].forEach(b => b.classList.remove("active"));
       if(active === "home") el.navHome.classList.add("active");
@@ -1184,8 +1390,10 @@
     }
 
     function go(where){
-      // stop poll when leaving pay
-      if(where !== "pay") stopPoll();
+      if(where !== "pay" && payPollTimer){
+        clearInterval(payPollTimer);
+        payPollTimer = null;
+      }
 
       [el.viewHome, el.viewPay, el.viewCabinet, el.viewGuide].forEach(v => v.classList.remove("active"));
 
@@ -1193,135 +1401,82 @@
         el.viewHome.classList.add("active");
         setNav("home");
         renderHome();
-        setHash("home");
       }
       if(where === "pay"){
         el.viewPay.classList.add("active");
         setNav("home");
         renderPay();
-        setHash("pay");
       }
       if(where === "cabinet"){
         el.viewCabinet.classList.add("active");
         setNav("cabinet");
         renderCabinet();
-        setHash("cabinet");
       }
       if(where === "guide"){
         el.viewGuide.classList.add("active");
         setNav("guide");
-        el.guideTag && (el.guideTag.textContent = "iOS");
-        setHash("guide");
-        if(tg && tg.BackButton) tg.BackButton.hide();
       }
-
       window.scrollTo({top:0, behavior:"smooth"});
     }
 
-    function setHash(x){
-      try{ history.replaceState(null, "", "#" + x); }catch(e){}
-    }
-    function getHash(){
-      const h = (location.hash || "").replace("#","").trim();
-      return h || "home";
-    }
-
-    // ---------------- Orders ----------------
-    function ensureCurrentOrder(){
-      const orderId = state.pay.current_order_id;
-      if(!orderId) return null;
-      return state.orders.find(o => o.order_id === orderId) || null;
-    }
-
-    // ---------------- Polling (demo) ----------------
-    let pollTimer = null;
-    function stopPoll(){
-      if(pollTimer){ clearInterval(pollTimer); pollTimer = null; }
-    }
-    async function pollOrder(order_id, maxMs=40000){
-      stopPoll();
-      const started = Date.now();
-      pollTimer = setInterval(async ()=>{
-        try{
-          const o = await mockApi.getOrder(order_id);
-          if(o.status === "fulfilled"){
-            stopPoll();
-            haptic('notify','success');
-            renderPay();
-            setTimeout(()=>go("cabinet"), 650);
-            return;
-          }
-          if(Date.now() - started > maxMs){
-            stopPoll();
-            setPayBadge("warn","Проверка позже","Платёж ещё не найден. Проверь статус чуть позже.");
-          }
-        }catch(e){}
-      }, 2200);
-    }
-
-    // ---------------- Actions ----------------
+    // ---------- Home -> create order -> pay screen ----------
     el.payBtn.onclick = async () => {
-      haptic('impact','light');
       const days = state.ui.days;
       const devices = state.ui.devices;
-      const provider = state.ui.pay_provider || "stars";
+      const provider = state.pay?.provider || "stars";
 
       el.payBtn.disabled = true;
       el.payBtn.textContent = "Создаём заказ…";
 
       try{
         await mockApi.createOrder({days, devices, provider});
-        el.payBtn.textContent = "Перейти к оплате";
+        el.payBtn.textContent = "Оплатить";
         el.payBtn.disabled = false;
         go("pay");
       } catch(e){
         console.error(e);
-        haptic('notify','error');
         toast("Ошибка создания заказа");
-        el.payBtn.textContent = "Перейти к оплате";
+        el.payBtn.textContent = "Оплатить";
         el.payBtn.disabled = false;
       }
     };
 
+    // ---------- Pay actions ----------
     el.openInvoiceBtn.onclick = async () => {
       const order = ensureCurrentOrder();
       if(!order) return;
 
-      haptic('impact','light');
-
-      // demo update provider + invoice link
-      order.provider = state.ui.pay_provider || "stars";
+      order.provider = state.pay.provider;
       order.invoice_link = order.provider === "stars"
         ? "https://t.me/$invoice/FAKE_STARS_INVOICE"
         : "https://t.me/CryptoBot?start=invoice_FAKE";
       saveState(state);
 
-      setPayBadge("warn","Ожидаем оплату…","Окно оплаты открыто. После оплаты нажми “Проверить статус”.");
+      setPayBadge("warn","Ожидаем оплату…");
+      el.payStatusHint.textContent = "Окно оплаты открыто. После оплаты статус обновится.";
 
-      openInvoice(order.invoice_link);
+      await openInvoiceLink(order.invoice_link);
 
-      // DEMO: emulate paid + poll
+      // DEMO: emulate paid and poll
       mockApi.emulatePaid(order.order_id);
-      pollOrder(order.order_id, 45000);
+      pollOrder(order.order_id, 60000);
     };
 
     el.checkStatusBtn.onclick = async () => {
       const order = ensureCurrentOrder();
       if(!order) return;
-      haptic('impact','light');
-      setPayBadge("warn","Проверяем…","Ищем подтверждение оплаты…");
+      setPayBadge("warn","Проверяем…");
       pollOrder(order.order_id, 20000);
     };
 
-    el.backFromPayBtn.onclick = () => { haptic('impact','light'); go("home"); };
+    el.backFromPayBtn.onclick = () => go("home");
 
-    // Config actions
+    // ---------- Config actions ----------
     el.toggleMaskBtn?.addEventListener("click", () => {
-      haptic('select');
-      state.flags.vless_masked = !state.flags.vless_masked;
+      state.ui_flags.vless_masked = !state.ui_flags.vless_masked;
       saveState(state);
       renderCabinet();
-      toast(state.flags.vless_masked ? "Скрыто" : "Показано");
+      toast(state.ui_flags.vless_masked ? "Скрыто" : "Показано");
     });
 
     el.copyBtn?.addEventListener("click", async () => {
@@ -1329,26 +1484,27 @@
       if(!text) return toast("Нет ссылки");
       try{
         await navigator.clipboard.writeText(text);
-        haptic('notify','success');
         toast("Скопировано");
       } catch(e){
-        haptic('notify','error');
-        toast("Не удалось скопировать");
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        toast("Скопировано");
       }
     });
 
     el.openBtn?.addEventListener("click", () => {
       const link = state.sub.vless;
       if(!link) return toast("Нет ссылки");
-      haptic('impact','light');
-      // В TG лучше openLink, но для vless:// часто надо window.location
-      try { window.location.href = link; } catch(e){}
+      window.location.href = link;
     });
 
     el.shareBtn?.addEventListener("click", async () => {
       const link = state.sub.vless;
       if(!link) return toast("Нет ссылки");
-      haptic('impact','light');
       if(navigator.share){
         try{
           await navigator.share({ title: "ZEUSVPN", text: "Мой VLESS конфиг", url: link });
@@ -1363,7 +1519,6 @@
 
     el.regenBtn?.addEventListener("click", async () => {
       if(!subscriptionActive()) return toast("Подписка не активна");
-      haptic('impact','light');
       el.regenBtn.disabled = true;
       el.regenBtn.textContent = "…";
       try{
@@ -1376,24 +1531,47 @@
       }
     });
 
-    // Reset
+    // ---------- Reset ----------
     el.resetBtn.onclick = () => {
-      haptic('notify','warning');
       localStorage.removeItem(LS_KEY);
       state = loadState();
-      toast("Сброшено");
+      toast("Демо-данные сброшены");
+      renderHome();
+      renderCabinet();
       go("home");
     };
 
-    // ---------------- Init ----------------
-    tgInit();
+    // ---------- Slider ----------
+    let slide = 0;
+    function setSlide(i){
+      slide = Math.max(0, Math.min(2, i));
+      el.slides.style.transform = `translateX(-${slide*100}%)`;
+      el.dots.forEach((d, idx) => d.classList.toggle("active", idx===slide));
+      el.slideTag.textContent = slide === 0 ? "iOS" : slide === 1 ? "Android" : "Desktop";
+    }
+    el.prevBtn.onclick = () => setSlide(slide-1);
+    el.nextBtn.onclick = () => setSlide(slide+1);
 
-    // Load initial view from hash
-    const start = getHash();
-    if(["home","pay","cabinet","guide"].includes(start)) go(start);
-    else go("home");
+    // swipe support
+    let sx=0, down=false;
+    el.slides.addEventListener("touchstart", (e)=>{ down=true; sx=e.touches[0].clientX; }, {passive:true});
+    el.slides.addEventListener("touchend", (e)=>{
+      if(!down) return;
+      down=false;
+      const ex = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : sx;
+      const dx = ex - sx;
+      if(Math.abs(dx) > 40){
+        if(dx < 0) setSlide(slide+1);
+        else setSlide(slide-1);
+      }
+    }, {passive:true});
 
-    // expose
+    // ---------- First render ----------
+    renderHome();
+    renderCabinet();
+    setSlide(0);
+
+    // expose navigation for inline buttons
     window.go = go;
   </script>
 </body>
